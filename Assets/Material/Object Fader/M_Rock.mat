@@ -1,0 +1,111 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: M_Rock
+  m_Shader: {fileID: -6465566751694194690, guid: 6d771e294c479074aa7500cba7804fa1,
+    type: 3}
+  m_ValidKeywords:
+  - _MAIN_LIGHT_SHADOWS
+  - _MAIN_LIGHT_SHADOWS_CASCADE
+  m_InvalidKeywords:
+  - MAIN_LIGHT_CALCULATE_SHADOWS
+  - _MAINS_LIGHT_SHADOWS_CASCADE
+  - _SHADOWS_SOFT
+  - _USE_SCREEN_SPACE
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - Texture2D_DC6DF663:
+        m_Texture: {fileID: 2800000, guid: 2862d24a5e6d6c049be2492f76bc1c2c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DiffuseTexture:
+        m_Texture: {fileID: 2800000, guid: a368d06af8a766341b6a58fc2601ca33, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ToonRamp:
+        m_Texture: {fileID: 2800000, guid: 6efa5441669cb794ca89ca7cc44855aa, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - MAIN_LIGHT_CALCULATE_SHADOWS: 1
+    - Vector1_29C6AB4C: 0
+    - Vector1_46F4FBA0: 5
+    - Vector1_ADAD9479: 0.21
+    - Vector1_E023A9A8: 0.044
+    - Vector1_EE54776A: 20
+    - _AlphaClip: 0
+    - _ApplySpecularLight: 1
+    - _ApplyTintColor: 1
+    - _Blend: 0
+    - _CastShadows: 1
+    - _Cull: 2
+    - _DstBlend: 0
+    - _GradientScale: 1
+    - _GradientSmoothness: 1
+    - _HAS_RIM_HIGHLIGHT: 0
+    - _IS_MATTE: 0
+    - _MAINS_LIGHT_SHADOWS_CASCADE: 1
+    - _MAIN_LIGHT_SHADOWS: 1
+    - _MAIN_LIGHT_SHADOWS_CASCADE: 1
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _Rim_Multiplier: 0.644
+    - _SHADOWS_SOFT: 1
+    - _Smoothness: 1
+    - _SrcBlend: 1
+    - _Surface: 0
+    - _USE_SCREEN_SPACE: 1
+    - _VoronoiDensity: 0.5
+    - _VoronoiMultiplier: 0.5
+    - _VoronoiThreshold: 0.1
+    - _ZTest: 4
+    - _ZWrite: 1
+    - _ZWriteControl: 0
+    m_Colors:
+    - Color_DAC4E11B: {r: 1, g: 1, b: 1, a: 0}
+    - Vector2_CFCD19EF: {r: 5, g: 5, b: 0, a: 0}
+    - _DiffuseTiling: {r: 1, g: 1, b: 0, a: 0}
+    - _Rim_Color: {r: 1, g: 1, b: 1, a: 0}
+    - _SpecColor: {r: 1, g: 1, b: 1, a: 0}
+    - _TintColor: {r: 1, g: 1, b: 1, a: 0}
+    - _VoronoiColor: {r: 1, g: 1, b: 1, a: 0}
+  m_BuildTextureStacks: []
+--- !u!114 &5766949560226174784
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5
