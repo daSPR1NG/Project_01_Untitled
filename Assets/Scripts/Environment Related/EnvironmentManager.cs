@@ -11,10 +11,8 @@ namespace dnSR_Coding
     [Component("EnvironmentManager", "")]
     public class EnvironmentManager : Singleton<EnvironmentManager>, IDebuggable
     {
-        [Title( "DEPENDENCIES", 12, "white" )]
-
-        [SerializeField] private List<EnvironmentData> _environmentDatas = new ();
-        [SerializeField] private List<EnvironmentCameraData> _environmentCameraDatas = new();
+        private List<EnvironmentData> _environmentDatas = new ();
+        private List<EnvironmentCameraData> _environmentCameraDatas = new();
 
         public static Action<EnvironmentType> OnFocusingOnEnvironment;
 
@@ -30,12 +28,10 @@ namespace dnSR_Coding
 
         void OnEnable() 
         {
-            Environment.OnSettingDisplayedState += UpdateEnvironmentsDisplayedState;
         }
 
         void OnDisable() 
         {
-            Environment.OnSettingDisplayedState -= UpdateEnvironmentsDisplayedState;
         }
 
         #endregion
@@ -44,20 +40,6 @@ namespace dnSR_Coding
         protected override void Init( bool dontDestroyOnLoad = false )
         {
             base.Init( true );
-
-            //FindEnvironmentCameras();
-        }
-
-        public void UpdateEnvironmentsDisplayedState( bool displayed )
-        {
-            if ( _environmentDatas.IsEmpty() ) { return; }
-
-            for ( int i = 0; i < _environmentDatas.Count; i++ )
-            {
-                if ( _environmentDatas [ i ].Displayed == displayed ) { continue; }
-
-                _environmentDatas [ i ].Displayed = displayed;
-            }
         }
 
         #region Environment Focus Handle
@@ -107,55 +89,22 @@ namespace dnSR_Coding
             return null;
         }
 
-        #endregion
+        #endregion        
 
-        private void FindEnvironmentCameras()
-        {
-            if ( _environmentDatas.IsEmpty()
-                || _environmentCameraDatas.Count >= _environmentDatas.Count )
-            {
-                return;
-            }
-
-            for ( int i = 0; i < _environmentDatas.Count; i++ )
-            {
-                Transform localEnvironmentTrs = _environmentDatas [ i ].EnvironmentTrs;
-
-                if ( localEnvironmentTrs.IsNull() ) { continue; }
-
-                Transform localCameraTrs = _environmentDatas [ i ].CameraTrs;
-                Environment environment = localEnvironmentTrs.GetComponent<Environment>();
-                CinemachineVirtualCamera cvc = localCameraTrs.GetChild( 0 ).GetComponent<CinemachineVirtualCamera>();
-
-                _environmentCameraDatas.AddItem(
-                            new EnvironmentCameraData(
-                                environment,
-                                cvc,
-                                cvc.Priority )
-                            {
-                                Name = localCameraTrs.GetChild( 0 ).gameObject.name
-                            },
-                            IsDebuggable );
-            }
-
-            FocusOnDefaultEnvironmentOnInit();
-        }
-
+        public List<EnvironmentData> EnvironmentDatas() => _environmentDatas;
         public List<EnvironmentCameraData> EnvironmentCameraDatas() => _environmentCameraDatas;
-
 
         #region OnValidate
 
 #if UNITY_EDITOR
-        private void SetEnvironmentsInEditor()
+
+        #region Environment Datas Handle
+
+        private void SetEachEnvironmentDatasProperties()
         {
             if ( _environmentDatas.IsEmpty() )
             {
-                if ( !_environmentCameraDatas.IsEmpty() )
-                {
-                    _environmentCameraDatas.Clear();
-                }
-
+                _environmentCameraDatas.Clear();
                 return;
             }
 
@@ -165,24 +114,101 @@ namespace dnSR_Coding
 
                 if ( eD.EnvironmentTrs.IsNull() ) { continue; }
 
-                eD.SetName( _environmentDatas [ i ].EnvironmentTrs.name );
-
-                eD.SetCameraDatas( 
-                    eD.EnvironmentTrs.name + " Camera", 
-                    eD.EnvironmentTrs.GetChild( eD.EnvironmentTrs.childCount - 1 ) );
-
-                eD.SetEnvironmentComponentReference( eD.EnvironmentTrs.GetComponent<Environment>() );
-                eD.EnvironmentComponent.ToggleEnvironmentVisibility( eD.Displayed );
+                SetEnvironmentData( eD, eD.EnvironmentTrs );
             }
 
-            FindEnvironmentCameras();
+            FocusOnDefaultEnvironmentOnInit();
         }
+
+        public void AddEnvironmentData( Transform trs )
+        {
+            if ( !_environmentDatas.IsEmpty() && DataHasAlreadyBeenSetForThisEnvironment( trs ) )
+            {
+                return;
+            }
+
+            EnvironmentData environmentData = new( trs )
+            {
+                Name = trs.name
+            };
+            SetEnvironmentData( environmentData, trs );
+
+            _environmentDatas.AddItem( environmentData, IsDebuggable );
+
+            CinemachineVirtualCamera cvc = environmentData.CameraTrs.GetChild( 0 ).GetComponent<CinemachineVirtualCamera>();
+
+            _environmentCameraDatas.AddItem(
+                            new EnvironmentCameraData(
+                                environmentData.EnvironmentComponent,
+                                cvc,
+                                cvc.Priority )
+                            {
+                                Name = environmentData.CameraTrs.GetChild( 0 ).name
+                            },
+                            IsDebuggable );
+
+            ResetFocusForEachCamera();
+            FocusOnDefaultEnvironmentOnInit();
+        }
+
+        private void SetEnvironmentData( EnvironmentData environmentData, Transform possibleEnvironmentTrs )
+        {
+            environmentData.SetEnvironmentComponent( possibleEnvironmentTrs.GetComponent<Environment>() );
+            environmentData.EnvironmentComponent.ToggleEnvironmentVisibility( true );
+
+            environmentData.SetCameraTransform( possibleEnvironmentTrs.GetChild( possibleEnvironmentTrs.childCount - 1 ) );
+            environmentData.SetVirtualCameraTransformName( possibleEnvironmentTrs.name + " Camera" );
+        }
+
+        public void HandleEnvironmentDatasListModifications()
+        {
+            if ( _environmentDatas.IsEmpty() ) { return; }
+
+            for ( int i = _environmentDatas.Count - 1; i >= 0; i-- )
+            {
+                EnvironmentData eD = _environmentDatas [ i ];
+
+                if ( eD.EnvironmentTrs.IsNull() ) { _environmentDatas.RemoveItem( eD, IsDebuggable ); }
+            }
+        }
+
+        public void HandleEnvironmentCameraDatasListModifications()
+        {
+            if ( _environmentCameraDatas.IsEmpty() ) { return; }
+
+            for ( int i = _environmentCameraDatas.Count - 1; i >= 0; i-- )
+            {
+                EnvironmentCameraData ecd = _environmentCameraDatas [ i ];
+
+                if ( ecd.EnvironmentParent.IsNull() ) { _environmentCameraDatas.RemoveItem( ecd, IsDebuggable ); }
+            }
+        }
+
+        private bool DataHasAlreadyBeenSetForThisEnvironment( Transform trs )
+        {
+            if ( _environmentDatas.IsEmpty() ) { return false; }
+
+            for ( int i = 0; i < _environmentDatas.Count; i++ )
+            {
+                if ( _environmentDatas [ i ].EnvironmentTrs == trs )
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
 
         private void OnValidate()
         {
             if ( Application.isPlaying ) { return; }
 
-            SetEnvironmentsInEditor();
+            SetEachEnvironmentDatasProperties();
+
+            HandleEnvironmentDatasListModifications();
+            HandleEnvironmentCameraDatasListModifications();
         }
 #endif
 

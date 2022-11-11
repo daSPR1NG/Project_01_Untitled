@@ -52,14 +52,17 @@ namespace dnSR_Coding.Utilities
 
         #region Transform
 
-        public static void ResetPosition( this Transform transform ) { transform.position = Vector3.zero; }
-        public static void ResetRotation( this Transform transform ) { transform.rotation = Quaternion.identity; }
-        public static void ResetScale( this Transform transform ) { transform.localScale = new Vector3( 1, 1, 1 ); }
-        public static void Reset( this Transform transform ) 
+        public static void Reset( this Transform transform, bool isLocal ) 
         {
-            transform.ResetPosition(); 
-            transform.ResetRotation(); 
-            transform.ResetScale(); 
+            transform.localScale = new Vector3( 1, 1, 1 );
+
+            if ( isLocal )
+            {
+                transform.SetLocalPositionAndRotation( Vector3.zero, Quaternion.identity );
+                return;
+            }
+
+            transform.SetPositionAndRotation( Vector3.zero, Quaternion.identity );
         }
 
         public static bool HasNoChild( this Transform transform ) { return transform.childCount == 0; }
@@ -290,7 +293,7 @@ namespace dnSR_Coding.Utilities
             if ( component != null )
                 SafeDestroy( component.gameObject );
             return null;
-        }
+        }        
 
         #endregion
     }

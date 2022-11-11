@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 129846112354d1842a785c0b4c2816ee, type: 3}
   m_Name: Test
   m_EditorClassIdentifier: 
-  Pitch: {x: 0.8, y: 3}
+  Pitch: {x: 0.8, y: 2}
   Volume: {x: 0.25, y: 1}
   Clips:
   - Name: '0 - EXPLOSION_A '

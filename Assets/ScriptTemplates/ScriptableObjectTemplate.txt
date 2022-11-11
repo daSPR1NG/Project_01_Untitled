@@ -1,0 +1,10 @@
+using UnityEngine;
+
+namespace dnSR_Coding
+{
+    [CreateAssetMenu(fileName = "", menuName = "Scriptable Objects/#SCRIPTNAME#")]
+    public class #SCRIPTNAME# : ScriptableObject
+    {
+        
+    }
+}

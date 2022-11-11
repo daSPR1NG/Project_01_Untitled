@@ -1,9 +1,7 @@
 using UnityEngine;
 using dnSR_Coding.Utilities;
-using System.Collections.Generic;
 using System;
 using ExternalPropertyAttributes;
-using Random = UnityEngine.Random;
 
 namespace dnSR_Coding
 {
@@ -39,23 +37,23 @@ namespace dnSR_Coding
 
         #region Environment Visibility Handle
 
-        public void ToggleEnvironmentVisibility( bool displayIt )
+        public void ToggleEnvironmentVisibility( bool shouldBeDisplayed )
         {
-            if ( displayIt )
+            if ( shouldBeDisplayed )
             {
-                LoadEnvironment();
+                DisplayEnvironment();
                 return;
             }
 
-            UnloadEnvironment();
+            HideEnvironment();
         }
-        private void LoadEnvironment()
+        private void DisplayEnvironment()
         {
             gameObject.TryToDisplay();
 
             OnSettingDisplayedState?.Invoke( gameObject.IsActive() );
         }
-        private void UnloadEnvironment()
+        private void HideEnvironment()
         {
             gameObject.TryToHide();
 
@@ -75,10 +73,6 @@ namespace dnSR_Coding
 
         private void OnValidate()
         {
-            if ( _environmentManager.IsNull() ) { _environmentManager = transform.parent.GetComponent<EnvironmentManager>(); }
-
-            ToggleEnvironmentVisibility( gameObject.IsActive() );
-            _environmentManager.UpdateEnvironmentsDisplayedState( gameObject.IsActive() );
         }
 #endif
 

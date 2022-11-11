@@ -1,0 +1,11 @@
+using UnityEngine;
+using System.Collections;
+
+namespace dnSR_Coding
+{
+    ///<summary> #SCRIPTNAME# description <summary>
+    public abstract class #SCRIPTNAME# : MonoBehaviour
+    {
+
+    }
+}
