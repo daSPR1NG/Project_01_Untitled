@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
@@ -66,6 +68,20 @@ namespace dnSR_Coding.Utilities
         }
 
         public static bool HasNoChild( this Transform transform ) { return transform.childCount == 0; }
+
+        public static Transform GetFirstChild( this Transform transform )
+        {
+            if ( transform.HasNoChild() ) { return null; }
+
+            return transform.GetChild( 0 );
+        }
+
+        public static Transform GetLastChild( this Transform transform) 
+        {
+            if ( transform.HasNoChild() ) { return null; }
+
+            return transform.GetChild( transform.childCount - 1 ); 
+        }
 
         #endregion
 
@@ -227,7 +243,7 @@ namespace dnSR_Coding.Utilities
 
         #region List
 
-        public static void AddItem<T>( this List<T> list, T t, bool debugMessage )
+        public static void AddItem<T>( this List<T> list, T t, bool debugMessage = false )
         {
             if ( list.Contains( t ) )
             {
@@ -246,7 +262,7 @@ namespace dnSR_Coding.Utilities
             list.Add( t );
         }
 
-        public static void RemoveItem<T>( this List<T> list, T t, bool debugMessage )
+        public static void RemoveItem<T>( this List<T> list, T t, bool debugMessage = false )
         {
             if ( list.IsEmpty() || !list.Contains( t ) )
             {

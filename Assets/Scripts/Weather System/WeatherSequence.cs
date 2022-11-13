@@ -3,10 +3,11 @@ using System.Collections;
 using dnSR_Coding.Utilities;
 using ExternalPropertyAttributes;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace dnSR_Coding
 {
-    // Required components or public findable enum here.
+    // Required components or public findable enum here.    
 
     // Uncomment this block right below if you need to use add component menu for this component.
     // [AddComponentMenu( menuName:"Custom Scripts/WeatherSequence" )]
@@ -14,34 +15,23 @@ namespace dnSR_Coding
     ///<summary> WeatherSequence description <summary>
     [Component("WeatherSequence", "")]
     [DisallowMultipleComponent]
-    public abstract class WeatherSequence : MonoBehaviour, IDebuggable
+    public class WeatherSequence : MonoBehaviour, IDebuggable
     {
         [Title( "SETTINGS", 12, "white" )]
 
-        [SerializeField] protected bool _isApplied = false;
-        [SerializeField] protected WeatherType _weatherType = WeatherType.None;
-        [SerializeField] private float _sunShaftFadeSpeed = 0.5f;
-        [SerializeField] private float _lightFadeSpeed = 0.5f;
-        [SerializeField] private float _vfxFadeSpeed = 0.5f;
+        [SerializeField] private bool _isApplied = false;
+        [SerializeField] private WeatherType _weatherType = WeatherType.None;
+        [SerializeField, Range( 0f, 15f )] private float _elementsFadeSpeed = 1f;
 
         [Space( 10f )]
 
         [Title( "ELEMENTS", 12, "white" )]
 
-        [SerializeField] protected List<Material> _sunShaftMaterials = new ();
-        [SerializeField] protected List<SequenceLightData> _lights = new ();
-        [SerializeField] protected List<SequenceParticleSystemData> _visualEffects = new ();
+        [SerializeField] private List<Material> _sunShaftMaterials = new ();
+        [SerializeField] private List<SequenceParticleSystemData> _visualEffects = new ();
 
         private Coroutine _sunShaftCoroutine = null;
-        private Coroutine _lightsCoroutine = null;
         private Coroutine _visualEffectCoroutine = null;
-
-        [System.Serializable]
-        public class SequenceLightData
-        {
-            public Light Light;
-            public float Intensity;
-        }
 
         [System.Serializable]
         public class SequenceParticleSystemData
@@ -55,6 +45,17 @@ namespace dnSR_Coding
         [Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
         [SerializeField] private bool _isDebuggable = true;
         public bool IsDebuggable => _isDebuggable;
+
+        #endregion
+
+        #region Enable, Disable
+
+        void OnEnable() {}
+
+        void OnDisable() 
+        {
+            StopAllCoroutines();
+        }
 
         #endregion
 
@@ -74,40 +75,44 @@ namespace dnSR_Coding
             #endif
         }
 
-        public abstract void ApplyWeatherSequence();
-        public abstract void RemoveWeatherSequence();
+        public void ApplyWeatherSequence()
+        {
+            // Smoothly turn sunshaft alpha from O to max value
+            SetSunshaftsAlphaValue( 1f );
+
+            // Smoothly turn VFX start color alpha from 0 to max value
+            SetVisualEffectsAlphaValue( false );
+
+            _isApplied = true;
+        }
+
+        public void RemoveWeatherSequence()
+        {
+            // Smoothly turn sunshaft alpha from O to max value
+            SetSunshaftsAlphaValue( 0f );
+
+            // Smoothly turn VFX start color alpha from 0 to max value
+            SetVisualEffectsAlphaValue( true );
+
+            _isApplied = false;
+        }
 
         #region Set Weather elements handle
 
-        protected virtual void SetSunshaftsAlphaValue( float alphaToReach )
+        private void SetSunshaftsAlphaValue( float alphaToReach )
         {
             if ( _sunShaftMaterials.IsEmpty() ) { return; }
 
-            if ( !_sunShaftCoroutine.IsNull() ) { StopCoroutine( _sunShaftCoroutine ); }
-
             for ( int i = 0; i < _sunShaftMaterials.Count; i++ )
             {
-                _sunShaftCoroutine =
-                    StartCoroutine( FadeMaterialColorAlphaTo( _sunShaftMaterials [ i ], alphaToReach, _sunShaftFadeSpeed ) );
+                if ( _sunShaftMaterials [ i ].color.a == alphaToReach ) { continue; }
+
+                _sunShaftCoroutine = StartCoroutine( 
+                    FadeSunShaftAlphaTo( _sunShaftMaterials [ i ], alphaToReach, _elementsFadeSpeed ) );
             }
         }
 
-        protected virtual void SetLightsAlphaValue( bool fadesOut )
-        {
-            if ( _lights.IsEmpty() ) { return; }
-
-            if ( !_lightsCoroutine.IsNull() ) { StopCoroutine( _lightsCoroutine ); }
-
-            for ( int i = 0; i < _lights.Count; i++ )
-            {
-                float intensity = fadesOut ? 0.1f : _lights [ i ].Intensity;
-
-                _lightsCoroutine = StartCoroutine(
-                    FadeLightIntensityTo( _lights [ i ].Light, intensity, _lightFadeSpeed ) );
-            }
-        }
-
-        protected virtual void SetVisualEffectsAlphaValue( bool fadesOut )
+        private void SetVisualEffectsAlphaValue( bool fadesOut )
         {
             if ( _visualEffects.IsEmpty() ) { return; }
 
@@ -115,11 +120,13 @@ namespace dnSR_Coding
 
             for ( int i = 0; i < _visualEffects.Count; i++ )
             {
-                float alpha = fadesOut ? 0 : _visualEffects [ i ].Alpha;
+                float alphaToReach = fadesOut ? 0 : _visualEffects [ i ].Alpha;
+
+                if ( _visualEffects [ i ].ParticleSystem.main.startColor.color.a == alphaToReach ) { continue; }
 
                 _visualEffectCoroutine = StartCoroutine(
-                    FadeParticleEffectStartingColorAlphaTo(
-                        _visualEffects [ i ].ParticleSystem, alpha, _vfxFadeSpeed ) );
+                    FadeVisualEffectAlphaTo(
+                        _visualEffects [ i ].ParticleSystem, alphaToReach, _elementsFadeSpeed / 2 ) );
             }
         }
 
@@ -127,38 +134,30 @@ namespace dnSR_Coding
 
         #region Utils - Coroutines
 
-        protected IEnumerator FadeLightIntensityTo( Light light, float toValue, float delay )
+        private IEnumerator FadeSunShaftAlphaTo( Material mat, float toValue, float delay )
         {
-            float initialIntensity = light.intensity;
+            float fromValue = mat.color.a;
 
+            // We initialize t as 0, then we increment it by deltaTime / delay to match the delay passed in argument.
+            // We execute the for loop until t is greater than 1.0f matching the max amplitude of a Color alpha 0-1.
             for ( float t = 0.0f; t < 1.0f; t += Time.deltaTime / delay )
             {
-                light.intensity = Mathf.Lerp( initialIntensity, toValue, t );
-                yield return null;
-            }
-
-            yield break;
-        }
-
-        protected IEnumerator FadeMaterialColorAlphaTo( Material mat, float toValue, float delay )
-        {
-            float alpha = mat.color.a;
-
-            for ( float t = 0.0f; t < 1.0f; t += Time.deltaTime / delay )
-            {
-                Color newColor = new( 1, 1, 1, Mathf.Lerp( alpha, toValue, t ) );
+                Color newColor = new( 1, 1, 1, Mathf.Lerp( fromValue, toValue, t ) );
                 mat.color = newColor;
 
                 yield return null;
             }
 
+            Debug.Log( "FadeSunShaftAlphaTo COMPLETED" );
             yield break;
         }
 
-        protected IEnumerator FadeParticleEffectStartingColorAlphaTo( ParticleSystem pS, float toValue, float delay )
+        private IEnumerator FadeVisualEffectAlphaTo( ParticleSystem pS, float toValue, float delay )
         {
             float alpha = pS.main.startColor.color.a;
 
+            // We initialize t as 0, then we increment it by deltaTime / delay to match the delay passed in argument.
+            // We execute the for loop until t is greater than 1.0f matching the max amplitude of a Color alpha 0-1.
             for ( float t = 0.0f; t < 1.0f; t += Time.deltaTime / delay )
             {
                 Color newColor = new( 1, 1, 1, Mathf.Lerp( alpha, toValue, t ) );
@@ -169,6 +168,7 @@ namespace dnSR_Coding
                 yield return null;
             }
 
+            Debug.Log( "FadeSunShaftAlphaTo COMPLETED" );
             yield break;
         }
 

@@ -11,10 +11,9 @@ namespace dnSR_Coding
     {
         [HideInInspector] public string Name;
 
-        public bool IsFocused { get; private set; }
-        public CinemachineVirtualCamera VirtualCamera { get; private set; }
-
-        [AllowNesting, ReadOnly] public Environment EnvironmentParent;
+        [AllowNesting, ReadOnly] public bool IsFocused;
+        [AllowNesting, ReadOnly] public CinemachineVirtualCamera VirtualCamera;
+        [AllowNesting, ReadOnly] public Environment EnvironmentComponent;
         [AllowNesting, ReadOnly] public int Priority;
 
         private Transform _parentTrs;
@@ -33,10 +32,9 @@ namespace dnSR_Coding
             IsFocused = false;
             VirtualCamera.enabled = IsFocused;
 
-            _parentTrs = EnvironmentParent.transform;
-            if ( _parentTrs.gameObject.IsActive() ) { EnvironmentParent.ToggleEnvironmentVisibility( false ); }
+            _parentTrs = EnvironmentComponent.transform;
+            if ( _parentTrs.gameObject.IsActive() ) { EnvironmentComponent.ToggleEnvironmentVisibility( false ); }
         }
-
         public void Focus()
         {
             if ( VirtualCamera.IsNull() )
@@ -51,13 +49,13 @@ namespace dnSR_Coding
             IsFocused = true;
             VirtualCamera.enabled = IsFocused;
 
-            _parentTrs = EnvironmentParent.transform;
-            if ( !_parentTrs.gameObject.IsActive() ) { EnvironmentParent.ToggleEnvironmentVisibility( true ); }
+            _parentTrs = EnvironmentComponent.transform;
+            if ( !_parentTrs.gameObject.IsActive() ) { EnvironmentComponent.ToggleEnvironmentVisibility( true ); }
         }
 
         public EnvironmentCameraData( Environment environmentParent, CinemachineVirtualCamera cameraTrs, int priority )
         {
-            EnvironmentParent = environmentParent;
+            EnvironmentComponent = environmentParent;
             VirtualCamera = cameraTrs;
             Priority = priority;
         }

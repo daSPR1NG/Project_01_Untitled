@@ -19,45 +19,27 @@ namespace dnSR_Coding
             EditorGUILayout.LabelField( "Environment Datas Count : " + eM.EnvironmentDatas().Count.ToString() );
             EditorGUILayout.LabelField( "Environment Camera Datas Count : " + eM.EnvironmentCameraDatas().Count.ToString() );
 
+            EditorGUILayout.Space( 2f );
+            using ( new EditorGUILayout.VerticalScope() )
+            {
+                FocusCameraButtonEditor( eM );
+            }
             EditorGUILayout.Space( 10f );
 
             base.OnInspectorGUI();
 
-            RefreshScriptButtonEditor( eM );
-            ClearDatasButtonEditor( eM );
-
-            FocusOnOneEnvironmentButtonEditor( eM );
-        }
-
-        private void RefreshScriptButtonEditor( EnvironmentManager eM )
-        {
             EditorGUILayout.Space( 10f );
-
-            #region Refresh button
-
-            GUIStyle buttonStyle = new( GUI.skin.button )
+            using ( new EditorGUILayout.HorizontalScope() )
             {
-                fontSize = 12,
-                fontStyle = FontStyle.Bold
-            };
-
-            GUIContent content = new( "Refresh script".ToUpper() );
-
-            if ( GUILayout.Button( content, buttonStyle,
-                GUILayout.Height( buttonStyle.CalcHeight( content, EditorGUIUtility.labelWidth ) + 10f ) ) )
-            {
-                eM.HandleEnvironmentDatasListModifications();
-                eM.HandleEnvironmentCameraDatasListModifications();
-                Debug.Log( "Refreshing." );
-            }
-
-            #endregion
+                GUILayout.FlexibleSpace();
+                RefreshScriptButtonEditor( eM );
+                ClearDatasButtonEditor( eM );
+                GUILayout.FlexibleSpace();
+            }            
         }
 
         private void AddCameraDataButtonEditor( EnvironmentManager eM )
         {
-            EditorGUILayout.Space( 10f );
-
             using ( new EditorGUILayout.HorizontalScope() )
             {
                 _possibleEnvironmentTrs = 
@@ -77,7 +59,7 @@ namespace dnSR_Coding
                 using ( new EditorGUI.DisabledGroupScope( _possibleEnvironmentTrs.IsNull() ) )
                 {
                     if ( GUILayout.Button( content, buttonStyle,
-                    GUILayout.Height( buttonStyle.CalcHeight( content, EditorGUIUtility.labelWidth ) ) ) )
+                    GUILayout.Height( buttonStyle.CalcHeight( content, EditorGUIUtility.labelWidth ) + 15f ) ) )
                     {
                         eM.AddEnvironmentData( _possibleEnvironmentTrs );
 
@@ -88,14 +70,61 @@ namespace dnSR_Coding
 
                 #endregion
             }
-
-            EditorGUILayout.Space( 10f );
         }
+        private void FocusCameraButtonEditor( EnvironmentManager eM )
+        {
+            foreach ( var ecd in eM.EnvironmentCameraDatas() )
+            {
+                GUIStyle buttonStyle = new( GUI.skin.button )
+                {
+                    fontSize = 12,
+                    fontStyle = FontStyle.Bold
+                };
 
+                if ( ecd.EnvironmentComponent.IsNull() ) { continue; }
+
+                string environmentName = ecd.EnvironmentComponent.name + " Camera";
+
+                GUIContent content = ecd.IsFocused
+                    ? new( environmentName + " is currently focused." )
+                    : new( "Focus On : ".ToUpper() + environmentName );
+
+                using ( new EditorGUI.DisabledGroupScope( ecd.IsFocused ) )
+                {
+                    if ( GUILayout.Button( content, buttonStyle,
+                    GUILayout.Height( buttonStyle.CalcHeight( content, EditorGUIUtility.labelWidth ) + 5f ) ) )
+                    {
+                        eM.ResetFocusForEachCamera();
+                        ecd.Focus();
+                    }
+                }
+            }
+        }
+        
+        private void RefreshScriptButtonEditor( EnvironmentManager eM )
+        {
+            #region Refresh button
+
+            GUIStyle buttonStyle = new( GUI.skin.button )
+            {
+                fontSize = 11,
+                fontStyle = FontStyle.Bold
+            };
+
+            GUIContent content = new( "Refresh script".ToUpper() );
+
+            if ( GUILayout.Button( content, buttonStyle,
+                GUILayout.Height( buttonStyle.CalcHeight( content, EditorGUIUtility.labelWidth ) + 5f) ) )
+            {
+                eM.HandleEnvironmentDatasListModifications();
+                eM.HandleEnvironmentCameraDatasListModifications();
+                Debug.Log( "Refreshing." );
+            }
+
+            #endregion
+        }
         private void ClearDatasButtonEditor( EnvironmentManager eM )
         {
-            EditorGUILayout.Space( 5f );
-
             #region Clear datas button
 
             GUIStyle buttonStyle = new( GUI.skin.button )
@@ -107,7 +136,7 @@ namespace dnSR_Coding
             GUIContent content = new( "Clear datas".ToUpper() );
 
             if ( GUILayout.Button( content, buttonStyle,
-                GUILayout.Height( buttonStyle.CalcHeight( content, EditorGUIUtility.labelWidth ) + 5f ) ) )
+                GUILayout.Height( buttonStyle.CalcHeight( content, EditorGUIUtility.labelWidth ) +5f ) ) )
             {
                 eM.ResetFocusForEachCamera();
 
@@ -121,43 +150,6 @@ namespace dnSR_Coding
             #endregion
 
             EditorGUILayout.Space( 5f );
-        }
-
-        private void FocusOnOneEnvironmentButtonEditor( EnvironmentManager eM )
-        {
-            EditorGUILayout.Space( 10f );
-
-            if ( eM.EnvironmentCameraDatas().IsEmpty() || eM.EnvironmentCameraDatas().Count == 1 ) { return; }
-
-            GUIStyle buttonStyle = new( GUI.skin.button )
-            {
-                fontSize = 12,
-                fontStyle = FontStyle.Bold
-            };
-
-            for ( int i = 0; i < eM.EnvironmentCameraDatas().Count; i++ )
-            {
-                if ( eM.EnvironmentCameraDatas() [ i ].EnvironmentParent.IsNull() ) { continue; }
-
-                string environmentName = !eM.EnvironmentCameraDatas() [ i ].EnvironmentParent.IsNull() 
-                    ? eM.EnvironmentCameraDatas() [ i ].EnvironmentParent.transform.name : string.Empty;
-
-                GUIContent content = eM.EnvironmentCameraDatas() [ i ].IsFocused 
-                    ? new( environmentName + " is currently focused." )
-                    : new( "Focus On : ".ToUpper() + eM.EnvironmentCameraDatas() [ i ].Name );
-
-                using ( new EditorGUI.DisabledGroupScope( eM.EnvironmentCameraDatas() [ i ].IsFocused ) )
-                {
-                    if ( GUILayout.Button( content, buttonStyle,
-                    GUILayout.Height( buttonStyle.CalcHeight( content, EditorGUIUtility.labelWidth ) + 10f ) ) )
-                    {
-                        eM.ResetFocusForEachCamera();
-                        eM.EnvironmentCameraDatas() [ i ].Focus();
-                    }
-                }
-            }
-
-            EditorGUILayout.Space( 10f );
         }
     }
 }

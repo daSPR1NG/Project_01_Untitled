@@ -8,6 +8,8 @@ namespace dnSR_Coding
 {
     public enum WeatherType { None, Rainy, Sunny, }
 
+    [RequireComponent( typeof( EnvironmentLightingManager ) )]
+
     ///<summary> WeatherSystemManager description <summary>
     [Component("WeatherSystemManager", "")]
     [DisallowMultipleComponent]
@@ -24,6 +26,11 @@ namespace dnSR_Coding
         [SerializeField] private List<WeatherSequence> _weatherSequences = new();
 
         private WeatherSequence _activeWeatherSequence;
+        private EnvironmentLightingManager _environmentLightingManager;
+        
+        private int _weatherTypeIndex;
+
+        public static Action<WeatherSequence> OnWeatherChanged;
 
         #region Debug
 
@@ -45,21 +52,20 @@ namespace dnSR_Coding
         void Init()
         {
             GetLinkedComponents();
-            GetWeatherSequences();
+            PopulateWeatherSequences();
+            SetWeather();
         }
 
         void GetLinkedComponents()
         {
-
+            if ( _environmentLightingManager.IsNull() ) { _environmentLightingManager = GetComponent<EnvironmentLightingManager>(); }
         }
-
-        private int _index;
 
         private void Update()
         {
             if ( KeyCode.W.IsPressed() )
             {
-                _weatherType = ( WeatherType ) ( _index++ % Enum.GetValues( typeof( WeatherType ) ).Length );
+                _weatherType = ( WeatherType ) ( _weatherTypeIndex++ % Enum.GetValues( typeof( WeatherType ) ).Length );
                 SetWeather();
             }
         }
@@ -91,7 +97,11 @@ namespace dnSR_Coding
                     _activeWeatherSequence.ApplyWeatherSequence();
                     break;
             }
+
+            OnWeatherChanged?.Invoke( _activeWeatherSequence );
         }
+
+        public WeatherSequence ActiveWeather => _activeWeatherSequence;
 
         #region Utils - Get Specific Weather Sequence
 
@@ -101,7 +111,11 @@ namespace dnSR_Coding
 
             for ( int i = _weatherSequences.Count - 1; i >= 0; i-- )
             {
-                if ( _weatherSequences [ i ].GetWeatherType() != type ) { continue; }
+                if ( _weatherSequences [ i ].IsNull() || _weatherSequences [ i ].GetWeatherType() != type ) 
+                {
+                    continue; 
+                }
+
                 return _weatherSequences [ i ];
             }
 
@@ -113,7 +127,11 @@ namespace dnSR_Coding
 
             for ( int i = _weatherSequences.Count - 1; i >= 0; i-- )
             {
-                if ( !_weatherSequences [ i ].IsApplied ) { continue; }
+                if ( _weatherSequences [ i ].IsNull() || !_weatherSequences [ i ].IsApplied ) 
+                {
+                    continue; 
+                }
+
                 return _weatherSequences [ i ];
             }
 
@@ -126,7 +144,7 @@ namespace dnSR_Coding
 
 #if UNITY_EDITOR
 
-        private void GetWeatherSequences()
+        private void PopulateWeatherSequences()
         {
             if ( transform.HasNoChild() ) { return; }
 
@@ -147,10 +165,26 @@ namespace dnSR_Coding
 
             if ( Application.isPlaying ) { return; }
 
-            GetWeatherSequences();
+            PopulateWeatherSequences();
         }
 #endif
 
         #endregion
+
+        private void OnGUI()
+        {
+            if ( !Application.isEditor || _activeWeatherSequence.IsNull() )
+            {
+                GUIContent nullContent = new("No active weather found." );
+                GUI.Label( new Rect( 5, Screen.height - 45, 350, 25 ), nullContent );
+                return; 
+            }
+
+            GUIContent content = new(
+                _activeWeatherSequence.GetWeatherType()
+                + " Weather is active." );
+
+            GUI.Label( new Rect( 5, Screen.height - 45, 350, 25 ), content );
+        }
     }
 }
