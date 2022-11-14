@@ -3,6 +3,10 @@ using dnSR_Coding.Utilities;
 using ExternalPropertyAttributes;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+using Unity.VisualScripting;
+using System;
 
 namespace dnSR_Coding
 {
@@ -24,14 +28,16 @@ namespace dnSR_Coding
         [SerializeField] private bool _isDaytime = false;
         [SerializeField, Range( 0, 240 )] private float _dayDuration = 120f;
         [SerializeField, Range( 0, 240 )] private float _timeOfDay;
+        [SerializeField, ExposedScriptableObject] private EnvironmentLightingSettings _defaultLightingSettings;
 
-        [SerializeField, ExposedScriptableObject] private List<EnvironmentLightingSettings> _settings;
-        private EnvironmentLightingSettings _activeSettings;
+        [field: SerializeField] public EnvironmentLightingSettings ActiveSettings { get; private set; }
 
         private WeatherSystemManager _weatherSystemManager;
+        private CustomPostProcessVolume _mainCameraVolume;
 
         private float _currentLightIntensity = 0;
-        private Coroutine _fadingLightIntensityOnSwapCoroutine = null;
+
+        public static Action OnLightingSettingsChanged;
 
         #region Debug
 
@@ -64,29 +70,33 @@ namespace dnSR_Coding
         void GetLinkedComponents()
         {
             if ( _weatherSystemManager.IsNull() ) { _weatherSystemManager = GetComponent<WeatherSystemManager>(); }
+            if ( _mainCameraVolume.IsNull() ) 
+            {
+                _mainCameraVolume = Helper.GetMainCamera().GetComponent<CustomPostProcessVolume>(); 
+            }
         }
 
         private void Update()
         {
-            if ( _settings.IsNull() ) { return; }
+            if ( ActiveSettings.IsNull() ) { return; }
 
             if ( Application.isPlaying )
             {
                 //(Replace with a reference to the game time)
                 _timeOfDay += Time.deltaTime;
                 _timeOfDay %= _dayDuration; //Modulus to ensure always between 0-maxValue
-                UpdateLighting( _timeOfDay / _dayDuration, _activeSettings );
+                UpdateLighting( _timeOfDay / _dayDuration, ActiveSettings );
             }
             else
             {
                 SetActiveLightingSettings( _weatherSystemManager.ActiveWeather );
-                UpdateLighting( _timeOfDay / _dayDuration, _activeSettings );
+                UpdateLighting( _timeOfDay / _dayDuration, ActiveSettings );
             }
         }
 
         private void UpdateLighting( float timePercent, EnvironmentLightingSettings settings )
         {
-            if ( _activeSettings.IsNull() ) { return; }
+            if ( ActiveSettings.IsNull() ) { return; }
 
             _isDaytime = timePercent >= .3f && timePercent <= .7f;
 
@@ -117,7 +127,7 @@ namespace dnSR_Coding
 
         private void SetLightIntensity( float intensity, float clampMin, float clampMax)
         {
-            if ( _directionalLight.IsNull() ) { return; }
+            if ( _directionalLight.IsNull() || _directionalLight.intensity == intensity ) { return; }
 
             // We multiply intensity by 2 to match the exact value of _settings.GreaterLightIntensity
             _directionalLight.intensity = intensity;
@@ -134,28 +144,38 @@ namespace dnSR_Coding
 
         private void SetActiveLightingSettings( WeatherSequence weatherSequence )
         {
-            if ( _settings.IsEmpty() 
-                || weatherSequence.IsNull() 
-                || weatherSequence.GetWeatherType() == WeatherType.None ) 
+            if ( weatherSequence.IsNull()
+                || !weatherSequence.IsNull() && weatherSequence.GetLightingSettings().IsNull()
+                || weatherSequence.GetWeatherType() == WeatherType.None )
             {
-                _activeSettings = null;
+                ActiveSettings = _defaultLightingSettings;
 
-                SetLightIntensity( 2f, 0f, 2f ); 
+                SetLightIntensity( 2f, 0f, 2f );
                 SetLightColor( Color.red );
 
+                SetCameraVolumeManagerGammaValue();
                 return;
             }
 
-            for ( int i = 0; i < _settings.Count; i++ )
-            {
-                if ( _settings [ i ].RelatedWeatherType == weatherSequence.GetWeatherType() )
-                {
-                    _activeSettings = _settings [ i ];
-                }
-            }
+            ActiveSettings = weatherSequence.GetLightingSettings();
+
+            SetCameraVolumeManagerGammaValue();
         }
 
         #region OnValidate
+#if UNITY_EDITOR
+        private void SetCameraVolumeManagerGammaValue()
+        {
+            if ( !Application.isPlaying )
+            {
+                CameraVolumeManager cvm = ( CameraVolumeManager ) FindObjectOfType( typeof( CameraVolumeManager ) );
+                cvm.NeedToBeUpdated();
+            }
+            else
+            {
+                OnLightingSettingsChanged?.Invoke();
+            }
+        }
 
         private void FindPossibleDirectionalLightInEditor()
         {
@@ -185,7 +205,7 @@ namespace dnSR_Coding
 
             FindPossibleDirectionalLightInEditor();
         }
-
-        #endregion 
+#endif
+        #endregion
     }
 }

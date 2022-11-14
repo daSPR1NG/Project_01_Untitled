@@ -4,6 +4,8 @@ using dnSR_Coding.Utilities;
 using ExternalPropertyAttributes;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
+using DG.Tweening;
 
 namespace dnSR_Coding
 {
@@ -22,6 +24,7 @@ namespace dnSR_Coding
         [SerializeField] private bool _isApplied = false;
         [SerializeField] private WeatherType _weatherType = WeatherType.None;
         [SerializeField, Range( 0f, 15f )] private float _elementsFadeSpeed = 1f;
+        [SerializeField, ExposedScriptableObject] private EnvironmentLightingSettings _lightingSettings;
 
         [Space( 10f )]
 
@@ -30,8 +33,7 @@ namespace dnSR_Coding
         [SerializeField] private List<Material> _sunShaftMaterials = new ();
         [SerializeField] private List<SequenceParticleSystemData> _visualEffects = new ();
 
-        private Coroutine _sunShaftCoroutine = null;
-        private Coroutine _visualEffectCoroutine = null;
+        private Coroutine _visualEffectRoutine = null;
 
         [System.Serializable]
         public class SequenceParticleSystemData
@@ -75,8 +77,11 @@ namespace dnSR_Coding
             #endif
         }
 
+        [ContextMenu( "Apply Sequence" ), Button]
         public void ApplyWeatherSequence()
         {
+            if ( _isApplied ) { return; }
+
             // Smoothly turn sunshaft alpha from O to max value
             SetSunshaftsAlphaValue( 1f );
 
@@ -86,8 +91,11 @@ namespace dnSR_Coding
             _isApplied = true;
         }
 
+        [ContextMenu( "Remove Sequence" ), Button]
         public void RemoveWeatherSequence()
         {
+            if ( !_isApplied ) { return; }
+
             // Smoothly turn sunshaft alpha from O to max value
             SetSunshaftsAlphaValue( 0f );
 
@@ -107,8 +115,7 @@ namespace dnSR_Coding
             {
                 if ( _sunShaftMaterials [ i ].color.a == alphaToReach ) { continue; }
 
-                _sunShaftCoroutine = StartCoroutine( 
-                    FadeSunShaftAlphaTo( _sunShaftMaterials [ i ], alphaToReach, _elementsFadeSpeed ) );
+                _sunShaftMaterials [ i ].DOFade( alphaToReach, _elementsFadeSpeed );
             }
         }
 
@@ -116,66 +123,26 @@ namespace dnSR_Coding
         {
             if ( _visualEffects.IsEmpty() ) { return; }
 
-            if ( !_visualEffectCoroutine.IsNull() ) { StopCoroutine( _visualEffectCoroutine ); }
-
             for ( int i = 0; i < _visualEffects.Count; i++ )
             {
                 float alphaToReach = fadesOut ? 0 : _visualEffects [ i ].Alpha;
 
                 if ( _visualEffects [ i ].ParticleSystem.main.startColor.color.a == alphaToReach ) { continue; }
 
-                _visualEffectCoroutine = StartCoroutine(
-                    FadeVisualEffectAlphaTo(
-                        _visualEffects [ i ].ParticleSystem, alphaToReach, _elementsFadeSpeed / 2 ) );
+                Color newColor = new( 1, 1, 1, _visualEffects [ i ].ParticleSystem.main.startColor.color.a );
+
+                var main = _visualEffects [ i ].ParticleSystem.main;
+
+                DOTween.ToAlpha( () => newColor, newColor => main.startColor = newColor,
+                    alphaToReach, _elementsFadeSpeed );
             }
-        }
-
-        #endregion
-
-        #region Utils - Coroutines
-
-        private IEnumerator FadeSunShaftAlphaTo( Material mat, float toValue, float delay )
-        {
-            float fromValue = mat.color.a;
-
-            // We initialize t as 0, then we increment it by deltaTime / delay to match the delay passed in argument.
-            // We execute the for loop until t is greater than 1.0f matching the max amplitude of a Color alpha 0-1.
-            for ( float t = 0.0f; t < 1.0f; t += Time.deltaTime / delay )
-            {
-                Color newColor = new( 1, 1, 1, Mathf.Lerp( fromValue, toValue, t ) );
-                mat.color = newColor;
-
-                yield return null;
-            }
-
-            Debug.Log( "FadeSunShaftAlphaTo COMPLETED" );
-            yield break;
-        }
-
-        private IEnumerator FadeVisualEffectAlphaTo( ParticleSystem pS, float toValue, float delay )
-        {
-            float alpha = pS.main.startColor.color.a;
-
-            // We initialize t as 0, then we increment it by deltaTime / delay to match the delay passed in argument.
-            // We execute the for loop until t is greater than 1.0f matching the max amplitude of a Color alpha 0-1.
-            for ( float t = 0.0f; t < 1.0f; t += Time.deltaTime / delay )
-            {
-                Color newColor = new( 1, 1, 1, Mathf.Lerp( alpha, toValue, t ) );
-
-                var main = pS.main;
-                main.startColor = newColor;
-
-                yield return null;
-            }
-
-            Debug.Log( "FadeSunShaftAlphaTo COMPLETED" );
-            yield break;
         }
 
         #endregion
 
         public bool IsApplied => _isApplied;
         public WeatherType GetWeatherType() => _weatherType;
+        public EnvironmentLightingSettings GetLightingSettings() => _lightingSettings;
 
         #region OnValidate
 

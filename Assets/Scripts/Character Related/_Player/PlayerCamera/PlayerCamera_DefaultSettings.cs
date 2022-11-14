@@ -37,10 +37,10 @@ namespace dnSR_Coding
             switch ( projectionType )
             {
                 case Projection.Perspective:
-                    Helper.MainCamera().orthographic = false;
+                    Helper.GetMainCamera().orthographic = false;
                     break;
                 case Projection.Orthographic:
-                    Helper.MainCamera().orthographic = true;
+                    Helper.GetMainCamera().orthographic = true;
                     break;
             }            
         }

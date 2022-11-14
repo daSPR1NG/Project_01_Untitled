@@ -209,7 +209,7 @@ namespace dnSR_Coding.Utilities
 
         public static Vector2 GetWorldPosition( this RectTransform rectTransform )
         {
-            RectTransformUtility.ScreenPointToLocalPointInRectangle( rectTransform, rectTransform.position, Helper.MainCamera(), out var result );
+            RectTransformUtility.ScreenPointToLocalPointInRectangle( rectTransform, rectTransform.position, Helper.GetMainCamera(), out var result );
             return result;
         }
 

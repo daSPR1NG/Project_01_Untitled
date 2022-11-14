@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5c4e8c2a0289014ea0954d9965f4296, type: 3}
+  m_Name: Default Volume Profile Settings
+  m_EditorClassIdentifier: 
+  _volumeProfileDatas:
+  - Name: Rainy
+    WeatherType: 1
+    VolumeProfile: {fileID: 11400000, guid: 53e9885735f5d954c8a8c880211b3234, type: 2}
+    GammaValue: {x: 1, y: 1, z: 1, w: -0.031}
+  - Name: Sunny
+    WeatherType: 2
+    VolumeProfile: {fileID: 11400000, guid: c71f88abe3f3dd945a714034e722c80e, type: 2}
+    GammaValue: {x: 1, y: 1, z: 1, w: 0.192}

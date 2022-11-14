@@ -83,8 +83,8 @@ namespace dnSR_Coding
         }
         private Vector3 GetInputMovementRelativeToCamera( Vector3 input )
         {
-            Vector3 forward = Helper.MainCamera().transform.forward;
-            Vector3 right = Helper.MainCamera().transform.right;
+            Vector3 forward = Helper.GetMainCamera().transform.forward;
+            Vector3 right = Helper.GetMainCamera().transform.right;
 
             forward.y = 0;
             right.y = 0;

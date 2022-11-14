@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bb377a03418c4884290844ad761fbc42, type: 3}
-  m_Name: EnvironmentLightingSettings_Sunny
+  m_Name: ELS_Sunny
   m_EditorClassIdentifier: 
   _relatedWeatherType: 2
   _relatedVolumeProfile: {fileID: 11400000, guid: c71f88abe3f3dd945a714034e722c80e,

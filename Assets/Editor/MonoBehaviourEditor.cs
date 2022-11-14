@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-[CanEditMultipleObjects]
-[CustomEditor(typeof(MonoBehaviour), true)]
-public class MonoBehaviourEditor : Editor
-{
-}
+//[CanEditMultipleObjects]
+//[CustomEditor(typeof(MonoBehaviour), true)]
+//public class MonoBehaviourEditor : Editor
+//{
+//}

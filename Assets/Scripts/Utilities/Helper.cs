@@ -10,7 +10,7 @@ namespace dnSR_Coding.Utilities
         #region Camera datas + Cinemachine
 
         private static Camera _mainCamera;
-        public static Camera MainCamera()
+        public static Camera GetMainCamera()
         {
             if ( _mainCamera.IsNull() ) { _mainCamera = Camera.main; }
             return _mainCamera;

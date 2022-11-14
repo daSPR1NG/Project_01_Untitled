@@ -37586,7 +37586,8 @@ GameObject:
   - component: {fileID: 1740937872}
   - component: {fileID: 1740937871}
   - component: {fileID: 1740937870}
-  - component: {fileID: 1740937869}
+  - component: {fileID: 1740937873}
+  - component: {fileID: 1740937874}
   - component: {fileID: 1740937868}
   - component: {fileID: 1740937867}
   m_Layer: 0
@@ -37613,7 +37614,7 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: -1
+  m_RendererIndex: 0
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
@@ -37637,23 +37638,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1740937866}
   m_Enabled: 1
---- !u!114 &1740937869
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1740937866}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IsGlobal: 1
-  priority: 0
-  blendDistance: 0
-  weight: 1
-  sharedProfile: {fileID: 11400000, guid: 53e9885735f5d954c8a8c880211b3234, type: 2}
 --- !u!114 &1740937870
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37746,6 +37730,39 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 65.25, y: 0, z: 0}
+--- !u!114 &1740937873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1740937866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac38659d8ce4b314aa127b9ad9eac83d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gammaFadingSpeed: 5
+  _volumeProfileSettings: {fileID: 11400000, guid: b0ff7c5ad5667cf488746e442a81e6de,
+    type: 2}
+  _isDebuggable: 1
+--- !u!114 &1740937874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1740937866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f3efda36f0db514c9f4732d507c7a69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 0e3359a8df915a344a45a990c9b6a491, type: 2}
 --- !u!1 &1774444269
 GameObject:
   m_ObjectHideFlags: 0
@@ -48845,7 +48862,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 0.078203864}
+      maxColor: {r: 1, g: 1, b: 1, a: 0.07838919}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -58512,7 +58529,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 0.5005047}
+      maxColor: {r: 1, g: 1, b: 1, a: 0.5019604}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -68118,7 +68135,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isApplied: 0
   _weatherType: 2
-  _elementsFadeSpeed: 5
+  _elementsFadeSpeed: 2
+  _lightingSettings: {fileID: 11400000, guid: a89b30131de553e44990a02bfc85e3e7, type: 2}
   _sunShaftMaterials:
   - {fileID: 2100000, guid: d2796aba5e93bcc4ebdda7a499b5e100, type: 2}
   - {fileID: 2100000, guid: b449dcca956d4da4585665cabe611a17, type: 2}
@@ -68247,7 +68265,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isApplied: 1
   _weatherType: 1
-  _elementsFadeSpeed: 5
+  _elementsFadeSpeed: 4
+  _lightingSettings: {fileID: 11400000, guid: 901b6ab6f723fb0428f9deda32089080, type: 2}
   _sunShaftMaterials:
   - {fileID: 2100000, guid: c17f2e1a207cba3439b160f293d65ff7, type: 2}
   - {fileID: 2100000, guid: 8a7b476ce6d83b0489e090456147cbd9, type: 2}
@@ -73426,7 +73445,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 0.0002828873}
+      maxColor: {r: 1, g: 1, b: 1, a: 0.00014720141}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -78470,7 +78489,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 0.5005047}
+      maxColor: {r: 1, g: 1, b: 1, a: 0.5019604}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -83220,9 +83239,10 @@ MonoBehaviour:
   _isDaytime: 1
   _dayDuration: 240
   _timeOfDay: 120
-  _settings:
-  - {fileID: 11400000, guid: 901b6ab6f723fb0428f9deda32089080, type: 2}
-  - {fileID: 11400000, guid: a89b30131de553e44990a02bfc85e3e7, type: 2}
+  _defaultLightingSettings: {fileID: 11400000, guid: 855cca910ca31224187460889ef55258,
+    type: 2}
+  <ActiveSettings>k__BackingField: {fileID: 11400000, guid: 901b6ab6f723fb0428f9deda32089080,
+    type: 2}
   _isDebuggable: 1
 --- !u!1 &8888832089487777272
 GameObject:

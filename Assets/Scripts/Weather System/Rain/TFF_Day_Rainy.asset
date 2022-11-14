@@ -86,7 +86,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66f335fb1ffd8684294ad653bf1c7564, type: 3}
   m_Name: ColorAdjustments
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   postExposure:
     m_OverrideState: 0
     m_Value: 0
@@ -178,10 +178,10 @@ MonoBehaviour:
     m_Value: {x: 1, y: 1, z: 1, w: 0}
   gamma:
     m_OverrideState: 1
-    m_Value: {x: 0.8861258, y: 0.9524652, z: 1, w: -0.24266934}
+    m_Value: {x: 0.9610162, y: 0.9811222, z: 1, w: -0.24724914}
   gain:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 0.9746699, z: 0.9460921, w: -0.25062492}
+    m_Value: {x: 0.9051305, y: 0.92476827, z: 1, w: -0.32012972}
 --- !u!114 &4936222729365049749
 MonoBehaviour:
   m_ObjectHideFlags: 3
