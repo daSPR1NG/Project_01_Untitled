@@ -26,8 +26,7 @@ namespace dnSR_Coding
         [SerializeField] private List<WeatherSequence> _weatherSequences = new();
 
         private WeatherSequence _activeWeatherSequence;
-        private EnvironmentLightingManager _environmentLightingManager;
-        
+        private EnvironmentLightingManager _environmentLightingManager;        
         private int _weatherTypeIndex;
 
         public static Action<WeatherSequence> OnWeatherChanged;
@@ -65,38 +64,38 @@ namespace dnSR_Coding
         {
             if ( KeyCode.W.IsPressed() )
             {
-                _weatherType = ( WeatherType ) ( _weatherTypeIndex++ % Enum.GetValues( typeof( WeatherType ) ).Length );
+                //_weatherType = ( WeatherType ) ( _weatherTypeIndex++ % Enum.GetValues( typeof( WeatherType ) ).Length );
+                if ( _weatherType == WeatherType.Rainy ) _weatherType = WeatherType.Sunny;
+                else if ( _weatherType == WeatherType.Sunny ) _weatherType = WeatherType.Rainy;
+
                 SetWeather();
             }
         }
 
         private void SetWeather()
         {
-            if ( !_activeWeatherSequence.IsNull() )
-            {
-                _activeWeatherSequence.RemoveWeatherSequence();
-            }
+            if ( !_activeWeatherSequence.IsNull() ) { _activeWeatherSequence.RemoveSequence(); }
 
             switch ( _weatherType )
             {
                 case WeatherType.None:
 
                     _activeWeatherSequence = null;
-                    if ( !GetActiveWeather().IsNull() ) { GetActiveWeather().RemoveWeatherSequence(); }
+                    if ( !GetActiveWeather().IsNull() ) { GetActiveWeather().RemoveSequence(); }
                     break;
 
                 case WeatherType.Rainy:
 
                     _activeWeatherSequence = GetWeatherSequenceByType( WeatherType.Rainy );
-                    _activeWeatherSequence.ApplyWeatherSequence();
+                    _activeWeatherSequence.ApplySequence( _environmentLightingManager.IsDaytime );
                     break;
 
                 case WeatherType.Sunny:
 
                     _activeWeatherSequence = GetWeatherSequenceByType( WeatherType.Sunny );
-                    _activeWeatherSequence.ApplyWeatherSequence();
+                    _activeWeatherSequence.ApplySequence( _environmentLightingManager.IsDaytime );
                     break;
-            }
+            }            
 
             OnWeatherChanged?.Invoke( _activeWeatherSequence );
         }
@@ -161,11 +160,11 @@ namespace dnSR_Coding
         private void OnValidate()
         {
             GetLinkedComponents();
-            SetWeather();
 
             if ( Application.isPlaying ) { return; }
-
+            
             PopulateWeatherSequences();
+            SetWeather();
         }
 #endif
 

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using DG.Tweening;
+using Unity.VisualScripting;
 
 namespace dnSR_Coding
 {
@@ -33,7 +34,7 @@ namespace dnSR_Coding
         [SerializeField] private List<Material> _sunShaftMaterials = new ();
         [SerializeField] private List<SequenceParticleSystemData> _visualEffects = new ();
 
-        private Coroutine _visualEffectRoutine = null;
+        private Transform _elementsTrs;
 
         [System.Serializable]
         public class SequenceParticleSystemData
@@ -52,38 +53,38 @@ namespace dnSR_Coding
 
         #region Enable, Disable
 
-        void OnEnable() {}
+        void OnEnable() 
+        {
+        }
 
         void OnDisable() 
         {
-            StopAllCoroutines();
         }
 
         #endregion
 
-        private void Update()
+        void Awake() => Init();
+        void Init()
         {
-            #if UNITY_EDITOR
-
-            if ( KeyCode.B.IsPressed() )
-            {
-                ApplyWeatherSequence();
-            }
-
-            if ( KeyCode.N.IsPressed() )
-            {
-                RemoveWeatherSequence();
-            }
-            #endif
+            GetLinkedComponents();
         }
 
-        [ContextMenu( "Apply Sequence" ), Button]
-        public void ApplyWeatherSequence()
+        void GetLinkedComponents()
         {
+            if ( _elementsTrs.IsNull() ) { _elementsTrs = transform.GetFirstChild(); }
+        }
+
+        // Wraps up all the method applied when removing a sequence.
+        [ContextMenu( "Apply Sequence" ), Button]
+        public void ApplySequence( bool isDaytime )
+        {
+            // Meaning it is already applied.
             if ( _isApplied ) { return; }
 
+            Debug.Log( "Apply " + transform.name + " Sequence" );
+
             // Smoothly turn sunshaft alpha from O to max value
-            SetSunshaftsAlphaValue( 1f );
+            DisplaySunShafts( isDaytime );
 
             // Smoothly turn VFX start color alpha from 0 to max value
             SetVisualEffectsAlphaValue( false );
@@ -91,13 +92,17 @@ namespace dnSR_Coding
             _isApplied = true;
         }
 
+        // Wraps up all the method applied when removing a sequence.
         [ContextMenu( "Remove Sequence" ), Button]
-        public void RemoveWeatherSequence()
+        public void RemoveSequence()
         {
-            if ( !_isApplied ) { return; }
+            // Meaning it is already unapplied.
+            //if ( !_isApplied ) { return; }
+
+            Debug.Log( "Remove " + transform.name + " Sequence" );
 
             // Smoothly turn sunshaft alpha from O to max value
-            SetSunshaftsAlphaValue( 0f );
+            HideSunShafts();
 
             // Smoothly turn VFX start color alpha from 0 to max value
             SetVisualEffectsAlphaValue( true );
@@ -107,15 +112,34 @@ namespace dnSR_Coding
 
         #region Set Weather elements handle
 
-        private void SetSunshaftsAlphaValue( float alphaToReach )
+        public void DisplaySunShafts( bool isDaytime )
+        {
+            float alpha = isDaytime ? 1.0f : 0.0f;
+            SetSunShaftsAlphaValue( alpha );
+        }
+        public void HideSunShafts() => SetSunShaftsAlphaValue( 0 );
+
+        private void SetSunShaftsAlphaValue( float alphaToReach )
         {
             if ( _sunShaftMaterials.IsEmpty() ) { return; }
 
             for ( int i = 0; i < _sunShaftMaterials.Count; i++ )
             {
+                Debug.Log( "Accesing Sun shafts material alpha" + transform.name, transform );
                 if ( _sunShaftMaterials [ i ].color.a == alphaToReach ) { continue; }
 
-                _sunShaftMaterials [ i ].DOFade( alphaToReach, _elementsFadeSpeed );
+                Debug.Log( "Fading Sun shafts material alpha" + transform.name, transform );
+
+                if ( !Application.isPlaying )
+                {
+                    Color newColor = new( 1, 1, 1 )
+                    {
+                        a = alphaToReach
+                    };
+
+                    _sunShaftMaterials [ i ].color = newColor;
+                }
+                else { _sunShaftMaterials [ i ].DOFade( alphaToReach, _elementsFadeSpeed ); }
             }
         }
 
@@ -133,8 +157,16 @@ namespace dnSR_Coding
 
                 var main = _visualEffects [ i ].ParticleSystem.main;
 
-                DOTween.ToAlpha( () => newColor, newColor => main.startColor = newColor,
-                    alphaToReach, _elementsFadeSpeed );
+                if ( !Application.isPlaying )
+                {
+                    newColor = new( 1, 1, 1, alphaToReach );
+                    main.startColor = newColor;
+                } 
+                else 
+                {
+                    DOTween.ToAlpha( () => newColor, newColor => main.startColor = newColor,
+                    alphaToReach, _elementsFadeSpeed ); 
+                }
             }
         }
 
@@ -150,8 +182,9 @@ namespace dnSR_Coding
 
         protected virtual void OnValidate()
         {
-
+            GetLinkedComponents();
         }
+
 #endif
 
         #endregion

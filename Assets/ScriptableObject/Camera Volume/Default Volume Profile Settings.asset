@@ -16,8 +16,6 @@ MonoBehaviour:
   - Name: Rainy
     WeatherType: 1
     VolumeProfile: {fileID: 11400000, guid: 53e9885735f5d954c8a8c880211b3234, type: 2}
-    GammaValue: {x: 1, y: 1, z: 1, w: -0.031}
   - Name: Sunny
     WeatherType: 2
     VolumeProfile: {fileID: 11400000, guid: c71f88abe3f3dd945a714034e722c80e, type: 2}
-    GammaValue: {x: 1, y: 1, z: 1, w: 0.192}

@@ -4,6 +4,7 @@ using ExternalPropertyAttributes;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using System.Collections;
+using static Cinemachine.CinemachineTriggerAction;
 
 namespace dnSR_Coding
 {
@@ -25,9 +26,9 @@ namespace dnSR_Coding
         private WeatherSystemManager _weatherSystemManager;
         private CameraVolumeManager _cameraVolumeManager;
 
-        WeatherSequence _sequence;
+        EnvironmentLightingSettings _lightingSettings;
         LiftGammaGain _profileLGG = null;
-        LiftGammaGain _sequenceProfileLGG = null;
+        LiftGammaGain _lightingSettingsProfileLGG = null;
         private bool _profileGammaNeedsToBeUpdated = false;
 
         #region Debug
@@ -78,27 +79,27 @@ namespace dnSR_Coding
             SetVolumeProfileGammaColor();
         }
 
-        public void NeedToBeUpdated()
+        public void NeedToBeUpdated( EnvironmentLightingSettings settings )
         {
-            _profileGammaNeedsToBeUpdated = true;
+            if ( _lightingSettings == settings ) { return; }
+
+            _lightingSettings = settings;
+            _profileGammaNeedsToBeUpdated = true;            
         }
 
         private void SetVolumeProfileGammaColor()
         {
             if ( !_profileGammaNeedsToBeUpdated ) { return; }
 
-            // Set sequence.
-            if ( _sequence != _weatherSystemManager.ActiveWeather )  { _sequence = _weatherSystemManager.ActiveWeather; }
-
             // Set active sequence profile.
-            if ( !_sequence.IsNull() 
-                && _sequence.GetLightingSettings().RelatedVolumeProfile.TryGet( out LiftGammaGain foundSequenceProfileLGG ) ) 
+            if ( !_lightingSettings.IsNull()
+                && _lightingSettings.RelatedVolumeProfile.TryGet( out LiftGammaGain foundSequenceProfileLGG ) ) 
             { 
-                if ( _sequenceProfileLGG != foundSequenceProfileLGG ) { _sequenceProfileLGG = foundSequenceProfileLGG; }
+                if ( _lightingSettingsProfileLGG != foundSequenceProfileLGG ) { _lightingSettingsProfileLGG = foundSequenceProfileLGG; }
             }
 
             // Set gamma value
-            Vector4 gammaValue = _sequence.IsNull() ? new Vector4( 1f, 1f, 1f, 0f) : _sequenceProfileLGG.gamma.value;
+            Vector4 gammaValue = _lightingSettings.IsNull() ? new Vector4( 1f, 1f, 1f, 0f) : _lightingSettingsProfileLGG.gamma.value;
 
             // Guard block - Gamma value reached
             if ( _profileLGG.gamma.value == gammaValue ) 

@@ -16,12 +16,12 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 0
-  m_FogColor: {r: 0.68395436, g: 0.8265977, b: 0.9999887, a: 1}
+  m_FogColor: {r: 0.05660396, g: 0.05660396, b: 0.05660396, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.03
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.55149996, g: 0.55149996, b: 0.55149996, a: 1}
+  m_AmbientSkyColor: {r: 0.023791457, g: 0.045802362, b: 0.21455264, a: 1}
   m_AmbientEquatorColor: {r: 0.7264151, g: 0.56268424, b: 0.4762816, a: 1}
   m_AmbientGroundColor: {r: 0.2, g: 0.19607843, b: 0.18431373, a: 1}
   m_AmbientIntensity: 1
@@ -39,7 +39,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.41788977, g: 0.40630352, b: 0.29819405, a: 1}
+  m_IndirectSpecularColor: {r: 0.4178899, g: 0.40630358, b: 0.2981941, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2070,7 +2070,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47ee610035badf340af6a8cb219ad2d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isDebuggable: 1
+  _isDebuggable: 0
   _isMovementBasedOnCameraOrientation: 1
   _walkSpeed: 5
   _sprintSpeed: 10
@@ -37742,7 +37742,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac38659d8ce4b314aa127b9ad9eac83d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gammaFadingSpeed: 5
+  _gammaFadingSpeed: 2
   _volumeProfileSettings: {fileID: 11400000, guid: b0ff7c5ad5667cf488746e442a81e6de,
     type: 2}
   _isDebuggable: 1
@@ -48862,7 +48862,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 0.07838919}
+      maxColor: {r: 1, g: 1, b: 1, a: 0}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -58529,7 +58529,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 0.5019604}
+      maxColor: {r: 1, g: 1, b: 1, a: 0}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -63057,8 +63057,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.7499832, g: 0.7499832, b: 0.7499832, a: 1}
-  m_Intensity: 1.5
+  m_Color: {r: 0.04688679, g: 0.04688679, b: 0.04688679, a: 1}
+  m_Intensity: 0.091
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -68133,9 +68133,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8305290144eb4545b27ab3de7c85c8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isApplied: 0
+  _isApplied: 1
   _weatherType: 2
-  _elementsFadeSpeed: 2
+  _elementsFadeSpeed: 3.5
   _lightingSettings: {fileID: 11400000, guid: a89b30131de553e44990a02bfc85e3e7, type: 2}
   _sunShaftMaterials:
   - {fileID: 2100000, guid: d2796aba5e93bcc4ebdda7a499b5e100, type: 2}
@@ -68263,9 +68263,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8305290144eb4545b27ab3de7c85c8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isApplied: 1
+  _isApplied: 0
   _weatherType: 1
-  _elementsFadeSpeed: 4
+  _elementsFadeSpeed: 5
   _lightingSettings: {fileID: 11400000, guid: 901b6ab6f723fb0428f9deda32089080, type: 2}
   _sunShaftMaterials:
   - {fileID: 2100000, guid: c17f2e1a207cba3439b160f293d65ff7, type: 2}
@@ -73232,7 +73232,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ac33099a61623e47a1782395ce68f57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _weatherType: 1
+  _weatherType: 2
   _weatherSequences:
   - {fileID: 4863806953530561618}
   - {fileID: 4863806953517110049}
@@ -73445,7 +73445,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 0.00014720141}
+      maxColor: {r: 1, g: 1, b: 1, a: 0.07843138}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -78291,14 +78291,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 620388649766684802}
-  m_LocalRotation: {x: 0.061628457, y: 0.70441604, z: -0.70441604, w: 0.061628457}
+  m_LocalRotation: {x: -0.04670042, y: 0.841115, z: 0.5337879, w: 0.07358808}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4863806954491973547}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 170.2, y: 180, z: 10}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!198 &6772047283688193802
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -78489,7 +78489,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 0.5019604}
+      maxColor: {r: 1, g: 1, b: 1, a: 0}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -83236,12 +83236,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _directionalLight: {fileID: 4653769162790639652}
-  _isDaytime: 1
   _dayDuration: 240
-  _timeOfDay: 120
+  _timeOfDay: 16.8
   _defaultLightingSettings: {fileID: 11400000, guid: 855cca910ca31224187460889ef55258,
     type: 2}
-  <ActiveSettings>k__BackingField: {fileID: 11400000, guid: 901b6ab6f723fb0428f9deda32089080,
+  _nightTimeLightingSettings: {fileID: 11400000, guid: fc8e2669be0b4c04e852f83dfae235c4,
+    type: 2}
+  <ActiveSettings>k__BackingField: {fileID: 11400000, guid: fc8e2669be0b4c04e852f83dfae235c4,
     type: 2}
   _isDebuggable: 1
 --- !u!1 &8888832089487777272

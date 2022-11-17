@@ -24,20 +24,62 @@ namespace dnSR_Coding
     {
         [Title( "DEPENDENCIES", 12, "white" )]
 
-        [SerializeField] private Light _directionalLight;
-        [SerializeField] private bool _isDaytime = false;
-        [SerializeField, Range( 0, 240 )] private float _dayDuration = 120f;
+        [SerializeField] private Light _directionalLight;        
+        [SerializeField, Range( 1, 240 )] private float _dayDuration = 120f;
         [SerializeField, Range( 0, 240 )] private float _timeOfDay;
+
+        [Title( "STORED LIGHTING SETTINGS", 12, "white" )]
+
         [SerializeField, ExposedScriptableObject] private EnvironmentLightingSettings _defaultLightingSettings;
+        [SerializeField, ExposedScriptableObject] private EnvironmentLightingSettings _nightTimeLightingSettings;
 
         [field: SerializeField] public EnvironmentLightingSettings ActiveSettings { get; private set; }
 
         private WeatherSystemManager _weatherSystemManager;
         private CustomPostProcessVolume _mainCameraVolume;
 
+        float _currentTimeOfDay;
         private float _currentLightIntensity = 0;
 
-        public static Action OnLightingSettingsChanged;
+        private bool _isDaytime = false;
+        public bool IsDaytime 
+        { 
+            get => _isDaytime; 
+            set
+            {
+                // Nighttime block
+                if ( _isDaytime && !value )
+                {
+                    Debug.Log( "Is Daytime value changed to false" );
+
+                    // Raising the event to subsribers.
+                    OnFallingNight?.Invoke();
+                    // Change active settings to the normal one matching the current weather.
+                    SetActiveSettings( _nightTimeLightingSettings );
+
+                    _weatherSystemManager.ActiveWeather.HideSunShafts();
+                }
+                // Daytime block
+                else if ( !_isDaytime && value )
+                {
+                    Debug.Log( "Is Daytime value changed to true" );                    
+
+                    // Raising the event to subsribers.
+                    OnRisingSun?.Invoke();
+                    // Change active settings to the normal one matching the current weather.
+                    SetActiveSettings( _weatherSystemManager.ActiveWeather.GetLightingSettings() );
+
+                    _weatherSystemManager.ActiveWeather.DisplaySunShafts( true );
+                }
+
+                _isDaytime = value;
+            }
+        }
+
+
+        public static Action<EnvironmentLightingSettings> OnLightingSettingsChanged;
+        public static Action OnFallingNight;
+        public static Action OnRisingSun;
 
         #region Debug
 
@@ -51,12 +93,12 @@ namespace dnSR_Coding
 
         void OnEnable() 
         {
-            WeatherSystemManager.OnWeatherChanged += SetActiveLightingSettings;
+            WeatherSystemManager.OnWeatherChanged += SetEnvironmentLightingSettingsOnWeatherChanged;
         }
 
         void OnDisable() 
         {
-            WeatherSystemManager.OnWeatherChanged -= SetActiveLightingSettings;
+            WeatherSystemManager.OnWeatherChanged -= SetEnvironmentLightingSettingsOnWeatherChanged;
         }
 
         #endregion
@@ -66,10 +108,10 @@ namespace dnSR_Coding
         {
             GetLinkedComponents();
         }
-
         void GetLinkedComponents()
         {
             if ( _weatherSystemManager.IsNull() ) { _weatherSystemManager = GetComponent<WeatherSystemManager>(); }
+
             if ( _mainCameraVolume.IsNull() ) 
             {
                 _mainCameraVolume = Helper.GetMainCamera().GetComponent<CustomPostProcessVolume>(); 
@@ -80,29 +122,48 @@ namespace dnSR_Coding
         {
             if ( ActiveSettings.IsNull() ) { return; }
 
-            if ( Application.isPlaying )
-            {
-                //(Replace with a reference to the game time)
-                _timeOfDay += Time.deltaTime;
-                _timeOfDay %= _dayDuration; //Modulus to ensure always between 0-maxValue
-                UpdateLighting( _timeOfDay / _dayDuration, ActiveSettings );
-            }
+            if ( Application.isPlaying ) { UpdateTimeOfDay(); }
             else
             {
-                SetActiveLightingSettings( _weatherSystemManager.ActiveWeather );
-                UpdateLighting( _timeOfDay / _dayDuration, ActiveSettings );
+                _timeOfDay %= _dayDuration;
+                _currentTimeOfDay = _timeOfDay / _dayDuration;
+
+                HandleCurrentTimeOfday();
+
+                SetEnvironmentLightingSettingsOnWeatherChanged( _weatherSystemManager.ActiveWeather );
+                UpdateLighting( _currentTimeOfDay, ActiveSettings );
             }
         }
 
-        private void UpdateLighting( float timePercent, EnvironmentLightingSettings settings )
+        #region Lighting handle on Update
+
+        /// <summary>
+        /// Updates current time of day, tracking wether its night or daytime.
+        /// </summary>
+        private void UpdateTimeOfDay()
+        {
+            _timeOfDay += Time.deltaTime;
+            _timeOfDay %= _dayDuration; //Modulus to ensure always between 0-maxValue
+
+            _currentTimeOfDay = _timeOfDay / _dayDuration;
+
+            HandleCurrentTimeOfday();
+
+            // Then we update the current active lighting settings parameters/setup.
+            UpdateLighting( _currentTimeOfDay, ActiveSettings );
+        }
+
+        /// <summary>
+        /// Updates the main directional light, acting as a Sun, at runtime.
+        /// Ambient, fog and intensity are modified.
+        /// </summary>
+        private void UpdateLighting( float timeOfDay, EnvironmentLightingSettings settings )
         {
             if ( ActiveSettings.IsNull() ) { return; }
 
-            _isDaytime = timePercent >= .3f && timePercent <= .7f;
-
-            //Set ambient and fog
-            RenderSettings.ambientLight = settings.AmbientColor.Evaluate( timePercent );
-            RenderSettings.fogColor = settings.FogColor.Evaluate( timePercent );
+            //Set ambient and fog values at runtime.
+            RenderSettings.ambientLight = settings.AmbientColor.Evaluate( timeOfDay );
+            RenderSettings.fogColor = settings.FogColor.Evaluate( timeOfDay );
 
             if ( _directionalLight.IsNull() ) { return; }
 
@@ -111,21 +172,23 @@ namespace dnSR_Coding
             // TO 50% daytime == 100% of intensity,
             // TO 100% of daytime == 0% of intensity a.k.a _settings.LowerLightIntensity.
             // This system mimics how the sun behaves in IRL.
-            _currentLightIntensity = timePercent <= .5f
-                ? settings.GreaterLightIntensity * timePercent
-                : Mathf.Abs( ( ( settings.GreaterLightIntensity * timePercent ) - settings.GreaterLightIntensity ) );
+            _currentLightIntensity = timeOfDay <= .5f
+                ? settings.GreaterLightIntensity * timeOfDay
+                : Mathf.Abs( ( ( settings.GreaterLightIntensity * timeOfDay ) - settings.GreaterLightIntensity ) );
 
             SetLightIntensity( _currentLightIntensity * 2,
                                          settings.LowerLightIntensity,
                                          settings.GreaterLightIntensity );
 
-            SetLightColor( settings.DirectionalColor.Evaluate( timePercent ) );
+            SetLightColor( settings.DirectionalColor.Evaluate( timeOfDay ) );
 
             _directionalLight.transform.localRotation =
-                Quaternion.Euler( new Vector3( ( timePercent * 360f ) - 90f, 170f, 0 ) );
+                Quaternion.Euler( new Vector3( ( timeOfDay * 360f ) - 90f, 170f, 0 ) );
         }
 
-        private void SetLightIntensity( float intensity, float clampMin, float clampMax)
+        #region Utils UpdateLighting
+
+        private void SetLightIntensity( float intensity, float clampMin, float clampMax )
         {
             if ( _directionalLight.IsNull() || _directionalLight.intensity == intensity ) { return; }
 
@@ -142,40 +205,92 @@ namespace dnSR_Coding
             _directionalLight.color = color;
         }
 
-        private void SetActiveLightingSettings( WeatherSequence weatherSequence )
+
+        #endregion
+
+        #endregion
+
+        /// <summary>
+        /// Sets the active volume profile settings, if its not already set.
+        /// </summary>
+        private void SetActiveSettings( EnvironmentLightingSettings settings )
         {
-            if ( weatherSequence.IsNull()
-                || !weatherSequence.IsNull() && weatherSequence.GetLightingSettings().IsNull()
-                || weatherSequence.GetWeatherType() == WeatherType.None )
+            if ( ActiveSettings == settings ) { return; }
+
+            ActiveSettings = settings;
+            SetCameraVolumeManagerGammaValue( settings );
+        }
+
+        /// <summary>
+        /// Sets default lighting settings, it is used when no weather sequence are currently active,
+        /// or when the active sequence doesn't have lighting settings filled.
+        /// </summary>
+        private void SetDefaultLightingSettings()
+        {
+            // If the sequence is null then we set the default setup.
+            SetActiveSettings( _defaultLightingSettings );
+
+            SetLightIntensity( 2f, 0f, 2f );
+            SetLightColor( Color.red );
+        }
+
+        #region On weather changed handle
+
+        /// <summary>
+        /// Sets the correct lighting settings according to the new weather.
+        /// </summary>
+        /// <param name="sequence"></param>
+        private void SetEnvironmentLightingSettingsOnWeatherChanged( WeatherSequence sequence )
+        {
+            if ( !sequence.IsNull()
+                || !sequence.IsNull() && sequence.GetLightingSettings().IsNull() )
             {
-                ActiveSettings = _defaultLightingSettings;
+                var settings = IsDaytime ? sequence.GetLightingSettings() : _nightTimeLightingSettings;
+                SetActiveSettings( settings );
 
-                SetLightIntensity( 2f, 0f, 2f );
-                SetLightColor( Color.red );
-
-                SetCameraVolumeManagerGammaValue();
                 return;
             }
 
-            ActiveSettings = weatherSequence.GetLightingSettings();
-
-            SetCameraVolumeManagerGammaValue();
+            SetDefaultLightingSettings();
         }
 
-        #region OnValidate
-#if UNITY_EDITOR
-        private void SetCameraVolumeManagerGammaValue()
+        #region Utils SetEnvironmentLightingSettingsOnWeatherChanged       
+
+        /// <summary>
+        /// Sets the gamma volume of the current settings volume profile.
+        /// </summary>
+        /// <param name="settings"></param>
+        private void SetCameraVolumeManagerGammaValue( EnvironmentLightingSettings settings )
         {
-            if ( !Application.isPlaying )
-            {
-                CameraVolumeManager cvm = ( CameraVolumeManager ) FindObjectOfType( typeof( CameraVolumeManager ) );
-                cvm.NeedToBeUpdated();
-            }
+            if ( Application.isPlaying ) { OnLightingSettingsChanged?.Invoke( settings ); }
             else
             {
-                OnLightingSettingsChanged?.Invoke();
+                CameraVolumeManager cvm = ( CameraVolumeManager ) FindObjectOfType( typeof( CameraVolumeManager ) );
+                cvm.NeedToBeUpdated( settings );
             }
         }
+
+        #endregion
+
+        #endregion
+
+        #region On specific time of day reached
+
+        /// <summary>
+        /// Assigns a value to "IsDaytime".
+        /// When its value change to its previous value it executes instructions set in it declaration above.
+        /// </summary>
+        private void HandleCurrentTimeOfday()
+        {
+            IsDaytime = _currentTimeOfDay >= .3f && _currentTimeOfDay <= .7f;
+            Debug.Log( "HandleCurrentTimeOfday() : " + IsDaytime, transform );
+        }
+
+        #endregion
+
+        #region OnValidate
+
+#if UNITY_EDITOR
 
         private void FindPossibleDirectionalLightInEditor()
         {
@@ -206,6 +321,7 @@ namespace dnSR_Coding
             FindPossibleDirectionalLightInEditor();
         }
 #endif
+
         #endregion
     }
 }
