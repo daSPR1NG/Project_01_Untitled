@@ -31,6 +31,8 @@ namespace dnSR_Coding
 
         private void EnableInputs()
         {
+            if ( _inputs.IsNull() ) { return; }
+
             if ( !_isEnabledAtStart ) 
             {                
                 DisableInputs();
@@ -41,12 +43,13 @@ namespace dnSR_Coding
         }
         private void DisableInputs()
         {
+            if ( _inputs.IsNull() ) { return; }
+
             _inputs.Disable();
         }
 
         #endregion
 
-        void Awake() => Init();
         protected override void Init( bool dontDestroyOnLoad = false )
         {
             base.Init( true );
@@ -60,7 +63,11 @@ namespace dnSR_Coding
 
         public InputAction GetTogglePauseMenuAction()
         {
-            return _inputs.UI.TogglePauseMenu;
+            InputAction action = _inputs.IsNull()
+                ? null
+                : _inputs.UI.TogglePauseMenu;
+
+            return action;
         }
     }
 }

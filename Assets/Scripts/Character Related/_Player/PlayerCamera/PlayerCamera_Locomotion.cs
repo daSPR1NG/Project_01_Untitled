@@ -30,8 +30,6 @@ namespace dnSR_Coding
 #if UNITY_EDITOR
         protected override void OnValidate()
         {
-            base.OnValidate();
-
             if ( _virtualCamera.IsNull() ) _virtualCamera = GetComponent<CinemachineVirtualCamera>();
 
             IsValid = !_virtualCamera.IsNull() && _virtualCamera.enabled;

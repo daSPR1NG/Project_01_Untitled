@@ -25,7 +25,7 @@ namespace dnSR_Coding
         [SerializeField] private bool _isApplied = false;
         [SerializeField] private WeatherType _weatherType = WeatherType.None;
         [SerializeField, Range( 0f, 15f )] private float _elementsFadeSpeed = 1f;
-        [SerializeField, ExposedScriptableObject] private EnvironmentLightingSettings _lightingSettings;
+        [SerializeField, Expandable] private EnvironmentLightingSettings _lightingSettings;
 
         [Space( 10f )]
 
@@ -74,14 +74,12 @@ namespace dnSR_Coding
             if ( _elementsTrs.IsNull() ) { _elementsTrs = transform.GetFirstChild(); }
         }
 
-        // Wraps up all the method applied when removing a sequence.
-        [ContextMenu( "Apply Sequence" ), Button]
         public void ApplySequence( bool isDaytime )
         {
             // Meaning it is already applied.
             if ( _isApplied ) { return; }
 
-            Debug.Log( "Apply " + transform.name + " Sequence" );
+            Helper.Log( this, "Apply " + transform.name + " Sequence" );
 
             // Smoothly turn sunshaft alpha from O to max value
             DisplaySunShafts( isDaytime );
@@ -92,14 +90,12 @@ namespace dnSR_Coding
             _isApplied = true;
         }
 
-        // Wraps up all the method applied when removing a sequence.
-        [ContextMenu( "Remove Sequence" ), Button]
         public void RemoveSequence()
         {
             // Meaning it is already unapplied.
             //if ( !_isApplied ) { return; }
 
-            Debug.Log( "Remove " + transform.name + " Sequence" );
+            Helper.Log( this, "Remove " + transform.name + " Sequence" );
 
             // Smoothly turn sunshaft alpha from O to max value
             HideSunShafts();
@@ -117,7 +113,7 @@ namespace dnSR_Coding
             float alpha = isDaytime ? 1.0f : 0.0f;
             SetSunShaftsAlphaValue( alpha );
         }
-        public void HideSunShafts() => SetSunShaftsAlphaValue( 0 );
+        public void HideSunShafts( bool isDaytime = false ) => SetSunShaftsAlphaValue( 0 );
 
         private void SetSunShaftsAlphaValue( float alphaToReach )
         {
@@ -125,10 +121,10 @@ namespace dnSR_Coding
 
             for ( int i = 0; i < _sunShaftMaterials.Count; i++ )
             {
-                Debug.Log( "Accesing Sun shafts material alpha" + transform.name, transform );
+                Helper.Log( this, "Accesing Sun shafts material alpha" + transform.name );
                 if ( _sunShaftMaterials [ i ].color.a == alphaToReach ) { continue; }
 
-                Debug.Log( "Fading Sun shafts material alpha" + transform.name, transform );
+                Helper.Log( this, "Fading Sun shafts material alpha" + transform.name );
 
                 if ( !Application.isPlaying )
                 {

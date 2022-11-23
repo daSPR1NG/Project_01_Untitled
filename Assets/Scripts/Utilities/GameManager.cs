@@ -2,13 +2,11 @@ using UnityEngine;
 using dnSR_Coding.Utilities;
 using System;
 using ExternalPropertyAttributes;
+using UnityEngine.InputSystem;
 
 namespace dnSR_Coding
 {
-    public enum GameState
-    {
-        Playing, Paused
-    }
+    public enum GameState { Playing, Paused }
 
     ///<summary> GameManager description <summary>
     [Component( "GAME MANAGER", "Handles global things about the game." )]
@@ -16,8 +14,8 @@ namespace dnSR_Coding
     {
         [SerializeField] private GameState _gameState = GameState.Playing;
 
-        public static Action OnGamePaused { get; set; }
-        public static Action OnGameResumed { get; set; }
+        public static Action OnGamePaused;
+        public static Action OnGameResumed;
 
         #region Debug
 
@@ -54,9 +52,11 @@ namespace dnSR_Coding
 
         public void TryToPauseTheGame()
         {
-            if ( PlayerInputsHelper.Instance.GetTogglePauseMenuAction().WasPerformedThisFrame() )
+            InputAction pauseAction = PlayerInputsHelper.Instance.GetTogglePauseMenuAction();
+
+            if ( !pauseAction.IsNull() && pauseAction.WasPerformedThisFrame() )
             {
-                if ( !UIManager.Instance.IsNull() && UIManager.Instance.AnyWindowIsDisplayed() ) return;
+                if ( !UIManager.Instance.IsNull() && UIManager.Instance.AWindowIsDisplayed() ) return;
 
                 Helper.Log( this, "Trying to pause the game" );
 
@@ -65,13 +65,6 @@ namespace dnSR_Coding
         }
 
         #region GameState Handle
-
-        #region GameState state getters
-
-        public bool IsGamePlaying() { return GetCurrentGameState() == GameState.Playing || Time.timeScale != 0; }
-        public bool IsGamePaused() { return GetCurrentGameState() == GameState.Paused || Time.timeScale == 0; }
-
-        #endregion
 
         private void ResumeOrPauseTheGame()
         {
@@ -83,7 +76,6 @@ namespace dnSR_Coding
 
             OnGamePaused?.Invoke();
         }
-
         public void ChangeGameState( GameState gameState )
         {
             if ( _gameState == gameState )
@@ -98,6 +90,7 @@ namespace dnSR_Coding
         }
 
         public GameState GetCurrentGameState() { return _gameState; }
+        public bool IsGamePaused() { return GetCurrentGameState() == GameState.Paused || Time.timeScale == 0; }
 
         #endregion
 

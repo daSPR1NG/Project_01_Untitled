@@ -37,7 +37,6 @@ namespace dnSR_Coding
 
         #endregion
 
-        private void Awake() => Init();
         protected override void Init( bool dontDestroyOnLoad = false )
         {
             base.Init( true );
@@ -109,12 +108,12 @@ namespace dnSR_Coding
             };
             SetAddedEnvironmentData( environmentData, trs );
 
-            _environmentDatas.AddItem( environmentData, IsDebuggable );
+            _environmentDatas.AppendItem( environmentData, IsDebuggable );
 
 
             CinemachineVirtualCamera cvc = environmentData.EnvironmentComponent.GetVirtualCamera();
 
-            _environmentCameraDatas.AddItem(
+            _environmentCameraDatas.AppendItem(
                             new EnvironmentCameraData(
                                 environmentData.EnvironmentComponent,
                                 cvc,

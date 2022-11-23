@@ -160,19 +160,19 @@ namespace dnSR_Coding.Utilities
         public static float FlooredInt( this float f ) {  return Mathf.FloorToInt( f ); }
 
         public static float Ceiled( this float f ) {  return Mathf.Ceil( f ); }
-        public static float CeiledInt( this float f ) {  return Mathf.CeilToInt( f ); }
+        public static float CeiledToInt( this float f ) {  return Mathf.CeilToInt( f ); }
 
-        #endregion
-
-        #region String
-
-        public static string InMinutesAndSeconds (this string s, float value)
+        public static string InMinutesAndSeconds( this float value )
         {
             string minutes = Mathf.Floor( value / 60 ).ToString( "0" );
             string seconds = Mathf.Floor( value % 60 ).ToString( "00" );
 
             return ( minutes + " : " + seconds );
         }
+
+        #endregion
+
+        #region String        
 
         public static string ToLogValue( this object obj)
         {
@@ -243,7 +243,7 @@ namespace dnSR_Coding.Utilities
 
         #region List
 
-        public static void AddItem<T>( this List<T> list, T t, bool debugMessage = false )
+        public static void AppendItem<T>( this List<T> list, T t, bool debugMessage = false )
         {
             if ( list.Contains( t ) )
             {

@@ -9,6 +9,7 @@ namespace dnSR_Coding
     public enum WeatherType { None, Rainy, Sunny, }
 
     [RequireComponent( typeof( EnvironmentLightingManager ) )]
+    [RequireComponent( typeof( TimeController ) )]
 
     ///<summary> WeatherSystemManager description <summary>
     [Component("WeatherSystemManager", "")]
@@ -26,7 +27,8 @@ namespace dnSR_Coding
         [SerializeField] private List<WeatherSequence> _weatherSequences = new();
 
         private WeatherSequence _activeWeatherSequence;
-        private EnvironmentLightingManager _environmentLightingManager;        
+        private EnvironmentLightingManager _environmentLightingManager;
+        private TimeController _timeController;
         private int _weatherTypeIndex;
 
         public static Action<WeatherSequence> OnWeatherChanged;
@@ -41,9 +43,17 @@ namespace dnSR_Coding
 
         #region Enable, Disable
 
-        void OnEnable() { }
+        void OnEnable() 
+        {
+            TimeController.OnFallingNight += ActiveWeather.HideSunShafts;
+            TimeController.OnRisingSun += ActiveWeather.DisplaySunShafts;
+        }
 
-        void OnDisable() { }
+        void OnDisable() 
+        {
+            TimeController.OnFallingNight -= ActiveWeather.HideSunShafts;
+            TimeController.OnRisingSun -= ActiveWeather.DisplaySunShafts;
+        }
 
         #endregion
 
@@ -58,11 +68,13 @@ namespace dnSR_Coding
         void GetLinkedComponents()
         {
             if ( _environmentLightingManager.IsNull() ) { _environmentLightingManager = GetComponent<EnvironmentLightingManager>(); }
+            if ( _timeController.IsNull() ) { _timeController = GetComponent<TimeController>(); }
         }
 
+#if UNITY_EDITOR
         private void Update()
         {
-            if ( KeyCode.W.IsPressed() )
+            if ( Application.isEditor && KeyCode.W.IsPressed() )
             {
                 //_weatherType = ( WeatherType ) ( _weatherTypeIndex++ % Enum.GetValues( typeof( WeatherType ) ).Length );
                 if ( _weatherType == WeatherType.Rainy ) _weatherType = WeatherType.Sunny;
@@ -71,6 +83,7 @@ namespace dnSR_Coding
                 SetWeather();
             }
         }
+#endif
 
         private void SetWeather()
         {
@@ -87,13 +100,13 @@ namespace dnSR_Coding
                 case WeatherType.Rainy:
 
                     _activeWeatherSequence = GetWeatherSequenceByType( WeatherType.Rainy );
-                    _activeWeatherSequence.ApplySequence( _environmentLightingManager.IsDaytime );
+                    _activeWeatherSequence.ApplySequence( _timeController.IsDaytime );
                     break;
 
                 case WeatherType.Sunny:
 
                     _activeWeatherSequence = GetWeatherSequenceByType( WeatherType.Sunny );
-                    _activeWeatherSequence.ApplySequence( _environmentLightingManager.IsDaytime );
+                    _activeWeatherSequence.ApplySequence( _timeController.IsDaytime );
                     break;
             }            
 
@@ -153,7 +166,7 @@ namespace dnSR_Coding
 
                 if ( wS.IsNull() ) { continue; }
 
-                _weatherSequences.AddItem( wS, false );
+                _weatherSequences.AppendItem( wS, false );
             }
         }
 

@@ -26,24 +26,8 @@ namespace dnSR_Coding
 
         [Title( "DEFAULT SETTINGS", 12, "white" )]
 
-        [SerializeField] protected Projection ProjectionType = Projection.Perspective;
-
-        private bool _isCameraOrthographic = false;        
-
-        private void ChangeProjectionType( Projection projectionType )
-        {
-            SetProjectionType( projectionType );
-
-            switch ( projectionType )
-            {
-                case Projection.Perspective:
-                    Helper.GetMainCamera().orthographic = false;
-                    break;
-                case Projection.Orthographic:
-                    Helper.GetMainCamera().orthographic = true;
-                    break;
-            }            
-        }
+        [SerializeField] protected Projection ProjectionType = Projection.Orthographic;
+        private bool _isCameraOrthographic;
 
         protected void SetProjectionType( Projection projectionType )
         {
@@ -52,6 +36,22 @@ namespace dnSR_Coding
             ProjectionType = projectionType;
 
             Helper.Log( this, "Camera projection is " + projectionType.ToLogComponent() + " ." );
+        }
+        private void ApplyProjectionType( Projection projectionType )
+        {
+            SetProjectionType( projectionType );
+
+            switch ( projectionType )
+            {
+                case Projection.Perspective:
+                    Helper.GetMainCamera().orthographic = false;
+                    _isCameraOrthographic = false;
+                    break;
+                case Projection.Orthographic:
+                    Helper.GetMainCamera().orthographic = true;
+                    _isCameraOrthographic = true;
+                    break;
+            }            
         }
 
         protected bool IsCameraOrthographic() { return _isCameraOrthographic; }
@@ -62,14 +62,10 @@ namespace dnSR_Coding
 
         protected virtual void OnValidate()
         {
-            foreach ( PlayerCamera_DefaultSettings item in transform.GetComponentsInChildren<PlayerCamera_DefaultSettings>() )
-            {
-                item.ChangeProjectionType( ProjectionType );
-                item._isCameraOrthographic = ProjectionType == Projection.Orthographic;
-            }
+            ApplyProjectionType( ProjectionType );
         }
-#endif
 
+#endif
         #endregion
     }
 }

@@ -12,74 +12,33 @@ namespace dnSR_Coding
 {
     // Required components or public findable enum here.
     [RequireComponent( typeof( WeatherSystemManager ) )]
+    [RequireComponent( typeof( TimeController ) )]
 
     // Uncomment this block right below if you need to use add component menu for this component.
     // [AddComponentMenu( menuName:"Custom Scripts/EnvironmentLightingManager" )]
 
     ///<summary> NightDayCycleManager description <summary>
     [Component("EnvironmentLightingManager", "")]
-    [DisallowMultipleComponent]
-    [ExecuteAlways]
+    [DisallowMultipleComponent, ExecuteAlways]
     public class EnvironmentLightingManager : MonoBehaviour, IDebuggable
     {
         [Title( "DEPENDENCIES", 12, "white" )]
 
         [SerializeField] private Light _directionalLight;        
-        [SerializeField, Range( 1, 240 )] private float _dayDuration = 120f;
-        [SerializeField, Range( 0, 240 )] private float _timeOfDay;
 
         [Title( "STORED LIGHTING SETTINGS", 12, "white" )]
 
-        [SerializeField, ExposedScriptableObject] private EnvironmentLightingSettings _defaultLightingSettings;
-        [SerializeField, ExposedScriptableObject] private EnvironmentLightingSettings _nightTimeLightingSettings;
-
-        [field: SerializeField] public EnvironmentLightingSettings ActiveSettings { get; private set; }
+        [SerializeField, Expandable] private EnvironmentLightingSettings _defaultLightingSettings;
+        [SerializeField, Expandable] private EnvironmentLightingSettings _nighttimeLightingSettings;
+        private EnvironmentLightingSettings _activeSettings;
+        
+        private float _currentLightIntensity = 0;        
 
         private WeatherSystemManager _weatherSystemManager;
+        private TimeController _timeController;
         private CustomPostProcessVolume _mainCameraVolume;
 
-        float _currentTimeOfDay;
-        private float _currentLightIntensity = 0;
-
-        private bool _isDaytime = false;
-        public bool IsDaytime 
-        { 
-            get => _isDaytime; 
-            set
-            {
-                // Nighttime block
-                if ( _isDaytime && !value )
-                {
-                    Debug.Log( "Is Daytime value changed to false" );
-
-                    // Raising the event to subsribers.
-                    OnFallingNight?.Invoke();
-                    // Change active settings to the normal one matching the current weather.
-                    SetActiveSettings( _nightTimeLightingSettings );
-
-                    _weatherSystemManager.ActiveWeather.HideSunShafts();
-                }
-                // Daytime block
-                else if ( !_isDaytime && value )
-                {
-                    Debug.Log( "Is Daytime value changed to true" );                    
-
-                    // Raising the event to subsribers.
-                    OnRisingSun?.Invoke();
-                    // Change active settings to the normal one matching the current weather.
-                    SetActiveSettings( _weatherSystemManager.ActiveWeather.GetLightingSettings() );
-
-                    _weatherSystemManager.ActiveWeather.DisplaySunShafts( true );
-                }
-
-                _isDaytime = value;
-            }
-        }
-
-
         public static Action<EnvironmentLightingSettings> OnLightingSettingsChanged;
-        public static Action OnFallingNight;
-        public static Action OnRisingSun;
 
         #region Debug
 
@@ -94,11 +53,17 @@ namespace dnSR_Coding
         void OnEnable() 
         {
             WeatherSystemManager.OnWeatherChanged += SetEnvironmentLightingSettingsOnWeatherChanged;
+
+            TimeController.OnFallingNight += SetActiveSettings;
+            TimeController.OnRisingSun += SetActiveSettings;
         }
 
         void OnDisable() 
         {
             WeatherSystemManager.OnWeatherChanged -= SetEnvironmentLightingSettingsOnWeatherChanged;
+
+            TimeController.OnFallingNight -= SetActiveSettings;
+            TimeController.OnRisingSun -= SetActiveSettings;
         }
 
         #endregion
@@ -111,6 +76,7 @@ namespace dnSR_Coding
         void GetLinkedComponents()
         {
             if ( _weatherSystemManager.IsNull() ) { _weatherSystemManager = GetComponent<WeatherSystemManager>(); }
+            if ( _timeController.IsNull() ) { _timeController = GetComponent<TimeController>(); }
 
             if ( _mainCameraVolume.IsNull() ) 
             {
@@ -120,38 +86,15 @@ namespace dnSR_Coding
 
         private void Update()
         {
-            if ( ActiveSettings.IsNull() ) { return; }
-
-            if ( Application.isPlaying ) { UpdateTimeOfDay(); }
+            if ( Application.isPlaying ) { UpdateLighting( _timeController.GetCurrentTimeOfDay(), _activeSettings ); }
             else
             {
-                _timeOfDay %= _dayDuration;
-                _currentTimeOfDay = _timeOfDay / _dayDuration;
-
-                HandleCurrentTimeOfday();
-
-                SetEnvironmentLightingSettingsOnWeatherChanged( _weatherSystemManager.ActiveWeather );
-                UpdateLighting( _currentTimeOfDay, ActiveSettings );
+                //SetEnvironmentLightingSettingsOnWeatherChanged( _weatherSystemManager.ActiveWeather );
+                UpdateLighting( _timeController.GetCurrentTimeOfDay(), _activeSettings );
             }
         }
 
         #region Lighting handle on Update
-
-        /// <summary>
-        /// Updates current time of day, tracking wether its night or daytime.
-        /// </summary>
-        private void UpdateTimeOfDay()
-        {
-            _timeOfDay += Time.deltaTime;
-            _timeOfDay %= _dayDuration; //Modulus to ensure always between 0-maxValue
-
-            _currentTimeOfDay = _timeOfDay / _dayDuration;
-
-            HandleCurrentTimeOfday();
-
-            // Then we update the current active lighting settings parameters/setup.
-            UpdateLighting( _currentTimeOfDay, ActiveSettings );
-        }
 
         /// <summary>
         /// Updates the main directional light, acting as a Sun, at runtime.
@@ -159,7 +102,7 @@ namespace dnSR_Coding
         /// </summary>
         private void UpdateLighting( float timeOfDay, EnvironmentLightingSettings settings )
         {
-            if ( ActiveSettings.IsNull() ) { return; }
+            if ( _activeSettings.IsNull() ) { return; }
 
             //Set ambient and fog values at runtime.
             RenderSettings.ambientLight = settings.AmbientColor.Evaluate( timeOfDay );
@@ -205,7 +148,6 @@ namespace dnSR_Coding
             _directionalLight.color = color;
         }
 
-
         #endregion
 
         #endregion
@@ -213,11 +155,15 @@ namespace dnSR_Coding
         /// <summary>
         /// Sets the active volume profile settings, if its not already set.
         /// </summary>
-        private void SetActiveSettings( EnvironmentLightingSettings settings )
+        public void SetActiveSettings( bool isDaytime )
         {
-            if ( ActiveSettings == settings ) { return; }
+            EnvironmentLightingSettings settings = 
+                isDaytime ? _weatherSystemManager.ActiveWeather.GetLightingSettings() : _nighttimeLightingSettings;
 
-            ActiveSettings = settings;
+            if ( _activeSettings == settings ) { return; }
+            Debug.Log( "Set active settings when its daytime : " + isDaytime );
+
+            _activeSettings = settings;
             SetCameraVolumeManagerGammaValue( settings );
         }
 
@@ -228,7 +174,8 @@ namespace dnSR_Coding
         private void SetDefaultLightingSettings()
         {
             // If the sequence is null then we set the default setup.
-            SetActiveSettings( _defaultLightingSettings );
+            _activeSettings = _defaultLightingSettings;
+            SetCameraVolumeManagerGammaValue( _defaultLightingSettings );
 
             SetLightIntensity( 2f, 0f, 2f );
             SetLightColor( Color.red );
@@ -245,9 +192,7 @@ namespace dnSR_Coding
             if ( !sequence.IsNull()
                 || !sequence.IsNull() && sequence.GetLightingSettings().IsNull() )
             {
-                var settings = IsDaytime ? sequence.GetLightingSettings() : _nightTimeLightingSettings;
-                SetActiveSettings( settings );
-
+                SetActiveSettings( sequence.GetLightingSettings() );
                 return;
             }
 
@@ -272,21 +217,7 @@ namespace dnSR_Coding
 
         #endregion
 
-        #endregion
-
-        #region On specific time of day reached
-
-        /// <summary>
-        /// Assigns a value to "IsDaytime".
-        /// When its value change to its previous value it executes instructions set in it declaration above.
-        /// </summary>
-        private void HandleCurrentTimeOfday()
-        {
-            IsDaytime = _currentTimeOfDay >= .3f && _currentTimeOfDay <= .7f;
-            Debug.Log( "HandleCurrentTimeOfday() : " + IsDaytime, transform );
-        }
-
-        #endregion
+        #endregion        
 
         #region OnValidate
 
@@ -317,7 +248,6 @@ namespace dnSR_Coding
         private void OnValidate()
         {
             GetLinkedComponents();
-
             FindPossibleDirectionalLightInEditor();
         }
 #endif

@@ -1,4 +1,5 @@
 using dnSR_Coding.Utilities;
+using System.Drawing;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -31,7 +32,7 @@ public class FullScreenRenderPassFeature : ScriptableRendererFeature
             this._material = material;
             this._pixelSize = pixelSize;
 
-            SetPixelSize( this._material, pixelSize );
+            SetPixelSize( material );
         }
 
         // This method is called before executing the render pass.
@@ -79,17 +80,14 @@ public class FullScreenRenderPassFeature : ScriptableRendererFeature
             _tempTexture.Release();
         }
 
-        private void SetPixelSize( Material material, int pixelSize )
+        private void SetPixelSize( Material material )
         {
-            int value = pixelSize;
-
-            material.SetFloat( "_PixelSize", value );
+            material.SetFloat( "_PixelSize", _pixelSize );
         }
     }
 
     CustomRenderPass m_ScriptablePass;
 
-    /// <inheritdoc/>
     public override void Create()
     {
         if ( !_enableRendererFeature ) { return; }
@@ -110,11 +108,16 @@ public class FullScreenRenderPassFeature : ScriptableRendererFeature
         renderer.EnqueuePass(m_ScriptablePass);
     }
 
+    public void SetPixelSize( int size )
+    {
+        if ( _material.GetFloat( "_PixelSize" ) != size )
+        {
+            _material.SetFloat( "_PixelSize", size );
+        }
+    }
+
     private void OnValidate()
     {
-        if ( _material.GetFloat( "_PixelSize" ) != _pixelSize )
-        {
-            _material.SetFloat( "_PixelSize", _pixelSize );
-        }
+        SetPixelSize( _pixelSize );
     }
 }

@@ -57,7 +57,7 @@ namespace dnSR_Coding
             if ( canBeSelfHidden ) DisplayedWindowAmount--; 
         }
 
-        public bool AnyWindowIsDisplayed() => _aWindowWasDisplayed;
+        public bool AWindowIsDisplayed() => _aWindowWasDisplayed;
 
         #endregion
     }

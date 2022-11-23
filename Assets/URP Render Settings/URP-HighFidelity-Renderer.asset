@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Active: 1
   _enableRendererFeature: 0
   _material: {fileID: 2100000, guid: 58f565febcfd5af499fae3debaff0241, type: 2}
-  _pixelSize: 50
+  _pixelSize: 550
 --- !u!114 &8460015640335246963
 MonoBehaviour:
   m_ObjectHideFlags: 0
