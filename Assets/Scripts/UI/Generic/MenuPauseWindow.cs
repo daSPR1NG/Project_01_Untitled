@@ -15,9 +15,6 @@ namespace dnSR_Coding
 
             GameManager.OnGameResumed += ContextualToggleDisplay;
             GameManager.OnGamePaused += ContextualToggleDisplay;
-
-            //GameManager.OnGameResumed += SendNotificationToUpdate;
-            //GameManager.OnGamePaused += SendNotificationToUpdate;
         }
 
         protected override void OnDisable() 
@@ -26,9 +23,6 @@ namespace dnSR_Coding
 
             GameManager.OnGameResumed -= ContextualToggleDisplay;
             GameManager.OnGamePaused -= ContextualToggleDisplay;
-
-            //GameManager.OnGameResumed -= SendNotificationToUpdate;
-            //GameManager.OnGamePaused -= SendNotificationToUpdate;
         }
 
         #endregion

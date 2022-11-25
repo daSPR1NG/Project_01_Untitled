@@ -12,6 +12,7 @@ namespace dnSR_Coding
         [Header( "DEPENDENCIES" )]
         [SerializeField] private WeatherType _relatedWeatherType = WeatherType.None;
         [SerializeField] private VolumeProfile _relatedVolumeProfile;
+        [SerializeField] private Material _relatedSkybox;
 
         [Space( 10f )]
 
@@ -28,6 +29,7 @@ namespace dnSR_Coding
 
         public WeatherType RelatedWeatherType => _relatedWeatherType;
         public VolumeProfile RelatedVolumeProfile => _relatedVolumeProfile;
+        public Material RelatedSkybox => _relatedSkybox;
 
         public float GreaterLightIntensity => _greaterLightIntensity;
         public float LowerLightIntensity => _lowerLightIntensity;

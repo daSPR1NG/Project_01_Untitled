@@ -29,7 +29,7 @@ namespace dnSR_Coding
         [Title( "STORED LIGHTING SETTINGS", 12, "white" )]
 
         [SerializeField, Expandable] private EnvironmentLightingSettings _defaultLightingSettings;
-        [SerializeField, Expandable] private EnvironmentLightingSettings _nighttimeLightingSettings;
+        [SerializeField, Expandable] private EnvironmentLightingSettings _nightTimeLightingSettings;
         private EnvironmentLightingSettings _activeSettings;
         
         private float _currentLightIntensity = 0;        
@@ -72,6 +72,7 @@ namespace dnSR_Coding
         void Init()
         {
             GetLinkedComponents();
+            SetLightingSettingsOnStart();
         }
         void GetLinkedComponents()
         {
@@ -89,7 +90,6 @@ namespace dnSR_Coding
             if ( Application.isPlaying ) { UpdateLighting( _timeController.GetCurrentTimeOfDay(), _activeSettings ); }
             else
             {
-                //SetEnvironmentLightingSettingsOnWeatherChanged( _weatherSystemManager.ActiveWeather );
                 UpdateLighting( _timeController.GetCurrentTimeOfDay(), _activeSettings );
             }
         }
@@ -129,7 +129,7 @@ namespace dnSR_Coding
                 Quaternion.Euler( new Vector3( ( timeOfDay * 360f ) - 90f, 170f, 0 ) );
         }
 
-        #region Utils UpdateLighting
+        #region Utils UpdateLighting method
 
         private void SetLightIntensity( float intensity, float clampMin, float clampMax )
         {
@@ -153,18 +153,33 @@ namespace dnSR_Coding
         #endregion
 
         /// <summary>
+        /// Set the correct lighting settings at start, wether it is daytime or not.
+        /// </summary>
+        private void SetLightingSettingsOnStart()
+        {
+            SetActiveSettings( _timeController.IsDaytime );
+        }
+
+        /// <summary>
         /// Sets the active volume profile settings, if its not already set.
         /// </summary>
         public void SetActiveSettings( bool isDaytime )
         {
-            EnvironmentLightingSettings settings = 
-                isDaytime ? _weatherSystemManager.ActiveWeather.GetLightingSettings() : _nighttimeLightingSettings;
+            EnvironmentLightingSettings settings =
+                isDaytime ? _weatherSystemManager.ActiveWeather.GetLightingSettings() : _nightTimeLightingSettings;
 
             if ( _activeSettings == settings ) { return; }
             Debug.Log( "Set active settings when its daytime : " + isDaytime );
 
             _activeSettings = settings;
             SetCameraVolumeManagerGammaValue( settings );
+            ChangeSkybox();
+        }
+
+        private void ChangeSkybox()
+        {
+            if ( _activeSettings.RelatedSkybox.IsNull() ) { return; }
+            RenderSettings.skybox = _activeSettings.RelatedSkybox;
         }
 
         /// <summary>
@@ -192,7 +207,7 @@ namespace dnSR_Coding
             if ( !sequence.IsNull()
                 || !sequence.IsNull() && sequence.GetLightingSettings().IsNull() )
             {
-                SetActiveSettings( sequence.GetLightingSettings() );
+                SetActiveSettings( _timeController.IsDaytime );
                 return;
             }
 

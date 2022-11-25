@@ -15,6 +15,7 @@ MonoBehaviour:
   _relatedWeatherType: 1
   _relatedVolumeProfile: {fileID: 11400000, guid: 53e9885735f5d954c8a8c880211b3234,
     type: 2}
+  _relatedSkybox: {fileID: 2100000, guid: e1bad13f395b3b64abd38ab7055e7ea0, type: 2}
   _greaterLightIntensity: 1.5
   _lowerLightIntensity: 0.01
   _ambientColor:
@@ -22,8 +23,8 @@ MonoBehaviour:
     key0: {r: 0.1256607, g: 0.16214287, b: 0.45400003, a: 1}
     key1: {r: 0.24313727, g: 0.3137255, b: 0.87843144, a: 1}
     key2: {r: 0.35, g: 0.35, b: 0.35, a: 0}
-    key3: {r: 0.69803923, g: 0.69803923, b: 0.69803923, a: 0}
-    key4: {r: 0.6981132, g: 0.6981132, b: 0.6981132, a: 0}
+    key3: {r: 1, g: 1, b: 1, a: 0}
+    key4: {r: 1, g: 1, b: 1, a: 0}
     key5: {r: 0.34901962, g: 0.34901962, b: 0.34901962, a: 0}
     key6: {r: 0.24313726, g: 0.3137255, b: 0.8784314, a: 0}
     key7: {r: 0.1254902, g: 0.16078432, b: 0.45490196, a: 0}
@@ -49,9 +50,9 @@ MonoBehaviour:
   _directionalColor:
     serializedVersion: 2
     key0: {r: 0, g: 0, b: 0, a: 1}
-    key1: {r: 0.30980393, g: 0.30980393, b: 0.30980393, a: 1}
-    key2: {r: 0.75, g: 0.75, b: 0.75, a: 0}
-    key3: {r: 0.30882823, g: 0.30882823, b: 0.30882823, a: 0}
+    key1: {r: 0.6981132, g: 0.6981132, b: 0.6981132, a: 1}
+    key2: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 0}
+    key3: {r: 0.69803923, g: 0.69803923, b: 0.69803923, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}

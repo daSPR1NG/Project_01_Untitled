@@ -24,7 +24,7 @@ namespace dnSR_Coding
 
             FontSize = fontsize;
 
-            TextHeightIncrease = TextHeightIncrease.Max( 1, textHeightIncrease );
+            TextHeightIncrease = TextHeightIncrease.Clamped( 1, textHeightIncrease );
 
             if ( string.IsNullOrEmpty( header ) ) TextHeightIncrease = 1f;
 

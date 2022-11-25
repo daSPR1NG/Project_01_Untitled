@@ -21,21 +21,21 @@ namespace dnSR_Coding
 
         [Title( "Linked Resources Settings", 12, "white" )]
 
-        [SerializeField, ShowIf( "_canGenerateResources" )] 
+        [SerializeField, /*ShowIf( "_canGenerateResources" )*/] 
         private bool _hasMaxLimit = true;
-        [SerializeField, ShowIf( "_canGenerateResources" )] 
+        [SerializeField, /*ShowIf( "_canGenerateResources" )*/] 
         private int _totalAmountOfResources = 0;
-        [SerializeField, ShowIf( EConditionOperator.And, "_canGenerateResources", "_hasMaxLimit" )] 
+        [SerializeField, ShowIf( EConditionOperator.And, "_canGenerateResources", "_hasMaxLimit" )]
         private int _maxLimit = 500;
 
         [Title( "Generation Settings", 12, "white" )]
 
-        [SerializeField, ShowIf( "_canGenerateResources" )] 
+        [SerializeField, /*ShowIf( "_canGenerateResources" )*/] 
         private int _amountOfResourcesCreated = 1;
-        [SerializeField, ShowIf( "_canGenerateResources" )] 
+        [SerializeField,/* ShowIf( "_canGenerateResources" )*/] 
         private float _frequencyOfGettingResources = 1f;
 
-        [Space( 5f ), SerializeField, Expandable, ShowIf( "_canGenerateResources" )] 
+        [Space( 5f ), SerializeField, Expandable, /*ShowIf( "_canGenerateResources" )*/] 
         private BasicResource _linkedResource;
 
         public BasicResource LinkedResource { get => _linkedResource; }

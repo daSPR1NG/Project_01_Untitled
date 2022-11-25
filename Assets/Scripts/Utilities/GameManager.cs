@@ -3,6 +3,7 @@ using dnSR_Coding.Utilities;
 using System;
 using ExternalPropertyAttributes;
 using UnityEngine.InputSystem;
+using UnityEngine.SocialPlatforms;
 
 namespace dnSR_Coding
 {
@@ -13,6 +14,7 @@ namespace dnSR_Coding
     public class GameManager : Singleton<GameManager>, IDebuggable
     {
         [SerializeField] private GameState _gameState = GameState.Playing;
+        [SerializeField] private int _timeScale = 1;
 
         public static Action OnGamePaused;
         public static Action OnGameResumed;
@@ -39,7 +41,6 @@ namespace dnSR_Coding
 
         #endregion
 
-
         protected override void Init( bool dontDestroyOnLoad = false )
         {
             base.Init( true );
@@ -48,6 +49,14 @@ namespace dnSR_Coding
         private void Update()
         {
             TryToPauseTheGame();
+
+#if UNITY_EDITOR
+
+            if ( KeyCode.Alpha0.IsPressed() )
+            {
+                SetTimeScale( _timeScale );
+            }
+#endif
         }
 
         public void TryToPauseTheGame()
@@ -62,6 +71,13 @@ namespace dnSR_Coding
 
                 ResumeOrPauseTheGame();
             }
+        }
+
+        private void SetTimeScale( int timeScale )
+        {
+            if ( timeScale < 0 ) { timeScale = 0; }
+
+            if ( Time.timeScale != timeScale ) { Helper.SetTimeScale( timeScale ); }
         }
 
         #region GameState Handle
@@ -94,7 +110,6 @@ namespace dnSR_Coding
 
         #endregion
 
-
         public static void QuitApplication()
         {
 #if UNITY_EDITOR
@@ -113,9 +128,9 @@ namespace dnSR_Coding
         {
             if ( !Application.isEditor ) { return; }
 
-            GUIContent content = new ( GetCurrentGameState().ToString() + " | tS: " + Time.timeScale );
+            GUIContent content = new ( GetCurrentGameState().ToString() + " | Time Scale : " + Time.timeScale );
 
-            GUI.Label( new Rect( 5, 5, 105, 25 ), content );
+            GUI.Label( new Rect( 5, 5, 150, 25 ), content );
         }
 
         #endregion

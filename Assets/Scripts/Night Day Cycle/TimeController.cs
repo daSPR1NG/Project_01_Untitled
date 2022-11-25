@@ -102,7 +102,7 @@ namespace dnSR_Coding
         {
             if ( !_updateTimeOfDay || Application.isPlaying && GameManager.Instance.IsGamePaused() ) { return; }
 
-            _timeOfDay += Time.deltaTime;
+            _timeOfDay += Time.deltaTime * Time.timeScale;
             _timeOfDay %= _dayDuration; //Modulus to ensure always between 0-maxValue
 
             _currentTimeOfDay = _timeOfDay / _dayDuration;
@@ -125,8 +125,7 @@ namespace dnSR_Coding
         }
 
         /// <summary>
-        /// Assigns a value to "IsDaytime".
-        /// When its value change to its previous value it executes instructions set in it declaration above.
+        /// Assigns a value to "IsDaytime". When its value change to its previous value it executes instructions set in it declaration above.
         /// </summary>
         private void HandleCurrentTimeOfday()
         {
@@ -145,15 +144,15 @@ namespace dnSR_Coding
             //Debug.Log( t );
 
             // Convert to Hours
-            float hours = Mathf.Floor( t );
+            float hours = ExtMathfs.Floor( t );
 
             // Convert to Minutes
             t *= 60;
-            float minutes = Mathf.Floor( t % 60 );
+            float minutes = ExtMathfs.Floor( t % 60 );
 
             // Convert to Seconds
             t *= 60;
-            float seconds = Mathf.Floor( t % 60 );
+            float seconds = ExtMathfs.Floor( t % 60 );
 
             _daytimeInMinutesAndSecondsFormat = _timeOfDay.InMinutesAndSeconds();
             _daytimeInHoursFormat = hours + ":" + minutes + ":" + seconds;
@@ -197,5 +196,19 @@ namespace dnSR_Coding
 #endif
 
         #endregion
+
+        private void OnGUI()
+        {
+            if ( !Application.isEditor || !_updateTimeOfDay )
+            {
+                GUIContent nullContent = new( "No active weather found." );
+                GUI.Label( new Rect( 5, Screen.height - 45, 350, 25 ), nullContent );
+                return;
+            }
+
+            GUIContent content = new( "It is daytime : " + IsDaytime );
+
+            GUI.Label( new Rect( 5, Screen.height - 65, 350, 25 ), content );
+        }
     }
 }
