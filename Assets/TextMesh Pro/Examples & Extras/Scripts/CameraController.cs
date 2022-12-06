@@ -46,7 +46,7 @@ namespace TMPro.Examples
         //private float prev_ZoomDelta;
 
 
-        private const string event_SmoothingValue = "Slider - Smoothing Value";
+        private const string event_SmoothingValue = "Slider - Smoothing Points";
         private const string event_FollowDistance = "Slider - Camera Zoom";
 
 
@@ -205,7 +205,7 @@ namespace TMPro.Examples
                     {
                         if (hit.transform == CameraTarget)
                         {
-                            // Reset Follow Position
+                            // SetToDefault Follow Position
                             OrbitalAngle = 0;
                         }
                         else

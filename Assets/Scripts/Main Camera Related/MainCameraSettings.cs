@@ -13,17 +13,17 @@ namespace dnSR_Coding
     {
         private enum CameraProjection { Perspective, Orthographic }
 
-        [Title( "GENERAL SETTINGS", 12, "white" )]
+        [Header( "GENERAL SETTINGS" )]
         [SerializeField] private CameraProjection _projection;
 
-        [Title( "Perspective VIEW SETTINGS", 12, "white" )]
+        [Header( "Perspective VIEW SETTINGS" )]
         [SerializeField, ShowIf( "IsPerspective" )] private float _verticalFov = 60;
 
 
-        [Title( "Perspective VIEW SETTINGS", 12, "white" )]
+        [Header( "Perspective VIEW SETTINGS" )]
         [SerializeField, ShowIf( "IsOrthographic" )] private float _orthographicSize = 12.5f;
 
-        [Title( "Common VIEW SETTINGS", 12, "white" )]
+        [Header( "Common VIEW SETTINGS" )]
 
         [SerializeField] private float _nearClipPlane = 0.1f;
         [SerializeField] private float _farClipPlane = 100f;
@@ -34,7 +34,7 @@ namespace dnSR_Coding
 
         [Space( 10f )]
 
-        [Title( "Rendering settings", 12, "white" )]
+        [Header( "Rendering settings" )]
 
         [Range( 1, 1000 ), SerializeField] private int _pixelSize = 150;
 

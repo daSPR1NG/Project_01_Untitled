@@ -9,7 +9,7 @@ namespace dnSR_Coding
     [CreateAssetMenu(fileName = "", menuName = "Scriptable Objects/Audio Events/Simple")]
     public class SimpleAudioEvent : AudioEvent
     {
-        [Title( "SETTINGS", 12 ), HorizontalLine( .5f, EColor.Gray )]
+        [Header( "SETTINGS" ), HorizontalLine( .5f, EColor.Gray )]
         [MinMaxSlider( -3, 3 )] public Vector2 Pitch = new ( 0, 1);
         [MinMaxSlider( 0, 1 )] public Vector2 Volume = new ( 1, 1 );
 

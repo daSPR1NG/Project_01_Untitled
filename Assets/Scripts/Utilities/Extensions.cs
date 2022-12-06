@@ -148,9 +148,9 @@ namespace dnSR_Coding.Utilities
         }
 
         /// <summary>
-        /// Set Image component type, and wether if it preserves aspect or not.
+        /// Set Image component Type, and wether if it preserves aspect or not.
         /// </summary>
-        /// <param name="type">the image type you want the image to be</param>
+        /// <param name="type">the image Type you want the image to be</param>
         /// <param name="isSpriteOverriden">defines if you use the default sprite or the overridesprite</param>
         /// <param name="preserveAspect">defines if the image sprite preserves its aspect or not</param>
         [MethodImpl( INLINE )] 
@@ -171,7 +171,7 @@ namespace dnSR_Coding.Utilities
         }
 
         /// <summary>
-        /// Reset Image component properties.
+        /// SetToDefault Image component properties.
         /// </summary>
         /// <param name="image">the image you want to modify</param>
         /// <param name="isSpriteOverriden">defines if you're using the overriden sprite or not</param>
@@ -330,7 +330,32 @@ namespace dnSR_Coding.Utilities
                 v.w < -1f ? -1f : v.w > 1f ? 1f : v.w
             );
 
-        #endregion        
+        #endregion
+
+        #region Floor
+
+        /// <summary>Rounds the value down to the nearest integer</summary>
+		[MethodImpl( INLINE )] public static float Floor( float value ) => ( float ) Math.Floor( value );
+
+        /// <summary>Rounds the vector components down to the nearest integer</summary>
+        [MethodImpl( INLINE )] public static Vector2 Floor( Vector2 value ) => new Vector2( ( float ) Math.Floor( value.x ), ( float ) Math.Floor( value.y ) );
+
+        /// <inheritdoc cref="Mathfs.Floor(Vector2)"/>
+        [MethodImpl( INLINE )] public static Vector3 Floor( Vector3 value ) => new Vector3( ( float ) Math.Floor( value.x ), ( float ) Math.Floor( value.y ), ( float ) Math.Floor( value.z ) );
+
+        /// <inheritdoc cref="Mathfs.Floor(Vector2)"/>
+        [MethodImpl( INLINE )] public static Vector4 Floor( Vector4 value ) => new Vector4( ( float ) Math.Floor( value.x ), ( float ) Math.Floor( value.y ), ( float ) Math.Floor( value.z ), ( float ) Math.Floor( value.w ) );
+
+        /// <summary>Rounds the value down to the nearest integer, returning an int value</summary>
+        [MethodImpl( INLINE )] public static int FloorToInt( float value ) => ( int ) Math.Floor( value );
+
+        /// <summary>Rounds the vector components down to the nearest integer, returning an integer vector</summary>
+        [MethodImpl( INLINE )] public static Vector2Int FloorToInt( Vector2 value ) => new Vector2Int( ( int ) Math.Floor( value.x ), ( int ) Math.Floor( value.y ) );
+
+        /// <inheritdoc cref="Mathfs.FloorToInt(Vector2)"/>
+        [MethodImpl( INLINE )] public static Vector3Int FloorToInt( Vector3 value ) => new Vector3Int( ( int ) Math.Floor( value.x ), ( int ) Math.Floor( value.y ), ( int ) Math.Floor( value.z ) );
+
+        #endregion
 
         #region Float
 
@@ -591,7 +616,7 @@ namespace dnSR_Coding.Utilities
             if ( component != null )
                 SafeDestroy( component.gameObject );
             return null;
-        }        
+        }
 
         #endregion
     }

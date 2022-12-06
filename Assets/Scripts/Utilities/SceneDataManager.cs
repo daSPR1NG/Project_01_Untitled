@@ -12,7 +12,7 @@ namespace dnSR_Coding
     [DisallowMultipleComponent]
     public class SceneDataManager : Singleton<SceneDataManager>, IDebuggable
     {
-        [Title( "Scenes", 12, "white" )]
+        [Header( "Scenes" )]
 
         [SerializeField] private List<SceneData> _sceneData = new();
 

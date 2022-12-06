@@ -20,7 +20,7 @@ namespace dnSR_Coding
     [DisallowMultipleComponent]
     public class WeatherSequence : MonoBehaviour, IDebuggable
     {
-        [Title( "SETTINGS", 12, "white" )]
+        [Header( "SETTINGS" )]
 
         [SerializeField] private bool _isApplied = false;
         [SerializeField] private WeatherType _weatherType = WeatherType.None;
@@ -29,7 +29,7 @@ namespace dnSR_Coding
 
         [Space( 10f )]
 
-        [Title( "ELEMENTS", 12, "white" )]
+        [Header( "ELEMENTS" )]
 
         [SerializeField] private List<Material> _sunShaftMaterials = new ();
         [SerializeField] private List<SequenceParticleSystemData> _visualEffects = new ();

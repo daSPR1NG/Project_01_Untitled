@@ -52,7 +52,7 @@ namespace ExternalPropertyAttributes.Editor
 			else
 			{
 				string message = string.Format(
-					"The provided dynamic max value for the progress bar is not correct. Please check if the '{0}' is correct, or the return type is float",
+					"The provided dynamic max value for the progress bar is not correct. Please check if the '{0}' is correct, or the return Type is float",
 					nameof(progressBarAttribute.MaxValueName));
 
 				DrawDefaultPropertyAndHelpBox(rect, property, message, MessageType.Warning);

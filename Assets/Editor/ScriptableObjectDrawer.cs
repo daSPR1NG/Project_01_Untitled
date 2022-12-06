@@ -20,7 +20,7 @@ public class ScriptableObjectDrawer : PropertyDrawer
         bool foldout = false;
         if (property.objectReferenceValue != null)
         {
-            // Store foldout values in a dictionary per object type
+            // Store foldout values in a dictionary per object Type
             bool foldoutExists = foldoutByType.TryGetValue(property.objectReferenceValue.GetType(), out foldout);
             foldout = EditorGUI.Foldout(position, foldout, GUIContent.none);
             if (foldoutExists)

@@ -22,11 +22,11 @@ namespace dnSR_Coding
     [DisallowMultipleComponent, ExecuteAlways]
     public class EnvironmentLightingManager : MonoBehaviour, IDebuggable
     {
-        [Title( "DEPENDENCIES", 12, "white" )]
+        [Header( "DEPENDENCIES" )]
 
         [SerializeField] private Light _directionalLight;        
 
-        [Title( "STORED LIGHTING SETTINGS", 12, "white" )]
+        [Header( "STORED LIGHTING SETTINGS" )]
 
         [SerializeField, Expandable] private EnvironmentLightingSettings _defaultLightingSettings;
         [SerializeField, Expandable] private EnvironmentLightingSettings _nightTimeLightingSettings;

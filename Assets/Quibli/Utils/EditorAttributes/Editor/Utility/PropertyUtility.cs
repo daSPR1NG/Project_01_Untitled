@@ -60,7 +60,7 @@ namespace ExternalPropertyAttributes.Editor
 				else
 				{
 					string warning = string.Format(
-						"{0} can invoke only methods with 'void' return type and 0 parameters",
+						"{0} can invoke only methods with 'void' return Type and 0 parameters",
 						onValueChangedAttribute.GetType().Name);
 
 					Debug.LogWarning(warning, property.serializedObject.targetObject);

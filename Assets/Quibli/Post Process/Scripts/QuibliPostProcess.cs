@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace UnityEngine.Rendering.Universal.PostProcessing {
 /// <summary>
 /// This render feature is responsible for:
-/// <list type="bullet">
+/// <list Type="bullet">
 /// <item>
 /// <description> Injecting the render passes for custom post processing </description>
 /// </item>

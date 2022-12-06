@@ -18,10 +18,10 @@ namespace dnSR_Coding
     [DisallowMultipleComponent, ExecuteAlways]
     public class TimeController : MonoBehaviour, IDebuggable
     {
-        [Title( "DEPENDENCIES", 12, "white" )]
+        [Header( "DEPENDENCIES" )]
 
         [SerializeField] private bool _updateTimeOfDay = true;
-        [InfoBox( "The value is in seconds and does not exceeds 10 minutes realtime." )]
+        [InfoBox( "The value is in seconds and does not exceeds 10 minutes realtime (600s)." )]
         [SerializeField, Range( 1, 600)] private float _dayDuration = 480f;
         [SerializeField, Range( 0, 480 ), ShowIf( "IsDebuggable" )] private float _timeOfDay = 240f;
         [ShowNonSerializedField] private string _daytimeInMinutesAndSecondsFormat;
@@ -102,7 +102,7 @@ namespace dnSR_Coding
         {
             if ( !_updateTimeOfDay || Application.isPlaying && GameManager.Instance.IsGamePaused() ) { return; }
 
-            _timeOfDay += Time.deltaTime * Time.timeScale;
+            _timeOfDay += Helper.RealDeltaTime( true );
             _timeOfDay %= _dayDuration; //Modulus to ensure always between 0-maxValue
 
             _currentTimeOfDay = _timeOfDay / _dayDuration;

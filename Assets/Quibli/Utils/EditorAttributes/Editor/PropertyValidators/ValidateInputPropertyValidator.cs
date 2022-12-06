@@ -57,7 +57,7 @@ namespace ExternalPropertyAttributes.Editor
 					}
 					else
 					{
-						string warning = "The field type is not the same as the callback's parameter type";
+						string warning = "The field Type is not the same as the callback's parameter Type";
 						ExternalCustomEditorGUI.HelpBox_Layout(warning, MessageType.Warning, context: property.serializedObject.targetObject);
 					}
 				}
@@ -65,7 +65,7 @@ namespace ExternalPropertyAttributes.Editor
 				{
 					string warning =
 						validateInputAttribute.GetType().Name +
-						" needs a callback with boolean return type and an optional single parameter of the same type as the field";
+						" needs a callback with boolean return Type and an optional single parameter of the same Type as the field";
 
 					ExternalCustomEditorGUI.HelpBox_Layout(warning, MessageType.Warning, context: property.serializedObject.targetObject);
 				}

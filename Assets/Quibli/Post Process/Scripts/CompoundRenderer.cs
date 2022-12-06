@@ -189,9 +189,9 @@ public sealed class CompoundRendererFeatureAttribute : Attribute {
     }
 
     /// <summary>
-    /// Get the CompoundRendererFeatureAttribute attached to the type.
+    /// Get the CompoundRendererFeatureAttribute attached to the Type.
     /// </summary>
-    /// <param name="type">the type on which the attribute is attached</param>
+    /// <param name="type">the Type on which the attribute is attached</param>
     /// <returns>the attached CompoundRendererFeatureAttribute or null if none were attached</returns>
     public static CompoundRendererFeatureAttribute GetAttribute(Type type) {
         if (type == null) return null;

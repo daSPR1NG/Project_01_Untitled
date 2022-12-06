@@ -21,7 +21,7 @@ namespace dnSR_Coding
         static void CreateMonoBehaviourMenuItem()
         {
             string pathToNewFile = EditorUtility.SaveFilePanel( "Create Mono Behaviour", GetCurrentPath(), "NewMonoBehaviour.cs", "cs" );
-            string pathToTemplate = Application.dataPath + "/ScriptTemplates/MonoBehaviourTemplate.txt";
+            string pathToTemplate = Application.dataPath + "/ScriptTemplates/Mono/MonoBehaviourTemplate.txt";
 
             MakeScriptFromTemplate( pathToNewFile, pathToTemplate );
         }
@@ -31,13 +31,13 @@ namespace dnSR_Coding
         #region Abstract Class
 
         #region Menu Items
-        [MenuItem( "Assets/Create Script Menu/Behaviour/Create Abstract Class" )]
-        [MenuItem( "Create Script Menu/Behaviour/Create Abstract Class" )]
+        [MenuItem( "Assets/Create Script Menu/Mono/Create Abstract Class" )]
+        [MenuItem( "Create Script Menu/Mono/Create Abstract Class" )]
         #endregion
         static void CreateAbstractClassMenuItem()
         {
             string pathToNewFile = EditorUtility.SaveFilePanel( "Create Abstract Class", GetCurrentPath(), "NewAbstractClass.cs", "cs" );
-            string pathToTemplate = Application.dataPath + "/ScriptTemplates/AbstractClassTemplate.txt";
+            string pathToTemplate = Application.dataPath + "/ScriptTemplates/Mono/AbstractClassTemplate.txt";
 
             MakeScriptFromTemplate( pathToNewFile, pathToTemplate );
         }
@@ -47,13 +47,13 @@ namespace dnSR_Coding
         #region Scriptable Object
 
         #region Menu Items
-        [MenuItem( "Assets/Create Script Menu/Behaviour/Create Scriptable Object" )]
-        [MenuItem( "Create Script Menu/Behaviour/Create Scriptable Object" )]
+        [MenuItem( "Assets/Create Script Menu/Mono/Create Scriptable Object" )]
+        [MenuItem( "Create Script Menu/Mono/Create Scriptable Object" )]
         #endregion
         static void CreateScriptableObjectMenuItem()
         {
             string pathToNewFile = EditorUtility.SaveFilePanel( "Create ScriptableObject", GetCurrentPath(), "NewScriptableObject.cs", "cs" );
-            string pathToTemplate = Application.dataPath + "/ScriptTemplates/ScriptableObjectTemplate.txt";
+            string pathToTemplate = Application.dataPath + "/ScriptTemplates/Mono/ScriptableObjectTemplate.txt";
 
             MakeScriptFromTemplate( pathToNewFile, pathToTemplate );
         }
@@ -63,13 +63,13 @@ namespace dnSR_Coding
         #region Interface
 
         #region Menu Items
-        [MenuItem( "Assets/Create Script Menu/Behaviour/Create Interface" )]
-        [MenuItem( "Create Script Menu/Behaviour/Create Interface" )]
+        [MenuItem( "Assets/Create Script Menu/Mono/Create Interface" )]
+        [MenuItem( "Create Script Menu/Mono/Create Interface" )]
         #endregion
         static void CreateInterfaceMenuItem()
         {
             string pathToNewFile = EditorUtility.SaveFilePanel( "Create Interface", GetCurrentPath(), "NewInterface.cs", "cs" );
-            string pathToTemplate = Application.dataPath + "/ScriptTemplates/InterfaceTemplate.txt";
+            string pathToTemplate = Application.dataPath + "/ScriptTemplates/Mono/InterfaceTemplate.txt";
 
             MakeScriptFromTemplate( pathToNewFile, pathToTemplate );
         }
@@ -89,7 +89,7 @@ namespace dnSR_Coding
         static void CreateEditorMenuItem()
         {
             string pathToNewFile = EditorUtility.SaveFilePanel( "Create Editor", GetCurrentPath(), "NewEditor.cs", "cs" );
-            string pathToTemplate = Application.dataPath + "/ScriptTemplates/EditorTemplate.txt";
+            string pathToTemplate = Application.dataPath + "/ScriptTemplates/Editor/EditorTemplate.txt";
 
             MakeScriptFromTemplate( pathToNewFile, pathToTemplate );
         }
@@ -105,7 +105,7 @@ namespace dnSR_Coding
         static void CreatePropertyDrawerMenuItem()
         {
             string pathToNewFile = EditorUtility.SaveFilePanel( "Create Property Drawer", GetCurrentPath(), "NewPropertyDrawer.cs", "cs" );
-            string pathToTemplate = Application.dataPath + "/ScriptTemplates/PropertyDrawerTemplate.txt";
+            string pathToTemplate = Application.dataPath + "/ScriptTemplates/Editor/PropertyDrawerTemplate.txt";
 
             MakeScriptFromTemplate( pathToNewFile, pathToTemplate );
         }

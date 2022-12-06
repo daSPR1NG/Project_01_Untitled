@@ -11,13 +11,13 @@ namespace dnSR_Coding
     [Component( "UI MENU", "Handles behaviours for a menu." )]
     public abstract class DefaultUIWindow : MonoBehaviour, IDebuggable, IValidatable
     {
-        [Title( "INPUT", 12, "white" )]
+        [Header( "INPUT" )]
 
         [SerializeField] private KeyCode _relatedKeyCode = KeyCode.None;
 
         [Space( 5 )]
 
-        [Title( "VISIBILITY SETTINGS", 12, "white" )]
+        [Header( "VISIBILITY SETTINGS" )]
 
         [SerializeField] private bool _showOnStart = true;
         [SerializeField] private bool _hidesOnPressingEscape = true;
@@ -30,7 +30,7 @@ namespace dnSR_Coding
 
         [Space( 5 )]
 
-        [Title( "CONTEXTUAL DISPLAY SPEED SETTINGS", 12, "white" )]
+        [Header( "CONTEXTUAL DISPLAY SPEED SETTINGS" )]
 
         [SerializeField] private bool _isDynamic = true;
         [Range( 0.5f, 100), SerializeField] private float _displayUpdateSpeed = 10f;

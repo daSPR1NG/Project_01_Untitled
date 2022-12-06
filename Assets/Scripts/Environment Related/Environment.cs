@@ -11,7 +11,7 @@ namespace dnSR_Coding
     ///<summary> Environment description <summary>
     public class Environment : MonoBehaviour, IDebuggable
     {
-        [Title( "DEPENDENCIES", 12, "white" )]
+        [Header( "DEPENDENCIES" )]
 
         [SerializeField] private EnvironmentType _environmentType = EnvironmentType.Unassigned;
 

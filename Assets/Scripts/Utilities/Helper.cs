@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using UnityEngine.SocialPlatforms;
 
 namespace dnSR_Coding.Utilities
 {
@@ -115,9 +116,18 @@ namespace dnSR_Coding.Utilities
         {
             if ( Time.timeScale == value ) return;
 
+            if ( Time.timeScale < 0 ) { Time.timeScale = 0; }
+
             Time.timeScale = value;
 
             Debug.Log( "TimeScale".ToLogComponent( true ) + " value is: " + value.ToString().ToLogValue() );
+        }
+
+        private static float deltaTime;
+        public static float RealDeltaTime( bool ignoreTimeScale )
+        {
+            deltaTime = ignoreTimeScale ? Time.deltaTime : Time.deltaTime * Time.timeScale;
+            return deltaTime;
         }
     }
 }

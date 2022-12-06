@@ -13,7 +13,7 @@ namespace dnSR_Coding
     [Component( "UI BUTTON", "Handle all behaviours used by an UI button." )]
     public abstract class DefaultUIButton : MonoBehaviour, IDebuggable, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
-        [Title( "DEPENDENCIES", 12, "white" )]
+        [Header( "DEPENDENCIES" )]
         [SerializeField] private bool _goesBackToDefaultOnClick = true;
         [Validation( "Need to reference the Selection child object transform." )]
         [SerializeField] private Transform _selectionTrs;
@@ -21,7 +21,7 @@ namespace dnSR_Coding
 
         [Space( 5f )]
 
-        [Title( "OBSTRUCTOR SETTINGS", 12, "white" )]
+        [Header( "OBSTRUCTOR SETTINGS" )]
         [SerializeField] private bool _togglesOnInteraction = true;
         [Validation( "Need to reference the Obstructor object transform." )]        
         [SerializeField] private Transform _obstructor;
@@ -30,7 +30,7 @@ namespace dnSR_Coding
 
         [Space( 5f )]
 
-        [Title( "TEXT SETTINGS", 12, "white" )]
+        [Header( "TEXT SETTINGS" )]
         [SerializeField] private Color _textDefaultColor;
         [SerializeField] private Color _textHighlightColor = Color.white;
         private readonly List<TMP_Text> _texts = new();

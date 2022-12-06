@@ -4,6 +4,7 @@ using System;
 using ExternalPropertyAttributes;
 using UnityEngine.InputSystem;
 using UnityEngine.SocialPlatforms;
+using UnityEngine.Events;
 
 namespace dnSR_Coding
 {
@@ -54,7 +55,7 @@ namespace dnSR_Coding
 
             if ( KeyCode.Alpha0.IsPressed() )
             {
-                SetTimeScale( _timeScale );
+                Helper.SetTimeScale( _timeScale );
             }
 #endif
         }
@@ -71,13 +72,6 @@ namespace dnSR_Coding
 
                 ResumeOrPauseTheGame();
             }
-        }
-
-        private void SetTimeScale( int timeScale )
-        {
-            if ( timeScale < 0 ) { timeScale = 0; }
-
-            if ( Time.timeScale != timeScale ) { Helper.SetTimeScale( timeScale ); }
         }
 
         #region GameState Handle

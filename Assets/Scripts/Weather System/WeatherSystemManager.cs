@@ -16,13 +16,13 @@ namespace dnSR_Coding
     [DisallowMultipleComponent]
     public class WeatherSystemManager : MonoBehaviour, IDebuggable
     {
-        [Title( "DEPENDENCIES", 12, "white" )]
+        [Header( "DEPENDENCIES" )]
 
         [SerializeField] WeatherType _weatherType = WeatherType.None;   
 
         [Space( 10f )]
 
-        [Title( "DEPENDENCIES", 12, "white" )]
+        [Header( "DEPENDENCIES" )]
 
         [SerializeField] private List<WeatherSequence> _weatherSequences = new();
 

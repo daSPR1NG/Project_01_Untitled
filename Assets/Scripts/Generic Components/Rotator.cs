@@ -11,7 +11,7 @@ namespace dnSR_Coding
     [ExecuteAlways]
     public class Rotator : MonoBehaviour, IDebuggable
     {
-        [Title( "SETTINGS", 12, "white" )]
+        [Header( "SETTINGS" )]
 
         [SerializeField] private bool _applyRotation = true;
         [SerializeField] private Vector3 _rotationAxis = Vector3.zero;
@@ -25,14 +25,18 @@ namespace dnSR_Coding
 
         #endregion
 
-        void Update() => ApplyRotationAtRuntime();
+        void Update() => ApplyRotationAtRuntime( _rotationAxis, _rotationSpeed );
 
-        private void ApplyRotationAtRuntime()
+        /// <summary>
+        /// Rotates this transform around a given axis, at given speed.
+        /// </summary>
+        /// <param name="axis"> The axis this transform will rotate around </param>
+        /// <param name="speed"> The speed at which this transform will rotate </param>
+        private void ApplyRotationAtRuntime( Vector3 axis, float speed )
         {
-            if ( !_applyRotation || _rotationAxis == Vector3.zero ) { return; }
+            if ( !_applyRotation || axis == Vector3.zero ) { return; }
 
-            transform.Rotate( _rotationSpeed * Time.deltaTime * _rotationAxis );
-
+            transform.Rotate( speed * Helper.RealDeltaTime( true ) * axis );
         }
     }
 }

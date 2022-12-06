@@ -138,8 +138,8 @@ namespace ExternalPropertyAttributes.Editor
 			{
 				Undo.RecordObject(serializedObject.targetObject, "Dropdown");
 
-				// Problem with structs, because they are value type.
-				// The solution is to make boxing/unboxing but unfortunately I don't know the compile time type of the target object
+				// Problem with structs, because they are value Type.
+				// The solution is to make boxing/unboxing but unfortunately I don't know the compile time Type of the target object
 				dropdownField.SetValue(target, values[newIndex]);
 			}
 		}

@@ -16,7 +16,7 @@ namespace dnSR_Coding
     [ExecuteAlways]
     public class CameraVolumeManager : MonoBehaviour, IDebuggable
     {
-        [Title( "SETTINGS", 12, "white" )]
+        [Header( "SETTINGS" )]
 
         [SerializeField] private float _gammaFadingSpeed = .5f;
         [SerializeField, ExposedScriptableObject ] private VolumeProfileSettings _volumeProfileSettings;
