@@ -1,5 +1,4 @@
 using dnSR_Coding.Utilities;
-using System.Collections;
 using UnityEngine;
 
 namespace dnSR_Coding
@@ -38,7 +37,6 @@ namespace dnSR_Coding
 
             Helper.SetTimeScale( 0 );
         }
-
         protected override void HideWindow()
         {
             Helper.SetTimeScale( 1 );

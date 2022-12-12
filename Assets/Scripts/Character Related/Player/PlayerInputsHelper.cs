@@ -6,7 +6,7 @@ using ExternalPropertyAttributes;
 namespace dnSR_Coding
 {
     ///<summary> PlayerInputsHelper description <summary>
-    [Component("PlayerInputsHelper", "Helps to get all inputs from one place.")]
+    [Component( "PlayerInputsHelper", "Helps to get all inputs from one place." )]
     public class PlayerInputsHelper : Singleton<PlayerInputsHelper>, IDebuggable
     {
         [Header( "STATE SETTINGS" )]
@@ -33,12 +33,12 @@ namespace dnSR_Coding
         {
             if ( _inputs.IsNull() ) { return; }
 
-            if ( !_isEnabledAtStart ) 
-            {                
+            if ( !_isEnabledAtStart )
+            {
                 DisableInputs();
                 return;
             }
-            
+
             _inputs.Enable();
         }
         private void DisableInputs()
@@ -54,7 +54,7 @@ namespace dnSR_Coding
         {
             base.Init( true );
 
-            _inputs = new ();
+            _inputs = new();
 
             Helper.Log( this, _inputs.ToString() );
         }

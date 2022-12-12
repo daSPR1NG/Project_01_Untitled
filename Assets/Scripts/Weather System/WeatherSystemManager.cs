@@ -187,13 +187,14 @@ namespace dnSR_Coding
         {
             if ( !Application.isEditor || _activeWeatherSequence.IsNull() )
             {
-                GUIContent nullContent = new("No active weather found." );
+                GUIContent nullContent = new( "WeatherSystem Manager - No active weather found." );
                 GUI.Label( new Rect( 5, Screen.height - 45, 350, 25 ), nullContent );
                 return; 
             }
 
             GUIContent content = new(
-                _activeWeatherSequence.GetWeatherType()
+                "WeatherSystem Manager - "
+                + _activeWeatherSequence.GetWeatherType()
                 + " Weather is active." );
 
             GUI.Label( new Rect( 5, Screen.height - 45, 350, 25 ), content );

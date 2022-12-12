@@ -201,12 +201,12 @@ namespace dnSR_Coding
         {
             if ( !Application.isEditor || !_updateTimeOfDay )
             {
-                GUIContent nullContent = new( "No active weather found." );
-                GUI.Label( new Rect( 5, Screen.height - 45, 350, 25 ), nullContent );
+                GUIContent nullContent = new( "Time Controller is not updated." );
+                GUI.Label( new Rect( 5, Screen.height - 65, 350, 25 ), nullContent );
                 return;
             }
 
-            GUIContent content = new( "It is daytime : " + IsDaytime );
+            GUIContent content = new( "Time Controller - It is daytime : " + IsDaytime );
 
             GUI.Label( new Rect( 5, Screen.height - 65, 350, 25 ), content );
         }

@@ -6,6 +6,9 @@ using ExternalPropertyAttributes;
 
 namespace dnSR_Coding
 {
+    // TODO :
+    // - Refactoring, adding sums and detailling everything's purpose
+
     ///<summary> DefaultUIWindow description <summary>
     [DisallowMultipleComponent]
     [Component( "UI MENU", "Handles behaviours for a menu." )]
@@ -24,7 +27,6 @@ namespace dnSR_Coding
         [SerializeField] private bool _canBeDisplayedWhenGameIsPaused = false;
 
         private bool _isDisplayed = false;
-        //private bool _needsToBeUpdated = false;
 
         private Coroutine _toggleDisplayCoroutine = null;
 
@@ -54,8 +56,14 @@ namespace dnSR_Coding
 
         #region Enable, Disable
 
-        protected virtual void OnEnable() => HideWindow();
-        protected virtual void OnDisable() => HideWindow();
+        protected virtual void OnEnable()
+        {
+            HideWindow();
+        }
+        protected virtual void OnDisable()
+        {
+            HideWindow();
+        }
 
         #endregion
 
@@ -64,7 +72,7 @@ namespace dnSR_Coding
         protected virtual void Awake() => Init();
         protected virtual void Init()
         {
-            SetWindowTransform();
+            SetWindowTransformInEditor();
 
             HideWindow();
         }
@@ -86,14 +94,14 @@ namespace dnSR_Coding
 
         public void ContextualToggleDisplay()
         {
-            if ( !_canBeDisplayedWhenGameIsPaused && GameManager.Instance.IsGamePaused() )
+            if ( !_canBeDisplayedWhenGameIsPaused
+                && GameManager.Instance.IsGamePaused() )
             { 
                 return; 
             }
 
             if ( _isDynamic )
             {
-                //SendNotificationToUpdate();
                 DynamicToggleDisplay();
                 return;
             }
@@ -114,7 +122,7 @@ namespace dnSR_Coding
 
         protected virtual void DynamicToggleDisplay()
         {
-            if ( !_isDynamic /*|| !_needsToBeUpdated*/ ) return;
+            if ( !_isDynamic ) { return; }
 
             Helper.Log( this, "DynamicToggleDisplay is processing." );
 
@@ -131,7 +139,6 @@ namespace dnSR_Coding
         protected virtual IEnumerator DynamicToggleDisplayCoroutine( bool display )
         {
             bool alphaValueHasBeenReached = display ?
-                //_canvasGroup.alpha >= 1 : _canvasGroup.alpha <= 0;
                 _canvasGroup.alpha <= 0 : _canvasGroup.alpha >= 1;
 
             do
@@ -174,7 +181,6 @@ namespace dnSR_Coding
             SetCanvasGroupVariables();
 
             _isDisplayed = true;
-            //if ( _needsToBeUpdated ) { _needsToBeUpdated = false; }
 
             OnDisplay?.Invoke( _hidesOnPressingEscape );
         }
@@ -185,7 +191,6 @@ namespace dnSR_Coding
             SetCanvasGroupVariables( true );
 
             _isDisplayed = false;
-            //if ( _needsToBeUpdated ) { _needsToBeUpdated = false; }
 
             OnHide?.Invoke( _hidesOnPressingEscape );
         }
@@ -216,16 +221,16 @@ namespace dnSR_Coding
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            CreateOrFindWindow();
+            CreateOrFindWindowInEditor();
 
             if ( _showOnStart ) { DisplayWindow(); }
             else { HideWindow(); }
 
         }
 
-        private void CreateOrFindWindow()
+        private void CreateOrFindWindowInEditor()
         {
-            if ( _window.IsNull() && transform.childCount == 0 )
+            if ( _window.IsNull() && transform.HasNoChild() )
             {
                 GameObject windowGo = new();
 
@@ -235,7 +240,7 @@ namespace dnSR_Coding
                 windowGo.AddComponent<RectTransform>();
                 windowGo.AddComponent<CanvasGroup>();
 
-                SetWindowTransform();
+                SetWindowTransformInEditor();
 
                 return;
             }
@@ -248,13 +253,13 @@ namespace dnSR_Coding
                 //    + "<b>Trying to get Child( 0 ) as Window object.</b>");
                 _window = null;
 
-                SetWindowTransform();
+                SetWindowTransformInEditor();
             }
         }
 
-        private void SetWindowTransform()
+        private void SetWindowTransformInEditor()
         {
-            if ( transform.childCount == 0 ) return;
+            if ( transform.HasNoChild() ) return;
 
             if ( _window.IsNull()
                 && transform.GetChild( 0 ).TryGetComponent( out CanvasGroup cG ) )
@@ -263,8 +268,6 @@ namespace dnSR_Coding
                 _canvasGroup = cG;
                 return;
             }
-
-            //Debug.LogError( "There is no CanvasGroup Component on transform.GetChild( 0 ).", gameObject );
         }
 #endif
 

@@ -140,11 +140,36 @@ namespace dnSR_Coding.Utilities
         /// Set Image component raycast padding.
         /// </summary>
         /// <param name="image">the image you want to modify</param>
-        /// <param name="offset">the padding offset</param>
+        /// <param name="value">the padding value</param>
         [MethodImpl( INLINE )] 
-        public static void SetRaycastPadding( this Image image, Vector4 offset ) 
+        public static void SetRaycastPaddingV4Input( this Image image, Vector4 value ) 
         {
-            if ( image.raycastPadding != offset ) { image.raycastPadding  = offset; }
+            if ( image.raycastPadding != value ) { image.raycastPadding  = value; }
+        }
+
+        /// <summary>
+        /// Set Image component raycast padding inputing a Vector2 as a value.
+        /// X value applies for right and left, Y for up and down.
+        /// </summary>
+        /// <param name="image">the image you want to modify</param>
+        /// <param name="offset">the padding value</param>
+        [MethodImpl( INLINE )]
+        public static void SetRaycastPaddingV2Input( this Image image, Vector2 value )
+        {
+            Vector4 offset = new( value.x, value.y, value.x, value.y );
+            if ( image.raycastPadding != offset ) { image.raycastPadding = offset; }
+        }
+
+        /// <summary>
+        /// Set Image component raycast padding inputing a float as a value.
+        /// </summary>
+        /// <param name="image">the image you want to modify</param>
+        /// <param name="offset">the padding value</param>
+        [MethodImpl( INLINE )]
+        public static void SetRaycastPaddingFloatInput( this Image image, float value )
+        {
+            Vector4 offset = new( value, value, value, value );
+            if ( image.raycastPadding != offset ) { image.raycastPadding = offset; }
         }
 
         /// <summary>
@@ -183,7 +208,7 @@ namespace dnSR_Coding.Utilities
             image.SetMaskable( true );
 
             image.SetRaycastTarget( true );
-            image.SetRaycastPadding( Vector4.zero );
+            image.SetRaycastPaddingV4Input( Vector4.zero );
 
             image.SetImageType( Image.Type.Simple, isSpriteOverriden, false );
         }
