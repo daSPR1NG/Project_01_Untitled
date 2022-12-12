@@ -8,6 +8,10 @@ using static dnSR_Coding.Stat;
 
 namespace dnSR_Coding
 {
+    // TODO : 
+    // - The boolean used in the method "SetSubStatsValues", might need to be replaced in the future.
+    // - The boolean used by the method "ResetStatsPointsToDefault", might need to be replaced in the future.
+
     public enum StatType { Unassigned, Strength, Endurance, Dexterity, }
     public enum SubType
     {
@@ -22,7 +26,7 @@ namespace dnSR_Coding
     [DisallowMultipleComponent]
     public class CharacterStats : MonoBehaviour, IDebuggable
     {
-        [Header( "Details" )]
+        [Header( "Stats & sub_stats lists" )]
 
         [SerializeField] private List<Stat> _stats = new();
         [SerializeField] private List<SubStat> _subStats = new( System.Enum.GetValues( typeof( SubType ) ).Length );
@@ -57,6 +61,9 @@ namespace dnSR_Coding
         void Init()
         {
             GetLinkedComponents();
+
+            // Change the bool value to match the current state of the game, when resuming we don't want to reset the stats
+            ResetStatsPointsToDefault( true );
             SetSubStatsValues();
         }
 
@@ -109,9 +116,9 @@ namespace dnSR_Coding
         /// <summary>
         /// Resets the points of each stats.
         /// </summary>
-        public void ResetStatsPointsToDefault()
+        public void ResetStatsPointsToDefault( bool needsToBeReset )
         {
-            if ( _stats.IsEmpty() ) { return; }
+            if ( !needsToBeReset || _stats.IsEmpty() ) { return; }
 
             for ( int i = _stats.Count - 1; i >= 0; i-- )
             {
@@ -139,7 +146,9 @@ namespace dnSR_Coding
 
             for ( int i = _subStats.Count - 1; i >= 0; i-- )
             {
-                _subStats [ i ].CalculateValue( strengthPts, endurancePts, dexterityPts );
+                // Might need to replace the boolean used here to match the fact that when resuming the game we don't want the player character...
+                // ...to regenerate health fully while he had lost hp in the last game.
+                _subStats [ i ].CalculateValue( strengthPts, endurancePts, dexterityPts, true ); 
             }
         }
 
@@ -176,7 +185,7 @@ namespace dnSR_Coding
         [Button]
         private void ResetStatsPointsButton()
         {
-            ResetStatsPointsToDefault();
+            ResetStatsPointsToDefault( false );
         }
 
         private void SetStatsAndSubStatsNames()

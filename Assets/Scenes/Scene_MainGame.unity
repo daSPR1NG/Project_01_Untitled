@@ -35112,43 +35112,43 @@ MonoBehaviour:
   - Name: Initiative_INI
     _type: 1
     _baseValue: 5
-    _maxValue: 0
-    Value: 5
+    CurrentValue: 5
+    TotalValue: 5
   - Name: HealthPoints_HP
     _type: 2
     _baseValue: 25
-    _maxValue: 25
-    Value: 25
+    CurrentValue: 25
+    TotalValue: 25
   - Name: DamageReduction_DMGR
     _type: 3
     _baseValue: 0
-    _maxValue: 50
-    Value: 0
+    CurrentValue: 0
+    TotalValue: 0
   - Name: Resistance_RES
     _type: 4
     _baseValue: 0
-    _maxValue: 100
-    Value: 0
+    CurrentValue: 0
+    TotalValue: 0
   - Name: Damage_DMG
     _type: 5
     _baseValue: 5
-    _maxValue: 0
-    Value: 5
+    CurrentValue: 5
+    TotalValue: 5
   - Name: CounterAttackChance_CA
     _type: 6
     _baseValue: 0
-    _maxValue: 50
-    Value: 0
+    CurrentValue: 0
+    TotalValue: 0
   - Name: Precision_PRE
     _type: 7
     _baseValue: 0
-    _maxValue: 100
-    Value: 0
+    CurrentValue: 0
+    TotalValue: 0
   - Name: Dodge_DOD
     _type: 8
     _baseValue: 0
-    _maxValue: 50
-    Value: 0
+    CurrentValue: 0
+    TotalValue: 0
   _isDebuggable: 1
 --- !u!1 &2145574752
 GameObject:

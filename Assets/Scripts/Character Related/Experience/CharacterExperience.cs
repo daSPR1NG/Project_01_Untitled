@@ -6,6 +6,9 @@ using System;
 
 namespace dnSR_Coding
 {
+    // TODO : 
+    // - The boolean used by the method "ResetExperienceDatasToDefault", might need to be replaced in the future.
+
     [RequireComponent( typeof( PlayerCharacterProperties ) )]
 
     ///<summary> CharacterExperience description <summary>
@@ -47,6 +50,9 @@ namespace dnSR_Coding
         void Init()
         {
             GetLinkedComponents();
+
+            // Change the bool value to match the current state of the game, when resuming we don't want to reset the EXP
+            ResetExperienceDatasToDefault( true );
         }
 
         // Put all the get component here, it'll be easier to follow what we need and what we collect.
@@ -128,9 +134,9 @@ namespace dnSR_Coding
         /// <summary>
         /// Resets each valid experience data to default.
         /// </summary>
-        public void ResetExperienceDatasToDefault()
+        public void ResetExperienceDatasToDefault( bool needsToBeReset )
         {
-            if ( _experienceData.IsEmpty() ) { return; }
+            if ( !needsToBeReset || _experienceData.IsEmpty() ) { return; }
 
             for ( int i = _experienceData.Count - 1; i >= 0; i-- )
             {
@@ -168,7 +174,7 @@ namespace dnSR_Coding
         [Button]
         private void ResetExperienceDatasButton()
         {
-            ResetExperienceDatasToDefault();
+            ResetExperienceDatasToDefault( true );
         }
 
         private void SetExperienceDatasName()

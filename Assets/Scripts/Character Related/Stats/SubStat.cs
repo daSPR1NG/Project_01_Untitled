@@ -1,7 +1,5 @@
 using UnityEngine;
-using System.Collections;
 using dnSR_Coding.Utilities;
-//using NaughtyAttributes;
 using ExternalPropertyAttributes;
 
 namespace dnSR_Coding
@@ -9,150 +7,190 @@ namespace dnSR_Coding
     [System.Serializable]
     public class SubStat
     {
-        private const int DAMAGE_REDUCTION_MAX_VALUE = 50;
-        private const int RESISTANCE_MAX_VALUE = 100;
-        private const int COUNTER_ATTACK_CHANCE_MAX_VALUE = 50;
-        private const int PRECISION_MAX_VALUE = 100;
-        private const int DODGE_MAX_VALUE = 50;
+        // Max for defensive subStats
+        private const int DAMAGE_REDUCTION_MAX_VALUE =          15;
+        private const int COUNTER_ATTACK_CHANCE_MAX_VALUE =     15;
+        private const int DODGE_MAX_VALUE =                     15;
+
+        // Max up to 100%
+        private const int RESISTANCE_MAX_VALUE =                100;
+        private const int PRECISION_MAX_VALUE =                 100;
 
         [Header( "Details" )]
 
         [HideInInspector] public string Name;
         [SerializeField] private SubType _type = SubType.Unassigned;
 
-        [Header( "Base Value Settings" )]
+        [Header( "Base TotalValue Settings" )]
 
         private bool _hasBaseValue = true;
         [SerializeField, AllowNesting, ShowIf( "_hasBaseValue" )]
         private int _baseValue = 1;
 
-        [Header( "Max Value Settings" )]
-
-        private bool _hasMaxValue = true;
-        [SerializeField, AllowNesting, ShowIf( "_hasMaxValue" ), Range( 0, 100 )]
+        private bool _hasMaxValue = false;
         private int _maxValue = 0;
 
-        public int Value /*{ get; private set; }*/; // in public only to debug !
+        public int CurrentValue /*{ get; private set; }*/; // in public only to debug !
+        public int TotalValue /*{ get; private set; }*/; // in public only to debug !
         public SubType Type => _type;
 
-        public void CalculateValue( int strength, int endurance, int dexterity )
-        {
+        /// <summary>
+        /// Calculate the correct value of the substat, based on its type.
+        /// </summary>
+        /// <param name="strength"> Equals to the current amount of point in strength. </param>
+        /// <param name="endurance"> Equals to the current amount of point in endurance.</param>
+        /// <param name="dexterity"> Equals to the current amount of point in dexterity.</param>
+        public void CalculateValue( int strength, int endurance, int dexterity, bool initCurrentValue )
+        {            
+            int calculatedValue = 0;
+
+            // By default we reset both base and max values.
+            SetBaseValue();
+            SetMaxValue();
+
             switch ( Type )
             {
                 #region Others
 
+                // TotalValue equals 0.
                 case SubType.Unassigned:
-
-                    Value = 0;
+                    calculatedValue = 0;
                     break;
 
-                case SubType.Initiative_INI:
-                    // Initiative – INI : (END + FOR + DEX) * 1.
-                    SetBaseValue( 5 );
-
-                    Value = _baseValue + ( strength + endurance + dexterity );
+                // Initiative – INI : (END + FOR + DEX) * 1.
+                case SubType.Initiative_INI: 
+                    calculatedValue = _baseValue + ( strength + endurance + dexterity );
                     break;
 
                 #endregion
 
                 #region Endurance - END
 
-                case SubType.HealthPoints_HP:
-                    // Points de vie - HP = baseHP + ((baseHP * .1f) * END). 
-                    SetBaseValue( 25 );
-
-                    Value = endurance > 0
+                // Points de vie - HP = baseHP + ((baseHP * .1f) * END).
+                case SubType.HealthPoints_HP: 
+                    calculatedValue = endurance > 0
                         ? ExtMathfs.FloorToInt( _baseValue + ( ( _baseValue * .1f ) * endurance ) )
                         : _baseValue;
-
-                    SetMaxValue( Value );
                     break;
-                case SubType.DamageReduction_DMGR:
-                    // Réduction de dégâts - RDMG = (END * 5) / 4.
-                    ResetBaseValue();
-                    SetMaxValue( DAMAGE_REDUCTION_MAX_VALUE );
 
-                    Value = ExtMathfs.FloorToInt( ( endurance * 5 ) / 4 );
+                // Réduction de dégâts - RDMG = (END * 5) / 4.
+                case SubType.DamageReduction_DMGR: 
+                    calculatedValue = ExtMathfs.FloorToInt( ( endurance * 5 ) / 4 );
                     break;
-                case SubType.Resistance_RES:
-                    // Résistance aux effets - RES = ( END * .25f ) * 10.
-                    ResetBaseValue();
-                    SetMaxValue( RESISTANCE_MAX_VALUE );
 
-                    Value = ExtMathfs.FloorToInt( ( endurance * .25f ) * 10 );
+                // Résistance aux effets - RES = ( END * .25f ) * 10.
+                case SubType.Resistance_RES: 
+                    calculatedValue = ExtMathfs.FloorToInt( ( endurance * .25f ) * 10 );
                     break;
 
                 #endregion
+
                 #region Strength - STR
 
-                case SubType.Damage_DMG:
-                    // Dégâts - DMG = baseDMG + ((baseDMG * .4f) * FOR). 
-                    SetBaseValue( 5 );
-                    ResetMaxValue();
-
-                    Value = strength > 0 
+                // Dégâts - DMG = baseDMG + ((baseDMG * .4f) * FOR).
+                case SubType.Damage_DMG:                     
+                    calculatedValue = strength > 0
                         ? ExtMathfs.FloorToInt( _baseValue + ( ( _baseValue * .4f ) * strength ) )
                         : _baseValue;
                     break;
-                case SubType.CounterAttackChance_CA:
-                    // Chance de contre-attaquer – CATT = (FOR * .2f) * 10.
-                    ResetBaseValue();
-                    SetMaxValue( COUNTER_ATTACK_CHANCE_MAX_VALUE );
 
-                    Value = ExtMathfs.FloorToInt( ( strength * .2f ) * 10 );
+                // Chance de contre-attaquer – CATT = (FOR * .2f) * 2.5f.
+                case SubType.CounterAttackChance_CA: 
+                    calculatedValue = ExtMathfs.FloorToInt( ( strength * .2f ) * 2.5f );
                     break;
 
                 #endregion
+
                 #region Dexterity - DEX
 
-                case SubType.Precision_PRE:
-                    // Précision – PRE = (DEX * .25f) * 10.
-                    ResetBaseValue();
-                    SetMaxValue( PRECISION_MAX_VALUE );
-
-                    Value = ExtMathfs.FloorToInt( ( dexterity * .25f ) * 10 );
-                    break;
-                case SubType.Dodge_DOD:
-                    // Esquive – ESQ = (DEX * .2f) * 10.
-                    ResetBaseValue();
-                    SetMaxValue( DODGE_MAX_VALUE );
-
-                    Value = ExtMathfs.FloorToInt( ( dexterity * .2f ) * 10 );
+                // Précision – PRE = (DEX * .25f) *  2.5f .
+                case SubType.Precision_PRE: 
+                    calculatedValue = ExtMathfs.FloorToInt( ( dexterity * .25f ) * 2.5f );
                     break;
 
-                    #endregion
+                // Esquive – ESQ = (DEX * .2f) *  2.5f .
+                case SubType.Dodge_DOD: 
+                    calculatedValue = ExtMathfs.FloorToInt( ( dexterity * .2f ) * 2.5f );
+                    break;
+
+                #endregion
             }
+
+            TotalValue = _hasMaxValue && calculatedValue >= _maxValue 
+                ? _maxValue : calculatedValue;
+
+            if ( initCurrentValue ) { CurrentValue = TotalValue; }
         }
 
-        #region Base value related
-
-        private void SetBaseValue( int value )
-        {
-            _hasBaseValue = true;
-            _baseValue = value;
-        }
-        private void ResetBaseValue()
+        /// <summary>
+        /// Sets the subStat base value.
+        /// </summary>
+        /// <param name="value"></param>
+        private void SetBaseValue()
         {
             _hasBaseValue = false;
             _baseValue = 0;
+
+            // Contains all the types that have base value, refers yourself to the GDD.
+            switch ( Type )
+            {
+                // Base value is 5 - 07/12/2022
+                case SubType.Initiative_INI:
+                    _hasBaseValue = true;
+                    _baseValue = 5;
+                    break;
+
+                // Base value is 25 - 07/12/2022
+                case SubType.HealthPoints_HP:
+                    _hasBaseValue = true;
+                    _baseValue = 25;
+                    break;
+
+                // Base value is 5 - 07/12/2022
+                case SubType.Damage_DMG:
+                    _hasBaseValue = true;
+                    _baseValue = 5;
+                    break;
+            }           
         }
 
-        #endregion
-
-        #region Max value related
-
-        private void SetMaxValue( int value )
-        {
-            _hasMaxValue = true;
-            _maxValue = value;
-        }
-        private void ResetMaxValue()
+        /// <summary>
+        /// Sets the subStat max value.
+        /// </summary>
+        /// <param name="value"></param>
+        private void SetMaxValue()
         {
             _hasMaxValue = false;
             _maxValue = 0;
-        }
 
-        #endregion
+            switch ( Type )
+            {
+                case SubType.DamageReduction_DMGR:
+                    _hasMaxValue = true;
+                    _maxValue = DAMAGE_REDUCTION_MAX_VALUE;
+                    break;
+
+                case SubType.Resistance_RES:
+                    _hasMaxValue = true;
+                    _maxValue = RESISTANCE_MAX_VALUE;
+                    break;
+
+                case SubType.CounterAttackChance_CA:
+                    _hasMaxValue = true;
+                    _maxValue = COUNTER_ATTACK_CHANCE_MAX_VALUE;
+                    break;
+
+                case SubType.Precision_PRE:
+                    _hasMaxValue = true;
+                    _maxValue = PRECISION_MAX_VALUE;
+                    break;
+
+                case SubType.Dodge_DOD:
+                    _hasMaxValue = true;
+                    _maxValue = DODGE_MAX_VALUE;
+                    break;
+            }
+        }
 
         #region Editor
 
