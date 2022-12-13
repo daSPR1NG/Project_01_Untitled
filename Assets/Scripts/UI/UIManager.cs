@@ -24,14 +24,14 @@ namespace dnSR_Coding
 
         void OnEnable() 
         {
-            DefaultUIWindow.OnDisplay += AddDisplayedWindow;
-            DefaultUIWindow.OnHide += RemoveDisplayedWindow;
+            DefaultUIWindow.OnWindowDisplayed += AddDisplayedWindow;
+            DefaultUIWindow.OnWindowHidden += RemoveDisplayedWindow;
         }
 
         void OnDisable() 
         {
-            DefaultUIWindow.OnDisplay -= AddDisplayedWindow;
-            DefaultUIWindow.OnHide -= RemoveDisplayedWindow;
+            DefaultUIWindow.OnWindowDisplayed -= AddDisplayedWindow;
+            DefaultUIWindow.OnWindowHidden -= RemoveDisplayedWindow;
         }
 
         #endregion

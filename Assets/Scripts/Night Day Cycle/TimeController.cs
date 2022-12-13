@@ -131,7 +131,6 @@ namespace dnSR_Coding
         {
             IsDaytime = _currentTimeOfDay >= .2f && _currentTimeOfDay <= .8f;
             GetTime();
-            //Helper.Log( this, "HandleCurrentTimeOfday() : " + IsDaytime, transform );
         }
 
         /// <summary>
@@ -158,10 +157,15 @@ namespace dnSR_Coding
             _daytimeInHoursFormat = hours + ":" + minutes + ":" + seconds;
         }
 
+        // The argument is commented to enable the use of ButtonAttribute, remove it when tests are done !
+        /// <summary>
+        /// Add an amount of time to the current time value.
+        /// </summary>
+        /// /// <param name="timeToAdd"> Time value to add. </param>
         [Button]
-        private void AddTime( /*int hoursToAdd*/ )
+        private void AddTime( /*int timeToAdd*/ )
         {
-            float t = ( _dayDuration / 24 ) * 5/*hoursToAdd*/;
+            float t = ( _dayDuration / 24 ) * 5/*timeToAdd*/;
             Debug.Log( t );
 
             float hourToAdd = t;
@@ -170,6 +174,8 @@ namespace dnSR_Coding
             _currentTimeOfDay = _timeOfDay / _dayDuration;
             GetTime();
         }
+
+        public float GetCurrentTimeOfDay() => _currentTimeOfDay;
 
         [Button]
         private void Reset()
@@ -182,8 +188,6 @@ namespace dnSR_Coding
 
             _updateTimeOfDay = false;
         }
-
-        public float GetCurrentTimeOfDay() => _currentTimeOfDay;
 
         #region OnValidate
 

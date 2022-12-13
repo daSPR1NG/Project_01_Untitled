@@ -49,7 +49,7 @@ namespace dnSR_Coding
 
         private void Update()
         {
-            TryToPauseTheGame();
+            CheckIfPauseInputHasBeenPressed();
 
 #if UNITY_EDITOR
 
@@ -60,13 +60,21 @@ namespace dnSR_Coding
 #endif
         }
 
-        public void TryToPauseTheGame()
+        /// <summary>
+        /// Checks if the player presses the pause input,
+        /// if so this tries to resume or pause the game according to current game state.
+        /// </summary>
+        public void CheckIfPauseInputHasBeenPressed()
         {
-            InputAction pauseAction = PlayerInputsHelper.Instance.GetTogglePauseMenuAction();
+            InputAction input = PlayerInputsHelper.Instance.GetTogglePauseMenuAction();
 
-            if ( !pauseAction.IsNull() && pauseAction.WasPerformedThisFrame() )
+            if ( !input.IsNull() && input.WasPerformedThisFrame() )
             {
-                if ( !UIManager.Instance.IsNull() && UIManager.Instance.AWindowIsDisplayed() ) return;
+                if ( !UIManager.Instance.IsNull() 
+                    && UIManager.Instance.AWindowIsDisplayed() ) 
+                {
+                    return;
+                }
 
                 Helper.Log( this, "Trying to pause the game" );
 
@@ -76,6 +84,10 @@ namespace dnSR_Coding
 
         #region GameState Handle
 
+        /// <summary>
+        /// Its in charge of trying to resume or pause the game according to the current game state.
+        /// It throws an event for both situations.
+        /// </summary>
         private void ResumeOrPauseTheGame()
         {
             if ( IsGamePaused() )
@@ -86,12 +98,16 @@ namespace dnSR_Coding
 
             OnGamePaused?.Invoke();
         }
-        public void ChangeGameState( GameState gameState )
+
+        /// <summary>
+        /// Sets the game state to the given value.
+        /// </summary>
+        /// <param name="gameState"> New game state value to apply. </param>
+        public void SetGameState( GameState gameState )
         {
             if ( _gameState == gameState )
             {
                 Helper.Log( this, "GameState changed to: " + gameState.ToString().ToLogValue() );
-
                 return;
             }
 
@@ -104,6 +120,9 @@ namespace dnSR_Coding
 
         #endregion
 
+        /// <summary>
+        /// Quit the game : close the application in a build context and stops playmod in Editor.
+        /// </summary>
         public static void QuitApplication()
         {
 #if UNITY_EDITOR

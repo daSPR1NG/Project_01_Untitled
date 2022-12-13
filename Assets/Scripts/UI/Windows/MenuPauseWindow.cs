@@ -8,18 +8,14 @@ namespace dnSR_Coding
     {
         #region Enable, Disable
 
-        protected override void OnEnable() 
+        private void OnEnable() 
         {
-            base.OnEnable();
-
             GameManager.OnGameResumed += ContextualToggleDisplay;
             GameManager.OnGamePaused += ContextualToggleDisplay;
         }
 
-        protected override void OnDisable() 
+        private void OnDisable() 
         {
-            base.OnDisable();
-
             GameManager.OnGameResumed -= ContextualToggleDisplay;
             GameManager.OnGamePaused -= ContextualToggleDisplay;
         }
@@ -28,14 +24,15 @@ namespace dnSR_Coding
 
         protected override void DisplayWindow()
         {
+            Helper.SetTimeScale( 0 );
+
             base.DisplayWindow();
 
-            if ( Application.isPlaying && !GameManager.Instance.IsNull() ) 
+            if ( Application.isPlaying 
+                && !GameManager.Instance.IsNull() ) 
             {
-                GameManager.Instance.ChangeGameState( GameState.Paused ); 
-            }
-
-            Helper.SetTimeScale( 0 );
+                GameManager.Instance.SetGameState( GameState.Paused ); 
+            }            
         }
         protected override void HideWindow()
         {
@@ -43,9 +40,10 @@ namespace dnSR_Coding
 
             base.HideWindow();
 
-            if ( Application.isPlaying && !GameManager.Instance.IsNull() ) 
+            if ( Application.isPlaying 
+                && !GameManager.Instance.IsNull() ) 
             {
-                GameManager.Instance.ChangeGameState( GameState.Playing ); 
+                GameManager.Instance.SetGameState( GameState.Playing ); 
             }
         }
     }

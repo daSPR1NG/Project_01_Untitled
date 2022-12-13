@@ -64,7 +64,6 @@ namespace dnSR_Coding
             PopulateWeatherSequences();
             SetWeather();
         }
-
         void GetLinkedComponents()
         {
             if ( _environmentLightingManager.IsNull() ) { _environmentLightingManager = GetComponent<EnvironmentLightingManager>(); }
@@ -85,6 +84,9 @@ namespace dnSR_Coding
         }
 #endif
 
+        /// <summary>
+        /// Sets the weather based on the current weather type.
+        /// </summary>
         private void SetWeather()
         {
             if ( !_activeWeatherSequence.IsNull() ) { _activeWeatherSequence.RemoveSequence(); }
@@ -117,6 +119,11 @@ namespace dnSR_Coding
 
         #region Utils - Get Specific Weather Sequence
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         private WeatherSequence GetWeatherSequenceByType( WeatherType type )
         {
             if ( _weatherSequences.IsEmpty() ) { return null; }
@@ -133,13 +140,18 @@ namespace dnSR_Coding
 
             return null;
         }
+
+        /// <summary>
+        /// Cycle through the weather sequences list to find the  
+        /// </summary>
+        /// <returns> The current active weather or null if nothing has been found </returns>
         private WeatherSequence GetActiveWeather()
         {
             if ( _weatherSequences.IsEmpty() ) { return null; }
 
             for ( int i = _weatherSequences.Count - 1; i >= 0; i-- )
             {
-                if ( _weatherSequences [ i ].IsNull() || !_weatherSequences [ i ].IsApplied ) 
+                if ( _weatherSequences [ i ].IsNull() || !_weatherSequences [ i ].IsActive ) 
                 {
                     continue; 
                 }

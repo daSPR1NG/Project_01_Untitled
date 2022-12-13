@@ -18,31 +18,23 @@ namespace dnSR_Coding
 
         [SerializeField] private KeyCode _relatedKeyCode = KeyCode.None;
 
-        [Space( 5 )]
-
         [Header( "VISIBILITY SETTINGS" )]
-
-        [SerializeField] private bool _showOnStart = true;
-        [SerializeField] private bool _hidesOnPressingEscape = true;
-        [SerializeField] private bool _canBeDisplayedWhenGameIsPaused = false;
-
+        [SerializeField] private bool _isShownOnStart = true;
+        [SerializeField] private bool _selfHidesOnPressingEscape = true;
+        [SerializeField] private bool _ignoresTimeScale = false;
         private bool _isDisplayed = false;
-
         private Coroutine _toggleDisplayCoroutine = null;
 
-        [Space( 5 )]
-
         [Header( "CONTEXTUAL DISPLAY SPEED SETTINGS" )]
-
-        [SerializeField] private bool _isDynamic = true;
-        [Range( 0.5f, 100), SerializeField] private float _displayUpdateSpeed = 10f;
-        [Range( 0.5f, 100 ), SerializeField] private float _hideUpdateSpeed = 10f;
+        [SerializeField] private bool _isDisplayDynamic = true;
+        [Range( 0.5f, 100), SerializeField] private float _displayingSpeed = 10f;
+        [Range( 0.5f, 100 ), SerializeField] private float _hidingSpeed = 10f;
 
         private Transform _window;
         private CanvasGroup _canvasGroup;
 
-        public static Action<bool> OnDisplay;
-        public static Action<bool> OnHide;
+        public static Action<bool> OnWindowDisplayed;
+        public static Action<bool> OnWindowHidden;
 
         public bool IsValid => !_window.IsNull() && _relatedKeyCode != KeyCode.None;
 
@@ -54,53 +46,35 @@ namespace dnSR_Coding
 
         #endregion
 
-        #region Enable, Disable
-
-        protected virtual void OnEnable()
-        {
-            HideWindow();
-        }
-        protected virtual void OnDisable()
-        {
-            HideWindow();
-        }
-
-        #endregion
-
-        #region Initialization
-
         protected virtual void Awake() => Init();
         protected virtual void Init()
         {
-            SetWindowTransformInEditor();
-
             HideWindow();
         }
 
-        #endregion
-
         protected virtual void Update()
         {
-            if ( _hidesOnPressingEscape && KeyCode.Escape.IsPressed() )
+            if ( _selfHidesOnPressingEscape 
+                && KeyCode.Escape.IsPressed() )
             {
                 HideWindow(); 
             }
-
-            //ContextualToggleDisplay();
-            //DynamicToggleDisplay();
         }
 
-        #region Displayer Options
+        #region Displaying Options
 
+        /// <summary>
+        /// Toggles the visible of this window, handling if it's dynamic or direct.
+        /// </summary>
         public void ContextualToggleDisplay()
         {
-            if ( !_canBeDisplayedWhenGameIsPaused
+            if ( !_ignoresTimeScale
                 && GameManager.Instance.IsGamePaused() )
             { 
                 return; 
             }
 
-            if ( _isDynamic )
+            if ( _isDisplayDynamic )
             {
                 DynamicToggleDisplay();
                 return;
@@ -109,6 +83,11 @@ namespace dnSR_Coding
             DirectToggleDisplay();
         }
 
+        #region Different types of toggle - Direct / Dynamic
+
+        /// <summary>
+        /// Directly toggles the visible of this window, it is not dynamic.
+        /// </summary>
         public virtual void DirectToggleDisplay()
         {
             if ( _isDisplayed )
@@ -120,13 +99,16 @@ namespace dnSR_Coding
             DisplayWindow();
         }
 
+        /// <summary>
+        /// Dynamicly toggles the visible of this window, it is not direct.
+        /// </summary>
         protected virtual void DynamicToggleDisplay()
         {
-            if ( !_isDynamic ) { return; }
+            if ( !_isDisplayDynamic ) { return; }
 
             Helper.Log( this, "DynamicToggleDisplay is processing." );
 
-            if ( _toggleDisplayCoroutine.IsNull() ) 
+            if ( _toggleDisplayCoroutine.IsNull() )
             {
                 _toggleDisplayCoroutine = StartCoroutine( DynamicToggleDisplayCoroutine( IsDisplayed() ) );
                 return;
@@ -136,18 +118,25 @@ namespace dnSR_Coding
             _toggleDisplayCoroutine = StartCoroutine( DynamicToggleDisplayCoroutine( IsDisplayed() ) );
         }
 
-        protected virtual IEnumerator DynamicToggleDisplayCoroutine( bool display )
+        #endregion
+
+        /// <summary>
+        /// Coroutine used to dynamicly toggle the display of a window. It ignores Timescale by default.
+        /// </summary>
+        /// <param name="visible"> Returns weither if this window is actually displayed or not. </param>
+        /// <returns></returns>
+        protected virtual IEnumerator DynamicToggleDisplayCoroutine( bool visible )
         {
-            bool alphaValueHasBeenReached = display ?
+            bool alphaValueHasBeenReached = visible ?
                 _canvasGroup.alpha <= 0 : _canvasGroup.alpha >= 1;
 
             do
             {
-                switch ( display )
+                switch ( visible )
                 {
                     case true:
 
-                        _canvasGroup.alpha -= ( Time.unscaledDeltaTime * _hideUpdateSpeed );
+                        _canvasGroup.alpha -= ( Time.unscaledDeltaTime * _hidingSpeed );
 
                         if ( _canvasGroup.alpha <= 0 )
                         {
@@ -159,7 +148,7 @@ namespace dnSR_Coding
                     case false:
 
                         _window.gameObject.TryToDisplay();
-                        _canvasGroup.alpha += ( Time.unscaledDeltaTime * _displayUpdateSpeed );
+                        _canvasGroup.alpha += ( Time.unscaledDeltaTime * _displayingSpeed );
 
                         if ( _canvasGroup.alpha >= 1 )
                         {
@@ -175,43 +164,44 @@ namespace dnSR_Coding
             } while ( !alphaValueHasBeenReached );
         }
 
+        /// <summary>
+        /// Displays this window by handling the canvas settings and by throwing an event.
+        /// </summary>
         protected virtual void DisplayWindow()
         {
             _window.gameObject.TryToDisplay();
-            SetCanvasGroupVariables();
+            SetCanvasGroupSettings();
 
             _isDisplayed = true;
 
-            OnDisplay?.Invoke( _hidesOnPressingEscape );
+            OnWindowDisplayed?.Invoke( _selfHidesOnPressingEscape );
         }
 
+        /// <summary>
+        /// Hides this window by handling the canvas settings and by throwing an event.
+        /// </summary>
         protected virtual void HideWindow()
         {
             _window.gameObject.TryToHide();
-            SetCanvasGroupVariables( true );
+            SetCanvasGroupSettings( true );
 
             _isDisplayed = false;
 
-            OnHide?.Invoke( _hidesOnPressingEscape );
+            OnWindowHidden?.Invoke( _selfHidesOnPressingEscape );
         }
 
         #endregion
 
-        #region Canvas Group Handle
-
-        private void SetCanvasGroupVariables( bool visible = false )
+        /// <summary>
+        /// Set the canvas group attached settings weither it is hiding or displaying.
+        /// </summary>
+        /// <param name="visible"> Returns weither if this window is actually displayed or not. </param>
+        private void SetCanvasGroupSettings( bool visible = false )
         {
             _canvasGroup.alpha = visible ? 0f : 1f;
             _canvasGroup.blocksRaycasts = !visible;
             _canvasGroup.interactable = !visible;
         }
-
-        #endregion
-
-        //protected virtual void SendNotificationToUpdate()
-        //{
-        //    if ( !_needsToBeUpdated ) { _needsToBeUpdated = true; }
-        //}
 
         public KeyCode RelatedKeyCode() => _relatedKeyCode;
         public bool IsDisplayed() => _isDisplayed;
@@ -219,14 +209,6 @@ namespace dnSR_Coding
         #region OnValidate
 
 #if UNITY_EDITOR
-        private void OnValidate()
-        {
-            CreateOrFindWindowInEditor();
-
-            if ( _showOnStart ) { DisplayWindow(); }
-            else { HideWindow(); }
-
-        }
 
         private void CreateOrFindWindowInEditor()
         {
@@ -256,10 +238,13 @@ namespace dnSR_Coding
                 SetWindowTransformInEditor();
             }
         }
-
         private void SetWindowTransformInEditor()
         {
-            if ( transform.HasNoChild() ) return;
+            if ( transform.HasNoChild() )
+            {
+                Debug.LogError( "The window element cannot be found, this means that something is wrong.", transform );
+                return; 
+            }
 
             if ( _window.IsNull()
                 && transform.GetChild( 0 ).TryGetComponent( out CanvasGroup cG ) )
@@ -268,6 +253,15 @@ namespace dnSR_Coding
                 _canvasGroup = cG;
                 return;
             }
+        }
+
+        private void OnValidate()
+        {
+            CreateOrFindWindowInEditor();
+
+            if ( _isShownOnStart ) { DisplayWindow(); }
+            else { HideWindow(); }
+
         }
 #endif
 

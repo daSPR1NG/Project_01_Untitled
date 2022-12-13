@@ -19,18 +19,19 @@ namespace dnSR_Coding
         [Header( "Perspective VIEW SETTINGS" )]
         [SerializeField, ShowIf( "IsPerspective" )] private float _verticalFov = 60;
 
-
         [Header( "Perspective VIEW SETTINGS" )]
         [SerializeField, ShowIf( "IsOrthographic" )] private float _orthographicSize = 12.5f;
 
         [Header( "Common VIEW SETTINGS" )]
-
         [SerializeField] private float _nearClipPlane = 0.1f;
         [SerializeField] private float _farClipPlane = 100f;
         [SerializeField, Range( -180f, 180f)] private float _dutch = 0f;
 
+        [Header( "Position settings" )]
+        [SerializeField] private Vector3 _position = Vector3.zero;
+
         private readonly List<CinemachineVirtualCamera> _virtualCameras = new();
-        private Camera _cameraComponent;
+        private Camera _attachedCameraComponent;
 
         [Space( 10f )]
 
@@ -57,10 +58,13 @@ namespace dnSR_Coding
         }
         private void GetLinkedComponents()
         {
-            if ( _cameraComponent.IsNull() ) { _cameraComponent = GetComponent<Camera>(); }
+            if ( _attachedCameraComponent.IsNull() ) { _attachedCameraComponent = GetComponent<Camera>(); }
         }
 
-        private void GetPixelizeFeature()
+        /// <summary>
+        /// Is in charge to find the pixelize feature used by the current render setting.
+        /// </summary>
+        private void GetPixelizerFeature()
         {
             if ( ScriptableRendererData.IsNull() )
             {
@@ -73,9 +77,13 @@ namespace dnSR_Coding
                 ScriptableRendererData = ( ( UnityEngine.Rendering.Universal.ScriptableRendererData [] ) fieldInfo?.GetValue( pipeline ) )? [ 0 ];
             }
         }
+        /// <summary>
+        /// Sets the pixel value of the pixelizer feature.
+        /// </summary>
+        /// <param name="pixelSize"> Corresponds to the pixel size used by the pixelizer feature. </param>
         private void SetPixelizerPixelSize( int pixelSize )
         {
-            GetPixelizeFeature();
+            GetPixelizerFeature();
 
             for ( int i = 0; i < ScriptableRendererData.rendererFeatures.Count; i++ )
             {
@@ -85,7 +93,7 @@ namespace dnSR_Coding
                     PixelizeFeature.SetPixelSize( pixelSize );
                 }
             }
-        }
+        }        
 
         public bool IsOrthographic => _projection == CameraProjection.Orthographic;
         public bool IsPerspective => _projection == CameraProjection.Perspective;
@@ -94,13 +102,13 @@ namespace dnSR_Coding
 
 #if UNITY_EDITOR
 
-        void TryToFindAnyVirtualCameraInScene()
+        void TryToFindAnyVirtualCameraInSceneInEditor()
         {
             var cvc = FindObjectOfType<CinemachineVirtualCamera>();
 
             _virtualCameras.AppendItem( cvc );
         }
-        void LinkSettingsToAnyActiveVirtualCameras()
+        void ApplySettingsToAnyActiveVirtualCamerasInEditor()
         {
             if ( _virtualCameras.IsEmpty() ) { return; }
 
@@ -125,30 +133,48 @@ namespace dnSR_Coding
                 Debug.Log( "Virtual cameras lens settings set." );
             }
         }
-
-        void ApplyProjection()
+        void ApplyProjectionInEditor()
         {
-            if ( !_cameraComponent.IsNull() )
+            if ( !_attachedCameraComponent.IsNull() )
             {
                 switch ( _projection )
                 {
                     case CameraProjection.Perspective:
-                        _cameraComponent.orthographic = false;
+                        _attachedCameraComponent.orthographic = false;
                         break;
                     case CameraProjection.Orthographic:
-                        _cameraComponent.orthographic = true;
+                        _attachedCameraComponent.orthographic = true;
                         break;
                 }
+            }
+        }
+        private void ApplyPositionInEditor()
+        {
+            if ( _virtualCameras.IsEmpty() ) { return; }
+
+            for ( int i = 0; i < _virtualCameras.Count; i++ )
+            {
+                bool hasAParent = !_virtualCameras [ i ].transform.parent.IsNull();
+
+                if ( hasAParent )
+                {
+                    _virtualCameras [ i ].transform.parent.position = _position;
+                    continue;
+                }
+
+                _virtualCameras [ i ].transform.position = _position;
             }
         }
 
         private void OnValidate()
         {
             GetLinkedComponents();
-            ApplyProjection();
 
-            TryToFindAnyVirtualCameraInScene();
-            LinkSettingsToAnyActiveVirtualCameras();
+            ApplyProjectionInEditor();
+            ApplyPositionInEditor();
+
+            TryToFindAnyVirtualCameraInSceneInEditor();
+            ApplySettingsToAnyActiveVirtualCamerasInEditor();
 
             SetPixelizerPixelSize( _pixelSize );
         }
