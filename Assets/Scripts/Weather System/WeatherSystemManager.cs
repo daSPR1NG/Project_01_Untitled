@@ -14,7 +14,7 @@ namespace dnSR_Coding
     ///<summary> WeatherSystemManager description <summary>
     [Component("WeatherSystemManager", "")]
     [DisallowMultipleComponent]
-    public class WeatherSystemManager : MonoBehaviour, IDebuggable
+    public class WeatherSystemManager : Singleton<WeatherSystemManager>, IDebuggable
     {
         [Header( "DEPENDENCIES" )]
 
@@ -57,9 +57,10 @@ namespace dnSR_Coding
 
         #endregion
 
-        void Awake() => Init();
-        void Init()
+        protected override void Init( bool dontDestroyOnLoad )
         {
+            base.Init( true );
+
             GetLinkedComponents();
             PopulateWeatherSequences();
             SetWeather();

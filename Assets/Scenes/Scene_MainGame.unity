@@ -16,7 +16,7 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 0
-  m_FogColor: {r: 0.039354686, g: 0.039354686, b: 0.039354686, a: 1}
+  m_FogColor: {r: 0.12073386, g: 0.12073386, b: 0.12073386, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.03
   m_LinearFogStart: 0
@@ -2113,7 +2113,6 @@ MonoBehaviour:
   - {fileID: 928812682}
   - {fileID: 1736944719}
   - {fileID: 279592536}
-  _isDebuggable: 0
 --- !u!1 &253049034
 GameObject:
   m_ObjectHideFlags: 0
@@ -2489,7 +2488,7 @@ GameObject:
   - component: {fileID: 279592537}
   - component: {fileID: 279592536}
   m_Layer: 0
-  m_Name: '[NAME] - Simple - Dexterity'
+  m_Name: '[NAME] - Simple - Base = Dexterity'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14733,7 +14732,7 @@ GameObject:
   - component: {fileID: 928812683}
   - component: {fileID: 928812682}
   m_Layer: 0
-  m_Name: '[NAME] - Simple - Strength'
+  m_Name: '[NAME] - Simple - Base = Strength'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17343,6 +17342,8 @@ MonoBehaviour:
     Index: 0
   - Name: Main Game
     Index: 1
+  - Name: Combat
+    Index: 2
   _isDebuggable: 1
 --- !u!1 &1091406762
 GameObject:
@@ -24996,7 +24997,7 @@ GameObject:
   - component: {fileID: 1736944720}
   - component: {fileID: 1736944719}
   m_Layer: 0
-  m_Name: '[NAME] - Simple - Endurance'
+  m_Name: '[NAME] - Simple - Base = Endurance'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25014,7 +25015,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06e7e4bde9dcf81488d61e39d89c6736, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _canGenerate: 1
+  _canGenerate: 0
   _creationFrequency: 1
   _generatedExperiences:
   - Name: Endurance
@@ -25245,6 +25246,7 @@ MonoBehaviour:
   _nearClipPlane: 0.1
   _farClipPlane: 5000
   _dutch: 0
+  _position: {x: 0, y: 0, z: 0}
   _pixelSize: 650
   _isDebuggable: 1
 --- !u!1 &1752061856
@@ -53620,7 +53622,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.0051477784, g: 0.0051477784, b: 0.0051477784, a: 1}
+  m_Color: {r: 0.2639229, g: 0.2639229, b: 0.2639229, a: 1}
   m_Intensity: 0.55
   m_Range: 10
   m_SpotAngle: 30
@@ -63772,8 +63774,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4863806954491973547}
-  - component: {fileID: 8313710306491643354}
   - component: {fileID: 4863806954491973546}
+  - component: {fileID: 8313710306491643354}
   - component: {fileID: 8313710306491643353}
   - component: {fileID: 7982912309926178804}
   - component: {fileID: 1652992015205929630}
@@ -68855,7 +68857,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 620388649766684802}
-  m_LocalRotation: {x: -0.06112811, y: 0.710089, z: 0.698697, w: 0.062124785}
+  m_LocalRotation: {x: -0.031583723, y: 0.9284829, z: 0.36100337, w: 0.08123179}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -73871,7 +73873,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _updateTimeOfDay: 1
   _dayDuration: 480
-  _timeOfDay: 1.2354857
+  _timeOfDay: 63.34246
   _isDebuggable: 1
 --- !u!1 &8336381315896712434
 GameObject:
