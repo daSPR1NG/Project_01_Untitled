@@ -15,9 +15,10 @@ MonoBehaviour:
   _name: 010016161
   _id: -105250
   _description: guigyulyglyglu
-  _canBeEquipped: 0
+  _rarity: 2
+  _canBeEquipped: 1
   _isEquipped: 0
-  _linkedBodyPart: 0
+  _linkedBodyPart: 3
   _isStackable: 0
   _stackSize: 1
   _maxStackSize: 1

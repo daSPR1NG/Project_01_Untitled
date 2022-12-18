@@ -28,19 +28,22 @@ namespace dnSR_Coding
             _infosData = new( item );
 
             Debug.Log(
-                _infosData.Name + '\n' +
-                _infosData.ID + '\n' +
-                _infosData.Description + '\n' +
+                "Name : " + _infosData.Name + '\n' +
+                "ID : " + _infosData.ID + '\n' +
+                "Description : " + _infosData.Description + '\n' +
 
-                _infosData.CanBeEquipped + '\n' +
-                _infosData.IsEquipped + '\n' +
-                _infosData.LinkedBodyPart + '\n' +
+                "Rarity : " +_infosData.Rarity + '\n' +
+                "Can be equipped ? : " +_infosData.CanBeEquipped + '\n' +
+                "Is equipped ? : " +_infosData.IsEquipped + '\n' +
+                "Linked body part : " + _infosData.LinkedBodyPart + '\n' +                
 
-                _infosData.IsStackable + '\n' +
-                _infosData.StackSize + '\n' +
-                _infosData.MaxStackSize + '\n' +
+                "Is stackable ? : " +_infosData.IsStackable + '\n' +
+                "Stack Size : " +_infosData.StackSize + '\n' +
+                "Max Stack Size : " + _infosData.MaxStackSize + '\n' +
 
-                _infosData.HasStats );
+                "Has stats ? : " + _infosData.HasStats );
+
+            // Add the stats reading, name + value
         }
     }
 }

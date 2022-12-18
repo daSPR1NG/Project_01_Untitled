@@ -9,8 +9,8 @@ using static dnSR_Coding.Stat;
 namespace dnSR_Coding
 {
     // TODO : 
-    // - The boolean used in the method "SetSubStatsValues", might need to be replaced in the future.
-    // - The boolean used by the method "ResetStatsPointsToDefault", might need to be replaced in the future.
+    // - The boolean used in the method "SetSubStatsValues" as a parameter, might need to be replaced in the future.
+    // - The boolean used by the method "ResetStatsPointsToDefault" as a parameter, might need to be replaced in the future.
 
     public enum StatType { Unassigned, Strength, Endurance, Dexterity, }
     public enum SubType
@@ -132,6 +132,9 @@ namespace dnSR_Coding
 
         #region SubStats related
 
+        /// <summary>
+        /// Sends main stats point to sub stats to update their value.
+        /// </summary>
         private void SetSubStatsValues()
         {
             if ( _subStats.IsEmpty() )

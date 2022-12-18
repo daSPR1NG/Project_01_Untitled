@@ -1,12 +1,16 @@
 using UnityEngine;
 using ExternalPropertyAttributes;
-using System.Collections.Generic;
 
 namespace dnSR_Coding
 {
     public enum LinkedBodyPart
     {
-        Unassigned, Head, Body, LeftHand, RightHand
+        Unassigned, Head, Body, Feet, LeftHand, RightHand
+    }
+
+    public enum Rarity
+    {
+        Unassigned, Common, Magic, Rare, Unique
     }
 
     [CreateAssetMenu( fileName = "", menuName = "Scriptable Objects/Items/New Item" )]
@@ -19,10 +23,13 @@ namespace dnSR_Coding
 
         //----------------------------------------------------------------------------------------------------
 
-        [Header( "Equipement settings" )]
+        [Header( "Item settings" )]
+        [SerializeField] private Rarity _rarity = Rarity.Unassigned;
         [SerializeField] private bool _canBeEquipped = false;
-        [SerializeField, ShowIf( "_canBeEquipped" )] private bool _isEquipped = false;
-        [SerializeField, ShowIf( "_canBeEquipped" )] private LinkedBodyPart _linkedBodyPart = LinkedBodyPart.Unassigned;
+        [SerializeField, ShowIf( "_canBeEquipped" )] 
+        private bool _isEquipped = false;
+        [SerializeField, ShowIf( "_canBeEquipped" )] 
+        private LinkedBodyPart _linkedBodyPart = LinkedBodyPart.Unassigned;
 
         //----------------------------------------------------------------------------------------------------
 
@@ -35,9 +42,11 @@ namespace dnSR_Coding
 
         //----------------------------------------------------------------------------------------------------
 
-        [Header( "Stats Settings" )]
+        [Header( "Stat Settings" )]
         [SerializeField] private bool _hasStats = false;
         //[SerializeField, ShowIf( "_hasStats" )] private List<Stats> _stats = new();
+
+        //----------------------------------------------------------------------------------------------------
 
         [Header( "UI elements" )]
         [SerializeField, ShowAssetPreview( 64, 64 )] private Sprite _icon = null;
@@ -52,6 +61,7 @@ namespace dnSR_Coding
 
             public bool CanBeEquipped { get; }
             public bool IsEquipped { get; }
+            public Rarity Rarity { get; }
             public LinkedBodyPart LinkedBodyPart { get; }
 
             public bool IsStackable { get; }
@@ -73,6 +83,7 @@ namespace dnSR_Coding
 
                 CanBeEquipped = _item._canBeEquipped;
                 IsEquipped = _item._isEquipped;
+                Rarity = _item._rarity;
                 LinkedBodyPart = _item._linkedBodyPart;
 
                 IsStackable = _item._isStackable;
