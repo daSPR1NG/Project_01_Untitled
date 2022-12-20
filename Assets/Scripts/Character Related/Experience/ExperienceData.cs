@@ -16,7 +16,9 @@ namespace dnSR_Coding
         [SerializeField] private StatType _linkedStatType = StatType.Unassigned;
 
         [Header( "Scaling Settings" )]
+        [Tooltip( "This value is used to calculate the new max value on level up." )]
         [SerializeField] private float _scalingFactor = 1.25f;
+        [Tooltip( "This value is the max exp required for the first level, it is used after on level up when calculating the new max value." )]
         [SerializeField] private int _initialMaxValue = 25;
 
         [Header( "Multiplier Settings" )]

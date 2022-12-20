@@ -396,16 +396,27 @@ namespace dnSR_Coding.Utilities
 
         #region String        
 
-        [MethodImpl( INLINE )] public static string ToLogValue( this object obj)
+        [MethodImpl( INLINE )] 
+        public static string ToLogValue( this object obj )
         {
             return $"<b><color=#ff7f00>{"[" + obj + "]"}</color></b>";
         }
-        [MethodImpl( INLINE )] public static string ToLogComponent( this object obj, bool toUpper = false)
+        [MethodImpl( INLINE )] 
+        public static string ToLogComponent( this object obj, bool toUpper = false )
         {
-            string str = $"<b><color=#289900>{obj}</color></b>";
-            if ( toUpper ) str = str.ToString().ToUpper();
+            string name = $"<b><color=#289900>{obj}</color></b>";
+            if ( toUpper ) name = name.ToString().ToUpper();
 
-            return str;
+            return name;
+        }
+
+        [MethodImpl( INLINE )]
+        public static string Bolded( this object obj, bool toUpper = false )
+        {
+            string name = $"<b>{ obj }</b>";
+            if ( toUpper ) name = name.ToString().ToUpper();
+
+            return name;
         }
 
         #endregion

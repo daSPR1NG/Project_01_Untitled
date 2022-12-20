@@ -69,5 +69,14 @@ namespace dnSR_Coding
 
             return action;
         }
+
+        public InputAction GetToggleCharacterSheetMenuAction()
+        {
+            InputAction action = _inputs.IsNull()
+                ? null
+                : _inputs.UI.ToggleCharacterSheetMenu;
+
+            return action;
+        }
     }
 }

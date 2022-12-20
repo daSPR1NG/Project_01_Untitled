@@ -8,7 +8,7 @@ namespace dnSR_Coding
     public class SubStat
     {
         // Max for defensive subStats
-        private const int DAMAGE_REDUCTION_MAX_VALUE =          15;
+        //private const int DAMAGE_REDUCTION_MAX_VALUE =          15;
         private const int COUNTER_ATTACK_CHANCE_MAX_VALUE =     15;
         private const int DODGE_MAX_VALUE =                     15;
 
@@ -31,7 +31,7 @@ namespace dnSR_Coding
         private int _maxValue = 0;
 
         public int CurrentValue /*{ get; private set; }*/; // in public only to debug !
-        public int TotalValue /*{ get; private set; }*/; // in public only to debug !
+
         public SubType Type => _type;
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace dnSR_Coding
         /// <param name="strength"> Equals to the current amount of point in strength. </param>
         /// <param name="endurance"> Equals to the current amount of point in endurance.</param>
         /// <param name="dexterity"> Equals to the current amount of point in dexterity.</param>
-        public void CalculateValue( int strength, int endurance, int dexterity, bool initCurrentValue )
+        public void CalculateValue( int strength, int endurance, int dexterity )
         {            
             int calculatedValue = 0;
 
@@ -116,10 +116,11 @@ namespace dnSR_Coding
                 #endregion
             }
 
-            TotalValue = _hasMaxValue && calculatedValue >= _maxValue 
-                ? _maxValue : calculatedValue;
+            CurrentValue = calculatedValue;
 
-            if ( initCurrentValue ) { CurrentValue = TotalValue; }
+#if UNITY_EDITOR
+            SetName();
+#endif
         }
 
         /// <summary>
@@ -165,10 +166,10 @@ namespace dnSR_Coding
 
             switch ( Type )
             {
-                case SubType.DamageReduction_DMGR:
-                    _hasMaxValue = true;
-                    _maxValue = DAMAGE_REDUCTION_MAX_VALUE;
-                    break;
+                //case SubType.DamageReduction_DMGR:
+                //    _hasMaxValue = true;
+                //    _maxValue = DAMAGE_REDUCTION_MAX_VALUE;
+                //    break;
 
                 case SubType.Resistance_RES:
                     _hasMaxValue = true;
@@ -198,7 +199,7 @@ namespace dnSR_Coding
 
         public void SetName()
         {
-            string typeName = Type.ToString();
+            string typeName = Type.ToString() + " - " + CurrentValue.ToString();
             if ( !Name.Equals( typeName ) ) { Name = typeName; }
         }
 #endif

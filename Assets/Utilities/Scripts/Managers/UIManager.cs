@@ -53,8 +53,8 @@ namespace dnSR_Coding
         }
         private void RemoveDisplayedWindow( bool canBeSelfHidden ) 
         {
-            if ( DisplayedWindowAmount == 0 ) _aWindowWasDisplayed = false;
-            if ( canBeSelfHidden ) DisplayedWindowAmount--; 
+            if ( canBeSelfHidden ) { DisplayedWindowAmount--; }
+            if ( DisplayedWindowAmount == 0 ) { _aWindowWasDisplayed = false; }
         }
 
         public bool AWindowIsDisplayed() => _aWindowWasDisplayed;

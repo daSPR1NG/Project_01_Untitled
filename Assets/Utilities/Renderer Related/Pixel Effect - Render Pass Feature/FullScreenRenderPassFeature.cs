@@ -122,6 +122,9 @@ public class FullScreenRenderPassFeature : ScriptableRendererFeature
         }
     }
 
+    public void EnableFeature() => _enableRendererFeature = true;
+    public void DisableFeature() => _enableRendererFeature = false;
+
     private void OnValidate()
     {
         SetPixelSize( _pixelSize );

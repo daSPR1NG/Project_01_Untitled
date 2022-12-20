@@ -192,6 +192,15 @@ namespace dnSR_Coding
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleCharacterSheetMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""b6d035c2-1a0e-4f6e-9ef2-06671256fc65"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -326,6 +335,17 @@ namespace dnSR_Coding
                     ""action"": ""TogglePauseMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""84c38331-8940-4d38-b1d0-cb3e02e78d94"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ToggleCharacterSheetMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -407,6 +427,7 @@ namespace dnSR_Coding
             m_UI_ScrollWheel = m_UI.FindAction("ScrollWheel", throwIfNotFound: true);
             m_UI_RightClick = m_UI.FindAction("RightClick", throwIfNotFound: true);
             m_UI_TogglePauseMenu = m_UI.FindAction("TogglePauseMenu", throwIfNotFound: true);
+            m_UI_ToggleCharacterSheetMenu = m_UI.FindAction("ToggleCharacterSheetMenu", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -515,6 +536,7 @@ namespace dnSR_Coding
         private readonly InputAction m_UI_ScrollWheel;
         private readonly InputAction m_UI_RightClick;
         private readonly InputAction m_UI_TogglePauseMenu;
+        private readonly InputAction m_UI_ToggleCharacterSheetMenu;
         public struct UIActions
         {
             private @PlayerInputs m_Wrapper;
@@ -527,6 +549,7 @@ namespace dnSR_Coding
             public InputAction @ScrollWheel => m_Wrapper.m_UI_ScrollWheel;
             public InputAction @RightClick => m_Wrapper.m_UI_RightClick;
             public InputAction @TogglePauseMenu => m_Wrapper.m_UI_TogglePauseMenu;
+            public InputAction @ToggleCharacterSheetMenu => m_Wrapper.m_UI_ToggleCharacterSheetMenu;
             public InputActionMap Get() { return m_Wrapper.m_UI; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -560,6 +583,9 @@ namespace dnSR_Coding
                     @TogglePauseMenu.started -= m_Wrapper.m_UIActionsCallbackInterface.OnTogglePauseMenu;
                     @TogglePauseMenu.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnTogglePauseMenu;
                     @TogglePauseMenu.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnTogglePauseMenu;
+                    @ToggleCharacterSheetMenu.started -= m_Wrapper.m_UIActionsCallbackInterface.OnToggleCharacterSheetMenu;
+                    @ToggleCharacterSheetMenu.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnToggleCharacterSheetMenu;
+                    @ToggleCharacterSheetMenu.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnToggleCharacterSheetMenu;
                 }
                 m_Wrapper.m_UIActionsCallbackInterface = instance;
                 if (instance != null)
@@ -588,6 +614,9 @@ namespace dnSR_Coding
                     @TogglePauseMenu.started += instance.OnTogglePauseMenu;
                     @TogglePauseMenu.performed += instance.OnTogglePauseMenu;
                     @TogglePauseMenu.canceled += instance.OnTogglePauseMenu;
+                    @ToggleCharacterSheetMenu.started += instance.OnToggleCharacterSheetMenu;
+                    @ToggleCharacterSheetMenu.performed += instance.OnToggleCharacterSheetMenu;
+                    @ToggleCharacterSheetMenu.canceled += instance.OnToggleCharacterSheetMenu;
                 }
             }
         }
@@ -652,6 +681,7 @@ namespace dnSR_Coding
             void OnScrollWheel(InputAction.CallbackContext context);
             void OnRightClick(InputAction.CallbackContext context);
             void OnTogglePauseMenu(InputAction.CallbackContext context);
+            void OnToggleCharacterSheetMenu(InputAction.CallbackContext context);
         }
     }
 }

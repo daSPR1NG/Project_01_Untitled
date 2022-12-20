@@ -5,7 +5,7 @@ namespace dnSR_Coding
 {
     // Required components or public findable enum here.
     [RequireComponent( typeof( CharacterStats ) )]
-    [RequireComponent( typeof( CharacterExperience ) )]
+    [RequireComponent( typeof( StatsExperienceManager ) )]
 
     // Uncomment this block right below if you need to use add component menu for this component.
     [AddComponentMenu( menuName:"Custom Scripts/PlayerCharacterProperties" )]
@@ -16,7 +16,7 @@ namespace dnSR_Coding
     public class PlayerCharacterProperties : Singleton<PlayerCharacterProperties>
     {
         public CharacterStats CharacterStats { get; private set; }
-        public CharacterExperience CharacterExperience { get; private set; }
+        public ExperienceManager CharacterExperience { get; private set; }
         
         // Set all datas that need it at the start of the game
         protected override void Init( bool dontDestroyOnload )
@@ -29,7 +29,7 @@ namespace dnSR_Coding
         void GetLinkedComponents()
         {
             if ( CharacterStats.IsNull() ) { CharacterStats = GetComponent<CharacterStats>(); }
-            if ( CharacterExperience.IsNull() ) { CharacterExperience = GetComponent<CharacterExperience>(); }
+            if ( CharacterExperience.IsNull() ) { CharacterExperience = GetComponent<StatsExperienceManager>(); }
         }
 
         #region OnValidate

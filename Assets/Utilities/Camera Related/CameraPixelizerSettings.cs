@@ -8,8 +8,9 @@ namespace dnSR_Coding
     [Component("CameraPixelizerSettings", "")]
     [DisallowMultipleComponent]
     public class CameraPixelizerSettings : MonoBehaviour, IDebuggable
-    {[Header( "Rendering settings" )]
-
+    {
+        [Header( "Rendering settings" )]
+        [SerializeField] private bool _isEnabled = true;
         [Range( 1, 1000 ), SerializeField] private int _pixelSize = 150;
 
         private UnityEngine.Rendering.Universal.ScriptableRendererData ScriptableRendererData;
@@ -70,6 +71,19 @@ namespace dnSR_Coding
         private void OnValidate()
         {
             SetPixelizerPixelSize( _pixelSize );
+
+            if ( PixelizeFeature.IsNull() ) { return; }
+
+            switch ( _isEnabled )
+            {
+                case true:
+                    PixelizeFeature.EnableFeature();
+                    break;
+
+                case false:
+                    PixelizeFeature.DisableFeature();
+                    break;
+            }
         }
 #endif
 

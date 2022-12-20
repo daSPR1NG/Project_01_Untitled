@@ -3,7 +3,7 @@ using System.Collections;
 using dnSR_Coding.Utilities;
 using ExternalPropertyAttributes;
 using System.Collections.Generic;
-using static dnSR_Coding.CharacterExperience;
+using static dnSR_Coding.ExperienceManager;
 using static dnSR_Coding.Stat;
 
 namespace dnSR_Coding
@@ -45,12 +45,12 @@ namespace dnSR_Coding
 
         void OnEnable() 
         {
-            OnStatLevelUp += AddPointToStat;
+            StatsExperienceManager.OnStatLevelUp += AddPointToStat;
         }
 
         void OnDisable() 
         {
-            OnStatLevelUp += AddPointToStat;
+            StatsExperienceManager.OnStatLevelUp += AddPointToStat;
         }
 
         #endregion
@@ -151,7 +151,7 @@ namespace dnSR_Coding
             {
                 // Might need to replace the boolean used here to match the fact that when resuming the game we don't want the player character...
                 // ...to regenerate health fully while he had lost hp in the last game.
-                _subStats [ i ].CalculateValue( strengthPts, endurancePts, dexterityPts, true ); 
+                _subStats [ i ].CalculateValue( strengthPts, endurancePts, dexterityPts ); 
             }
         }
 
@@ -188,7 +188,8 @@ namespace dnSR_Coding
         [Button]
         private void ResetStatsPointsButton()
         {
-            ResetStatsPointsToDefault( false );
+            ResetStatsPointsToDefault( true );
+            SetStatsAndSubStatsNames();
         }
 
         private void SetStatsAndSubStatsNames()
@@ -214,8 +215,8 @@ namespace dnSR_Coding
         {
             GetLinkedComponents();
 
-            SetStatsAndSubStatsNames();
             SetSubStatsValues();
+            SetStatsAndSubStatsNames();
         }
 #endif
 
