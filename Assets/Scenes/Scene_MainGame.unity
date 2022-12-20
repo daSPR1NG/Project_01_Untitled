@@ -16,12 +16,12 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 0
-  m_FogColor: {r: 0.5297877, g: 0.66087997, b: 0.77621853, a: 1}
+  m_FogColor: {r: 0.4625627, g: 0.58701617, b: 0.6784462, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.03
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.99896, g: 0.99896, b: 0.99896, a: 1}
+  m_AmbientSkyColor: {r: 0.5717949, g: 0.5717949, b: 0.5717949, a: 1}
   m_AmbientEquatorColor: {r: 0.7264151, g: 0.56268424, b: 0.4762816, a: 1}
   m_AmbientGroundColor: {r: 0.2, g: 0.19607843, b: 0.18431373, a: 1}
   m_AmbientIntensity: 1
@@ -643,8 +643,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 292709183}
-  m_Father: {fileID: 1124390264}
-  m_RootOrder: 2
+  m_Father: {fileID: 246415775}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 30, y: 45, z: 0}
 --- !u!1001 &45985468
 PrefabInstance:
@@ -2434,7 +2434,7 @@ Transform:
   m_Children:
   - {fileID: 1572330079}
   m_Father: {fileID: 246415775}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &201523661
 GameObject:
@@ -2889,6 +2889,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 45376403}
   - {fileID: 1480055951}
   - {fileID: 1839455338}
   - {fileID: 561790974}
@@ -7926,7 +7927,7 @@ Transform:
   m_Children:
   - {fileID: 1086258097}
   m_Father: {fileID: 246415775}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &561790975
 MonoBehaviour:
@@ -19426,7 +19427,7 @@ Transform:
   m_Children:
   - {fileID: 958790651}
   m_Father: {fileID: 246415775}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &947854078
 GameObject:
@@ -23680,7 +23681,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1124390264}
-  - component: {fileID: 1124390265}
   m_Layer: 0
   m_Name: Hunter Environment
   m_TagString: Untagged
@@ -23702,24 +23702,9 @@ Transform:
   m_Children:
   - {fileID: 767602568}
   - {fileID: 839537965}
-  - {fileID: 45376403}
   m_Father: {fileID: 1480055951}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1124390265
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1124390263}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b92fbafd7fcc764ea5546cbd58f06c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _environmentType: 1
-  _isDebuggable: 1
 --- !u!1 &1131145115
 GameObject:
   m_ObjectHideFlags: 0
@@ -29296,7 +29281,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1480055951}
-  - component: {fileID: 1480055950}
   m_Layer: 0
   m_Name: LD - Environment Manager
   m_TagString: Untagged
@@ -29304,28 +29288,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1480055950
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1480055949}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6cf0e3cc2d6640b4f98071f8e7585844, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _environmentDatas:
-  - Name: Hunter Environment
-    EnvironmentComponent: {fileID: 1124390265}
-  _environmentCameraDatas:
-  - Name: 
-    IsFocused: 1
-    VirtualCamera: {fileID: 292709184}
-    EnvironmentComponent: {fileID: 1124390265}
-    Priority: 20
-  _isDebuggable: 1
 --- !u!4 &1480055951
 Transform:
   m_ObjectHideFlags: 0
@@ -29340,7 +29302,7 @@ Transform:
   m_Children:
   - {fileID: 1124390264}
   m_Father: {fileID: 246415775}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1480556415
 GameObject:
@@ -34423,7 +34385,7 @@ Transform:
   m_Children:
   - {fileID: 1444157379}
   m_Father: {fileID: 246415775}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1840294987
 GameObject:
@@ -43505,8 +43467,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2138343642}
   - component: {fileID: 2138343643}
-  - component: {fileID: 2138343645}
-  - component: {fileID: 2138343646}
   m_Layer: 0
   m_Name: Player Character Properties
   m_TagString: Untagged
@@ -43541,94 +43501,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6840d27870703d4ba7b7303bcc5f47e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2138343645
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2138343640}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f5eb27f1af3fc84a95141485a57f20d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _stats:
-  - Name: Strength
-    Type: 1
-    Points: 0
-  - Name: Endurance
-    Type: 2
-    Points: 0
-  - Name: Dexterity
-    Type: 3
-    Points: 0
-  _subStats:
-  - Name: Initiative_INI - 5
-    _type: 1
-    _baseValue: 5
-    CurrentValue: 5
-  - Name: HealthPoints_HP - 25
-    _type: 2
-    _baseValue: 25
-    CurrentValue: 25
-  - Name: DamageReduction_DMGR - 0
-    _type: 3
-    _baseValue: 0
-    CurrentValue: 0
-  - Name: Resistance_RES - 0
-    _type: 4
-    _baseValue: 0
-    CurrentValue: 0
-  - Name: Damage_DMG - 5
-    _type: 5
-    _baseValue: 5
-    CurrentValue: 5
-  - Name: CounterAttackChance_CA - 0
-    _type: 6
-    _baseValue: 0
-    CurrentValue: 0
-  - Name: Precision_PRE - 0
-    _type: 7
-    _baseValue: 0
-    CurrentValue: 0
-  - Name: Dodge_DOD - 0
-    _type: 8
-    _baseValue: 0
-    CurrentValue: 0
-  _isDebuggable: 1
---- !u!114 &2138343646
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2138343640}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b081fc2e59013b14c8526b347dfb1801, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _isDebuggable: 1
-  _experienceData:
-  - Name: Strength
-    _isDebuggable: 0
-    _linkedStatType: 1
-    _scalingFactor: 1.25
-    _initialMaxValue: 25
-    _multiplier: 1
-  - Name: Endurance
-    _isDebuggable: 0
-    _linkedStatType: 2
-    _scalingFactor: 1.25
-    _initialMaxValue: 25
-    _multiplier: 1
-  - Name: Dexterity
-    _isDebuggable: 0
-    _linkedStatType: 3
-    _scalingFactor: 1.25
-    _initialMaxValue: 25
-    _multiplier: 1
+  _characterStats: {fileID: 11400000, guid: 680057e7da0188848a293d87b6c7ed3e, type: 2}
+  _characterExperience: {fileID: 11400000, guid: 5487383438693c047bd2a4e6c76b3179,
+    type: 2}
 --- !u!1 &2145574752
 GameObject:
   m_ObjectHideFlags: 0
@@ -62848,8 +62723,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.6464043, g: 0.6464043, b: 0.6464043, a: 1}
-  m_Intensity: 1.0495086
+  m_Color: {r: 0.6613455, g: 0.6613455, b: 0.6613455, a: 1}
+  m_Intensity: 0.85266817
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -78208,7 +78083,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 620388649766684802}
-  m_LocalRotation: {x: 0.026889967, y: 0.9475958, z: -0.30735353, w: 0.082903944}
+  m_LocalRotation: {x: 0.08665256, y: 0.106898524, z: -0.9904427, w: 0.009352415}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -83455,7 +83330,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _updateTimeOfDay: 1
   _dayDuration: 480
-  _timeOfDay: 167.92137
+  _timeOfDay: 343.5731
   _isDebuggable: 1
 --- !u!1 &8336381315896712434
 GameObject:

@@ -7,22 +7,17 @@ using System.Collections.Generic;
 
 namespace dnSR_Coding
 {
-    // Required components or public findable enum here.
-    [RequireComponent( typeof( PlayerCharacterProperties ) )]
-
-    // Uncomment this block right below if you need to use add component menu for this component.
-    // [AddComponentMenu( menuName:"Custom Scripts/StatsExperienceManager" )]
-
     ///<summary> CustomExperienceManager description <summary>
-    [Component("StatsExperienceManager", "")]
-    [DisallowMultipleComponent]
+    [CreateAssetMenu( fileName = "", menuName = "Scriptable Objects/Character/New Stat Experience Manager" )]
     public class StatsExperienceManager : ExperienceManager
     {
         [SerializeField] private List<ExperienceData> _experienceData = new();
 
-        private PlayerCharacterProperties _pcPropertiesManager;
-
         public static Action<StatType> OnStatLevelUp;
+
+#if UNITY_EDITOR
+        private StatSheet _relatedStatSheet = null;
+#endif
 
         #region Enable, Disable
 
@@ -37,22 +32,6 @@ namespace dnSR_Coding
         }
 
         #endregion
-
-        void Awake() => Init();
-        
-        // Set all datas that need it at the start of the game
-        void Init()
-        {
-            GetLinkedComponents();
-        }
-
-        // Put all the get component here, it'll be easier to follow what we need and what we collect.
-        // This method is called on Awake() + OnValidate() to set both in game mod and in editor what this script needs.
-        void GetLinkedComponents()
-        {
-            if ( _pcPropertiesManager.IsNull() )
-            { _pcPropertiesManager = GetComponent<PlayerCharacterProperties>(); }
-        }
 
         /// <summary>
         /// Adds a certain amount of experience to the given experience data.
@@ -88,7 +67,7 @@ namespace dnSR_Coding
 
                 if ( !Application.isPlaying )
                 {
-                    _pcPropertiesManager.CharacterStats.AddPointToStat( type );
+                    _relatedStatSheet.AddPointToStat( type );
                 }
                 else { OnStatLevelUp?.Invoke( type ); }
             }
@@ -163,12 +142,6 @@ namespace dnSR_Coding
             AddExperienceToAStat( StatType.Dexterity, 10 );
         }
 
-        [Button]
-        private void ResetExperienceDatasButton()
-        {
-            ResetExperienceDatasToDefault( true );
-        }
-
         private void SetExperienceDatasName()
         {
             if ( _experienceData.IsEmpty() ) { return; }
@@ -179,9 +152,13 @@ namespace dnSR_Coding
             }
         }
 
+        public void SetRelatedStatSheet( StatSheet sheet )
+        {
+            if ( _relatedStatSheet != sheet ) { _relatedStatSheet = sheet; }
+        }
+
         private void OnValidate()
         {
-            GetLinkedComponents();
             SetExperienceDatasName();
         }
 

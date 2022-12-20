@@ -1,10 +1,7 @@
 using UnityEngine;
-using System.Collections;
 using dnSR_Coding.Utilities;
 using ExternalPropertyAttributes;
 using System.Collections.Generic;
-using static dnSR_Coding.ExperienceManager;
-using static dnSR_Coding.Stat;
 
 namespace dnSR_Coding
 {
@@ -19,19 +16,20 @@ namespace dnSR_Coding
         Precision_PRE, Dodge_DOD
     }
 
-    [RequireComponent( typeof( PlayerCharacterProperties ) )]
-
-    ///<summary> CharacterStats description <summary>
-    [Component("CharacterStats", "")]
-    [DisallowMultipleComponent]
-    public class CharacterStats : MonoBehaviour, IDebuggable
+    ///<summary> StatSheet description <summary>
+    [CreateAssetMenu( fileName = "", menuName = "Scriptable Objects/Character/New Stat Sheet" )]
+    public class StatSheet : ScriptableObject, IDebuggable
     {
-        [Header( "Stats & sub_stats lists" )]
-
+        [Header( "Stats" )]
         [SerializeField] private List<Stat> _stats = new();
+
+        [Header( "Sub stats" )]
         [SerializeField] private List<SubStat> _subStats = new( System.Enum.GetValues( typeof( SubType ) ).Length );
 
-        private PlayerCharacterProperties _playerCharacterPropertiesManager;
+        [Header( "Attached stats experience" )]
+        [SerializeField] private bool _usesAnExperienceManager = true;
+        [ShowIf( "_usesAnExperienceManager" )]
+        [SerializeField] private StatsExperienceManager _attachedExperienceManager;
 
         #region Debug
 
@@ -54,26 +52,6 @@ namespace dnSR_Coding
         }
 
         #endregion
-
-        void Awake() => Init();
-        
-        // Set all datas that need it at the start of the game
-        void Init()
-        {
-            GetLinkedComponents();
-
-            // Change the bool value to match the current state of the game, when resuming we don't want to reset the stats
-            ResetStatsPointsToDefault( true );
-            SetSubStatsValues();
-        }
-
-        // Put all the get component here, it'll be easier to follow what we need and what we collect.
-        // This method is called on Awake() + OnValidate() to set both in game mod and in editor what this script needs.
-        void GetLinkedComponents()
-        {
-            if ( _playerCharacterPropertiesManager.IsNull() ) 
-            { _playerCharacterPropertiesManager = GetComponent<PlayerCharacterProperties>(); }
-        }
 
         #region Stats related
 
@@ -185,11 +163,17 @@ namespace dnSR_Coding
 
 #if UNITY_EDITOR
 
-        [Button]
-        private void ResetStatsPointsButton()
+        private const int STAT_AMOUNT = 3;
+        private const int SUB_STAT_AMOUNT = 8;
+
+        [Button( "Reset sheet's stat and sub stats value" )]
+        private void ResetSheet()
         {
-            ResetStatsPointsToDefault( true );
+            bool needToBeReset = true;
+
+            ResetStatsPointsToDefault( needToBeReset );
             SetStatsAndSubStatsNames();
+            _attachedExperienceManager.ResetExperienceDatasToDefault( needToBeReset );
         }
 
         private void SetStatsAndSubStatsNames()
@@ -211,11 +195,57 @@ namespace dnSR_Coding
             }
         }
 
+        private void SetRelatedStatSheetOfAttachedExperienceManager()
+        {
+            if ( _attachedExperienceManager.IsNull() ) { return; }
+            _attachedExperienceManager.SetRelatedStatSheet( this );
+        }
+
+        private void InitSheet()
+        {
+            if ( _attachedExperienceManager.IsNull() ) { return; }
+
+            int statTypeIndex = 1;
+            int subStatTypeIndex = 1;
+
+            for ( int i = 0; i < STAT_AMOUNT; i++ )
+            {
+                Stat createdStat = new()
+                {
+                    Type = ( StatType ) statTypeIndex,
+                    Points = 0,
+                    Name = ( ( StatType ) statTypeIndex ).ToString(),
+                };
+                
+                if ( _stats.Count < STAT_AMOUNT )
+                {
+                    _stats.AppendItem( createdStat );
+                    statTypeIndex++;
+                }
+            }
+
+            for ( int i = 0; i < SUB_STAT_AMOUNT; i++ )
+            {
+                SubStat createdSubStat = new()
+                {
+                    Type = ( SubType ) subStatTypeIndex,
+                    Name = ( ( SubType ) subStatTypeIndex ).ToString(),
+                };
+
+                if ( _subStats.Count < SUB_STAT_AMOUNT )
+                {
+                    _subStats.AppendItem( createdSubStat );
+                    subStatTypeIndex++;
+                }
+            }
+
+            SetRelatedStatSheetOfAttachedExperienceManager();
+            SetSubStatsValues();
+        }
+
         private void OnValidate()
         {
-            GetLinkedComponents();
-
-            SetSubStatsValues();
+            InitSheet();
             SetStatsAndSubStatsNames();
         }
 #endif

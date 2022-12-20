@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b081fc2e59013b14c8526b347dfb1801, type: 3}
+  m_Name: New Stats Experience Manager
+  m_EditorClassIdentifier: 
+  _isDebuggable: 1
+  _experienceData:
+  - Name: Strength
+    _isDebuggable: 0
+    _linkedStatType: 1
+    _scalingFactor: 1.25
+    _initialMaxValue: 25
+    _multiplier: 1
+  - Name: Endurance
+    _isDebuggable: 0
+    _linkedStatType: 2
+    _scalingFactor: 1.25
+    _initialMaxValue: 25
+    _multiplier: 1
+  - Name: Dexterity
+    _isDebuggable: 0
+    _linkedStatType: 3
+    _scalingFactor: 1.25
+    _initialMaxValue: 25
+    _multiplier: 1

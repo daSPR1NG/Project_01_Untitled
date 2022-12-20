@@ -32,7 +32,7 @@ namespace dnSR_Coding
 
         public int CurrentValue /*{ get; private set; }*/; // in public only to debug !
 
-        public SubType Type => _type;
+        public SubType Type { get => _type; set => _type = value; }
 
         /// <summary>
         /// Calculate the correct value of the substat, based on its type.
@@ -199,8 +199,8 @@ namespace dnSR_Coding
 
         public void SetName()
         {
-            string typeName = Type.ToString() + " - " + CurrentValue.ToString();
-            if ( !Name.Equals( typeName ) ) { Name = typeName; }
+            string name = Type.ToString() + " - " + CurrentValue.ToString();
+            if ( !Name.Equals( name ) ) { Name = name; }
         }
 #endif
 

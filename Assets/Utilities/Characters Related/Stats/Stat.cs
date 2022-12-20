@@ -22,8 +22,8 @@ namespace dnSR_Coding
 #if UNITY_EDITOR
         public void SetName()
         {
-            string typeName = Type.ToString();
-            if ( !Name.Equals( typeName ) ) { Name = typeName; }
+            string name = Type.ToString() + " - " + Points.ToString();
+            if ( !Name.Equals( name ) ) { Name = name; }
         }
 #endif
         #endregion

@@ -4,10 +4,8 @@ using dnSR_Coding.Utilities;
 
 namespace dnSR_Coding
 {
-    ///<summary> ExperienceManager description <summary>
-    [Component("ExperienceManager", "")]
-    [DisallowMultipleComponent]
-    public class ExperienceManager : MonoBehaviour, IDebuggable
+    ///<summary> ExperienceManager description <summary>    
+    public class ExperienceManager : ScriptableObject, IDebuggable
     {
         #region Debug
 
