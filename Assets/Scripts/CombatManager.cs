@@ -1,11 +1,10 @@
 using UnityEngine;
-using System.Collections;
-using dnSR_Coding.Utilities;
-//using NaughtyAttributes;
 using ExternalPropertyAttributes;
 
 namespace dnSR_Coding
 {
+    public enum UnitTeam { Ally, Enemy, }
+
     ///<summary> CombatManager description <summary>
     [Component("CombatManager", "")]
     [DisallowMultipleComponent]

@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b80bbecfdd3cdb64a87bc1897740f49c, type: 3}
-  m_Name: Test
+  m_Name: 05555 3
   m_EditorClassIdentifier: 
-  _name: 010016161
-  _id: -105250
-  _description: guigyulyglyglu
-  _rarity: 2
-  _canBeEquipped: 1
+  _name: Test
+  _id: 32620
+  _description: 666666666666gezgezgze
+  _rarity: 0
+  _canBeEquipped: 0
   _isEquipped: 0
-  _linkedBodyPart: 3
+  _linkedBodyPart: 0
   _isStackable: 0
   _stackSize: 1
   _maxStackSize: 1

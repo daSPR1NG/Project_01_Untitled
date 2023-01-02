@@ -8,13 +8,13 @@ namespace dnSR_Coding
     public class SubStat
     {
         // Max for defensive subStats
-        //private const int DAMAGE_REDUCTION_MAX_VALUE =          15;
-        private const int COUNTER_ATTACK_CHANCE_MAX_VALUE =     15;
-        private const int DODGE_MAX_VALUE =                     15;
+        //private const int DAMAGE_REDUCTION_MAX_VALUE =            15;
+        private const int COUNTER_ATTACK_CHANCE_MAX_VALUE =         15;
+        private const int DODGE_MAX_VALUE =                         15;
 
         // Max up to 100%
-        private const int RESISTANCE_MAX_VALUE =                100;
-        private const int PRECISION_MAX_VALUE =                 100;
+        private const int RESISTANCE_MAX_VALUE =                    100;
+        private const int PRECISION_MAX_VALUE =                     100;
 
         [Header( "Details" )]
 
@@ -74,7 +74,7 @@ namespace dnSR_Coding
                     break;
 
                 // Réduction de dégâts - RDMG = (END * 5) / 4.
-                case SubType.DamageReduction_DMGR: 
+                case SubType.DamageReduction_DMR: 
                     calculatedValue = ExtMathfs.FloorToInt( ( endurance * 5 ) / 4 );
                     break;
 
@@ -166,7 +166,7 @@ namespace dnSR_Coding
 
             switch ( Type )
             {
-                //case SubType.DamageReduction_DMGR:
+                //case SubType.DamageReduction_DMR:
                 //    _hasMaxValue = true;
                 //    _maxValue = DAMAGE_REDUCTION_MAX_VALUE;
                 //    break;

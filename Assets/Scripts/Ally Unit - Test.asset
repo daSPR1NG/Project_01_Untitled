@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f005b9466f79b14ca933e383a0a84b6, type: 3}
+  m_Name: Ally Unit - Test
+  m_EditorClassIdentifier: 
+  _name: Ally Unit - Test
+  _stats: {fileID: 11400000, guid: 680057e7da0188848a293d87b6c7ed3e, type: 2}
+  _items:
+  - {fileID: 11400000, guid: 02c4bfef8ea3b6649845a28e3ed6f719, type: 2}
+  _competences:
+  - {fileID: 11400000, guid: eaf8504d0c1b54f4cb7bebaf6ea55fa0, type: 2}
+  - {fileID: 11400000, guid: 63dd9276904ffa04b92d81f9204f8736, type: 2}
+  - {fileID: 11400000, guid: 62c78f15715cbc34ea684b16c0509a6d, type: 2}
+  - {fileID: 11400000, guid: c20e1774ef7cfd84ea00dd2b9d9be44f, type: 2}
+  _icon: {fileID: 21300000, guid: 372e7b39fc8f34549ac25d8757965a2c, type: 3}
+  _prefab: {fileID: 1753741187899190, guid: 45608daf8c357ac4883238b3247d64b7, type: 3}

@@ -12,7 +12,7 @@ namespace dnSR_Coding
     public enum StatType { Unassigned, Strength, Endurance, Dexterity, }
     public enum SubType
     {
-        Unassigned, Initiative_INI, HealthPoints_HP, DamageReduction_DMGR, Resistance_RES, Damage_DMG, CounterAttackChance_CA,
+        Unassigned, Initiative_INI, HealthPoints_HP, DamageReduction_DMR, Resistance_RES, Damage_DMG, CounterAttackChance_CA,
         Precision_PRE, Dodge_DOD
     }
 

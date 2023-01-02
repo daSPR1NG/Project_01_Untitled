@@ -1,5 +1,11 @@
 using UnityEngine;
 using ExternalPropertyAttributes;
+using dnSR_Coding.Utilities;
+using static UnityEditor.Progress;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace dnSR_Coding
 {
@@ -17,41 +23,61 @@ namespace dnSR_Coding
     public class Item : ScriptableObject
     {
         [Header( "Details" )]
-        [SerializeField] private string _name = "[TYPE HERE]";
-        [SerializeField] private int _id;
-        [SerializeField, ResizableTextArea] private string _description = "TYPE HERE";
+        [SerializeField, ReadOnly] 
+        private string _name = "[TYPE HERE]";
+        [SerializeField, ReadOnly] 
+        private int _id;
+        [SerializeField, ReadOnly] 
+        private string _description = "TYPE HERE";
 
         //----------------------------------------------------------------------------------------------------
 
         [Header( "Item settings" )]
-        [SerializeField] private Rarity _rarity = Rarity.Unassigned;
-        [SerializeField] private bool _canBeEquipped = false;
-        [SerializeField, ShowIf( "_canBeEquipped" )] 
+        [SerializeField, ReadOnly] 
+        private Rarity _rarity = Rarity.Unassigned;
+        [SerializeField, ReadOnly] 
+        private bool _canBeEquipped = false;
+        [SerializeField, ReadOnly]
         private bool _isEquipped = false;
-        [SerializeField, ShowIf( "_canBeEquipped" )] 
+        [SerializeField, ReadOnly] 
         private LinkedBodyPart _linkedBodyPart = LinkedBodyPart.Unassigned;
 
         //----------------------------------------------------------------------------------------------------
 
         [Header( "Stack settings" )]
-        [SerializeField] private bool _isStackable = false;
-        [SerializeField, ShowIf( "_isStackable" )] 
+        [SerializeField, ReadOnly] 
+        private bool _isStackable = false;
+        [SerializeField, ReadOnly] 
         private int _stackSize = 1;
-        [SerializeField, Range( 1, 40 ), ShowIf( "_isStackable" )] 
+        [SerializeField, ReadOnly] 
         private int _maxStackSize = 1;
 
         //----------------------------------------------------------------------------------------------------
 
         [Header( "Stat Settings" )]
-        [SerializeField] private bool _hasStats = false;
+        [SerializeField, ReadOnly] private bool _hasStats = false;
         //[SerializeField, ShowIf( "_hasStats" )] private List<Stats> _stats = new();
 
         //----------------------------------------------------------------------------------------------------
 
         [Header( "UI elements" )]
-        [SerializeField, ShowAssetPreview( 64, 64 )] private Sprite _icon = null;
+        [SerializeField, ReadOnly, ShowAssetPreview( 64, 64 )] private Sprite _icon = null;
 
-        public class InfosData
+        private ItemDatas _datas;
+        public ItemDatas Datas
+        {
+            get 
+            {
+                if ( _datas.IsNull() )
+                {
+                    _datas = new ItemDatas( this );
+                }
+                return _datas;
+            }
+            set { _datas = value; }
+        }
+
+        public class ItemDatas
         {
             private readonly Item _item;
 
@@ -73,7 +99,7 @@ namespace dnSR_Coding
 
             public Sprite Icon { get; }
             
-            public InfosData( Item item )
+            public ItemDatas( Item item )
             {
                 _item = item;
 
@@ -94,6 +120,25 @@ namespace dnSR_Coding
                 //Stats = _item._stats;
 
                 Icon = _item._icon;
+            }
+
+            public void ReadDatas()
+            {
+                Debug.Log(
+                "Name : " + Name + '\n' +
+                "ID : " + ID + '\n' +
+                "Description : " + Description + '\n' +
+
+                "Rarity : " + Rarity + '\n' +
+                "Can be equipped ? : " + CanBeEquipped + '\n' +
+                "Is equipped ? : " + IsEquipped + '\n' +
+                "Linked body part : " + LinkedBodyPart + '\n' +
+
+                "Is stackable ? : " + IsStackable + '\n' +
+                "Stack Size : " + StackSize + '\n' +
+                "Max Stack Size : " + MaxStackSize + '\n' +
+
+                "Has stats ? : " + HasStats );
             }
         }
 
@@ -119,11 +164,28 @@ namespace dnSR_Coding
         #region Editor
 
 #if UNITY_EDITOR
-        [Button]
-        private void GenerateIDButton()
-        {
-            _id = GetInstanceID();
-        }
+
+        //[Button( "Rename File" )]
+        //private void RenameFileAccordingToDatasNameButton()
+        //{
+        //    string newName = Datas.Name;
+
+        //    string assetPath = AssetDatabase.GetAssetPath( GetInstanceID() );
+        //    AssetDatabase.RenameAsset( assetPath, newName );
+        //    AssetDatabase.SaveAssets();
+        //}
+        //[Button( "Generate ID" )]
+        //private void GenerateIDButton()
+        //{
+        //    _id = GetInstanceID();
+        //}
+
+        //[AssetSelection]
+        //private void OnAssetSelection()
+        //{
+        //    Debug.Log( "Selection : " + name );
+        //}
+
 #endif
 
         #endregion

@@ -13,49 +13,49 @@ MonoBehaviour:
   m_Name: Test
   m_EditorClassIdentifier: 
   _stats:
-  - Name: Strength - 0
+  - Name: Strength - 2
     Type: 1
-    Points: 0
-  - Name: Endurance - 0
+    Points: 2
+  - Name: Endurance - 2
     Type: 2
-    Points: 0
-  - Name: Dexterity - 0
+    Points: 2
+  - Name: Dexterity - 2
     Type: 3
-    Points: 0
+    Points: 2
   _subStats:
-  - Name: Initiative_INI - 5
+  - Name: Initiative_INI - 11
     _type: 1
     _baseValue: 5
-    CurrentValue: 5
-  - Name: HealthPoints_HP - 25
+    CurrentValue: 11
+  - Name: HealthPoints_HP - 30
     _type: 2
     _baseValue: 25
-    CurrentValue: 25
-  - Name: DamageReduction_DMGR - 0
+    CurrentValue: 30
+  - Name: DamageReduction_DMGR - 2
     _type: 3
     _baseValue: 0
-    CurrentValue: 0
-  - Name: Resistance_RES - 0
+    CurrentValue: 2
+  - Name: Resistance_RES - 5
     _type: 4
     _baseValue: 0
-    CurrentValue: 0
-  - Name: Damage_DMG - 5
+    CurrentValue: 5
+  - Name: Damage_DMG - 9
     _type: 5
     _baseValue: 5
-    CurrentValue: 5
-  - Name: CounterAttackChance_CA - 0
+    CurrentValue: 9
+  - Name: CounterAttackChance_CA - 1
     _type: 6
     _baseValue: 0
-    CurrentValue: 0
-  - Name: Precision_PRE - 0
+    CurrentValue: 1
+  - Name: Precision_PRE - 1
     _type: 7
     _baseValue: 0
-    CurrentValue: 0
-  - Name: Dodge_DOD - 0
+    CurrentValue: 1
+  - Name: Dodge_DOD - 1
     _type: 8
     _baseValue: 0
-    CurrentValue: 0
-  _usesAnExperienceManager: 0
+    CurrentValue: 1
+  _usesAnExperienceManager: 1
   _attachedExperienceManager: {fileID: 11400000, guid: 5487383438693c047bd2a4e6c76b3179,
     type: 2}
   _isDebuggable: 1
