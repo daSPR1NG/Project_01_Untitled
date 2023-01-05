@@ -146,7 +146,7 @@ namespace dnSR_Coding
         /// <param name="value"> The amount pushed </param>
         public void PushExperience( StatType type, int value )
         {
-            Helper.Log( this, "Pushing " + value + " experience points for " + type.ToString() );
+            Helper.Log( this, "Pushing " + value + " experience _points for " + type.ToString() );
 
             OnGeneratingExperience?.Invoke( type, value );
             // Energy consomation

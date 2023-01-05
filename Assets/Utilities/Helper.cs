@@ -129,5 +129,15 @@ namespace dnSR_Coding.Utilities
             deltaTime = ignoreTimeScale ? Time.deltaTime : Time.deltaTime * Time.timeScale;
             return deltaTime;
         }
+
+        public static System.Array GetEnumToArray( System.Type type )
+        {
+            return System.Enum.GetValues( type );
+        }
+
+        public static int GetEnumLength( System.Type type )
+        {
+            return System.Enum.GetValues( type ).Length;
+        }
     }
 }

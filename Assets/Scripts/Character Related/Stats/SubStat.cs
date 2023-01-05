@@ -14,7 +14,6 @@ namespace dnSR_Coding
 
         // Max up to 100%
         private const int RESISTANCE_MAX_VALUE =                    100;
-        private const int PRECISION_MAX_VALUE =                     100;
 
         [Header( "Details" )]
 
@@ -66,15 +65,15 @@ namespace dnSR_Coding
 
                 #region Endurance - END
 
-                // Points de vie - HP = baseHP + ((baseHP * .1f) * END).
+                // _points de vie - HP = baseHP + ((baseHP * .1f) * END).
                 case SubType.HealthPoints_HP: 
                     calculatedValue = endurance > 0
                         ? ExtMathfs.FloorToInt( _baseValue + ( ( _baseValue * .1f ) * endurance ) )
                         : _baseValue;
                     break;
 
-                // Réduction de dégâts - RDMG = (END * 5) / 4.
-                case SubType.DamageReduction_DMR: 
+                // Défense - DEF = (END * 5) / 4.
+                case SubType.Defense_DEF: 
                     calculatedValue = ExtMathfs.FloorToInt( ( endurance * 5 ) / 4 );
                     break;
 
@@ -102,11 +101,6 @@ namespace dnSR_Coding
                 #endregion
 
                 #region Dexterity - DEX
-
-                // Précision – PRE = (DEX * .25f) *  2.5f .
-                case SubType.Precision_PRE: 
-                    calculatedValue = ExtMathfs.FloorToInt( ( dexterity * .25f ) * 2.5f );
-                    break;
 
                 // Esquive – ESQ = (DEX * .2f) *  2.5f .
                 case SubType.Dodge_DOD: 
@@ -166,7 +160,7 @@ namespace dnSR_Coding
 
             switch ( Type )
             {
-                //case SubType.DamageReduction_DMR:
+                //case SubType.Defense_DEF:
                 //    _hasMaxValue = true;
                 //    _maxValue = DAMAGE_REDUCTION_MAX_VALUE;
                 //    break;
@@ -181,10 +175,10 @@ namespace dnSR_Coding
                     _maxValue = COUNTER_ATTACK_CHANCE_MAX_VALUE;
                     break;
 
-                case SubType.Precision_PRE:
-                    _hasMaxValue = true;
-                    _maxValue = PRECISION_MAX_VALUE;
-                    break;
+                //case SubType.Precision_PRE:
+                //    _hasMaxValue = true;
+                //    _maxValue = PRECISION_MAX_VALUE;
+                //    break;
 
                 case SubType.Dodge_DOD:
                     _hasMaxValue = true;

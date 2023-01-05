@@ -16,7 +16,7 @@ namespace dnSR_Coding
         [Header( "Button text settings" )]
         [SerializeField] private bool _hasText = false;
         [SerializeField, ShowIf( "_hasText" ), Multiline] 
-        private string _buttonTextInput = "Type Here";
+        private string _buttonTextInput = "_type Here";
         [SerializeField, ShowIf( "_hasText" ), Range( 0.1f, 36 )]
         private float _buttonTextMaxSize = 24;
         [SerializeField, ShowIf( "_hasText" ), Range( -20, 20 )]

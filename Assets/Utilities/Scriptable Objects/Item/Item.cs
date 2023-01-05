@@ -1,17 +1,13 @@
 using UnityEngine;
 using ExternalPropertyAttributes;
 using dnSR_Coding.Utilities;
-using static UnityEditor.Progress;
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+using System.Collections.Generic;
 
 namespace dnSR_Coding
 {
     public enum LinkedBodyPart
     {
-        Unassigned, Head, Body, Feet, LeftHand, RightHand
+        Unassigned, Head, Chest, Legs, Hands, Weapon_Left, Weapon_Right,
     }
 
     public enum Rarity
@@ -56,7 +52,7 @@ namespace dnSR_Coding
 
         [Header( "Stat Settings" )]
         [SerializeField, ReadOnly] private bool _hasStats = false;
-        //[SerializeField, ShowIf( "_hasStats" )] private List<Stats> _stats = new();
+        [SerializeField, ShowIf( "_hasStats" )] private List<Stat> _stats = new();
 
         //----------------------------------------------------------------------------------------------------
 
@@ -95,7 +91,7 @@ namespace dnSR_Coding
             public int MaxStackSize { get; }
 
             public bool HasStats { get; }
-            //public List<Stats> Stats { get; }
+            public List<Stat> Stats { get; }
 
             public Sprite Icon { get; }
             
@@ -117,7 +113,7 @@ namespace dnSR_Coding
                 MaxStackSize = _item._maxStackSize;
 
                 HasStats = _item._hasStats;
-                //Stats = _item._stats;
+                Stats = _item._stats;
 
                 Icon = _item._icon;
             }
@@ -138,7 +134,39 @@ namespace dnSR_Coding
                 "Stack Size : " + StackSize + '\n' +
                 "Max Stack Size : " + MaxStackSize + '\n' +
 
-                "Has stats ? : " + HasStats );
+                "Has stats ? : " + HasStats + '\n' +
+                ReadStats() );
+            }
+
+            private string ReadStats()
+            {
+                string readStats = "Stats :" + '\n';
+
+                for ( int i = 0; i < Stats.Count; i++ )
+                {
+                    readStats += Stats [ i ].Name.ToString() + " - " + Stats [ i ].GetPoints().ToString() + '\n';
+                }
+
+                return readStats;
+            }
+
+            public Stat GetStatByType( StatType statType )
+            {
+                if ( Stats.IsEmpty() )
+                {
+                    Debug.LogError( "No stats assigned, it might be a bug, try to refresh the item asset", _item );
+                    return null;
+                }
+
+                for ( int i = 0; i < Stats.Count; i++ )
+                {
+                    if ( Stats [ i ].GetStatType() != statType ) { continue; }
+
+                    return Stats [ i ];
+                }
+
+                Debug.LogError( "No stats assigned, it might be a bug, try to refresh the item asset", _item );
+                return null;
             }
         }
 
@@ -161,30 +189,44 @@ namespace dnSR_Coding
             _icon = null;
         }
 
+        #region Constructors
+
+        public Item() : base() { }
+
+        public Item( string name ) : base()
+        {
+            _name = name;
+        }
+
+        #endregion
+
         #region Editor
 
 #if UNITY_EDITOR
 
-        //[Button( "Rename File" )]
-        //private void RenameFileAccordingToDatasNameButton()
-        //{
-        //    string newName = Datas.Name;
+        public void CreateStatEntriesInEditor()
+        {
+            int amountOfStat = Helper.GetEnumLength( typeof( StatType ) ) - 1;
+            int statTypeIndex = 1;
 
-        //    string assetPath = AssetDatabase.GetAssetPath( GetInstanceID() );
-        //    AssetDatabase.RenameAsset( assetPath, newName );
-        //    AssetDatabase.SaveAssets();
-        //}
-        //[Button( "Generate ID" )]
-        //private void GenerateIDButton()
-        //{
-        //    _id = GetInstanceID();
-        //}
+            if ( _stats.Count >= amountOfStat ) { return; }
 
-        //[AssetSelection]
-        //private void OnAssetSelection()
-        //{
-        //    Debug.Log( "Selection : " + name );
-        //}
+            if ( _stats.Count < amountOfStat )
+            {
+                for ( int i = 0; i < amountOfStat; i++ )
+                {
+                    _stats.AppendItem( new Stat( ( StatType ) Helper.GetEnumToArray( typeof( StatType ) ).GetValue ( statTypeIndex ), 0 ) );
+                    statTypeIndex++;
+                }                
+            }
+        }
+
+        private void OnValidate()
+        {
+            if ( Application.isPlaying ) { return; }
+
+            CreateStatEntriesInEditor();
+        }
 
 #endif
 

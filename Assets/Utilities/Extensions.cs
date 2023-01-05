@@ -173,9 +173,9 @@ namespace dnSR_Coding.Utilities
         }
 
         /// <summary>
-        /// Set Image component Type, and wether if it preserves aspect or not.
+        /// Set Image component _type, and wether if it preserves aspect or not.
         /// </summary>
-        /// <param name="type">the image Type you want the image to be</param>
+        /// <param name="type">the image _type you want the image to be</param>
         /// <param name="isSpriteOverriden">defines if you use the default sprite or the overridesprite</param>
         /// <param name="preserveAspect">defines if the image sprite preserves its aspect or not</param>
         [MethodImpl( INLINE )] 

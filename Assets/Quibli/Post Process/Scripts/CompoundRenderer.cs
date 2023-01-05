@@ -7,7 +7,7 @@ using UnityEngine.Experimental.Rendering;
 
 namespace UnityEngine.Rendering.Universal.PostProcessing {
 /// <summary>
-/// Custom Post Processing injection points.
+/// Custom Post Processing injection _points.
 /// Since this is a flag, you can write a renderer that can be injected at multiple locations.
 /// </summary>
 [Flags]
@@ -159,8 +159,8 @@ public sealed class CompoundRendererFeatureAttribute : Attribute {
     // In which render pass this effect should be injected
     readonly InjectionPoint injectionPoint;
 
-    // In case the renderer is added to multiple injection points,
-    // If shareInstance = true, one instance of the renderer will be constructed and shared between the injection points.
+    // In case the renderer is added to multiple injection _points,
+    // If shareInstance = true, one instance of the renderer will be constructed and shared between the injection _points.
     // Otherwise, a different instance will be  constructed for every injection point.
     readonly bool shareInstance;
 
@@ -171,8 +171,8 @@ public sealed class CompoundRendererFeatureAttribute : Attribute {
     public InjectionPoint InjectionPoint => injectionPoint;
 
     /// <value>
-    /// In case the renderer is added to multiple injection points,
-    /// If shareInstance = true, one instance of the renderer will be constructed and shared between the injection points.
+    /// In case the renderer is added to multiple injection _points,
+    /// If shareInstance = true, one instance of the renderer will be constructed and shared between the injection _points.
     /// Otherwise, a different instance will be  constructed for every injection point.
     /// </value>
     public bool ShareInstance => shareInstance;
@@ -189,9 +189,9 @@ public sealed class CompoundRendererFeatureAttribute : Attribute {
     }
 
     /// <summary>
-    /// Get the CompoundRendererFeatureAttribute attached to the Type.
+    /// Get the CompoundRendererFeatureAttribute attached to the _type.
     /// </summary>
-    /// <param name="type">the Type on which the attribute is attached</param>
+    /// <param name="type">the _type on which the attribute is attached</param>
     /// <returns>the attached CompoundRendererFeatureAttribute or null if none were attached</returns>
     public static CompoundRendererFeatureAttribute GetAttribute(Type type) {
         if (type == null) return null;

@@ -47,7 +47,7 @@ public class FoliageGenerator : MonoBehaviour {
     [Tooltip("The number of particles to generate.")]
     public int numParticles = 250;
 
-    [BoxGroup("Generation"), Label("Placement Type"), Space]
+    [BoxGroup("Generation"), Label("Placement _type"), Space]
     [Tooltip("Defines the positions of the carrier mesh at which particles are added. " +
              "'Random' selects random faces on the carrier mesh, 'Uniform' samples the mesh faces sequentially.")]
     public CarrierSampling carrierSampling = CarrierSampling.Random;

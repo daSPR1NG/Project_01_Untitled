@@ -52,7 +52,7 @@ public class FullScreenRenderPassFeature : ScriptableRendererFeature
         // Here you can implement the rendering logic.
         // Use <c>ScriptableRenderContext</c> to issue drawing commands or execute command buffers
         // https://docs.unity3d.com/ScriptReference/Rendering.ScriptableRenderContext.html
-        // You don't have to call ScriptableRenderContext.submit, the render pipeline will call it at specific points in the pipeline.
+        // You don't have to call ScriptableRenderContext.submit, the render pipeline will call it at specific _points in the pipeline.
         public override void Execute( ScriptableRenderContext context, ref RenderingData renderingData )
         {
             if ( !_enableRendererFeature ) { return; }

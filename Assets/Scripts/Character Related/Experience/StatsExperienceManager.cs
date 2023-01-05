@@ -98,7 +98,7 @@ namespace dnSR_Coding
                 return _experienceData [ i ];
             }
 
-            Debug.LogError( "There is no experience data of this Type, this means something is wrong." );
+            Debug.LogError( "There is no experience data of this _type, this means something is wrong." );
             return null;
         }
 

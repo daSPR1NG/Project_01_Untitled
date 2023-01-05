@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b80bbecfdd3cdb64a87bc1897740f49c, type: 3}
-  m_Name: 05555 1
+  m_Name: 05555 2
   m_EditorClassIdentifier: 
-  _name: dggezg
-  _id: 31568
-  _description: zfgezgzegezgezgze
+  _name: '[TYPE HERE]'
+  _id: 32746
+  _description: 2222222222222222
   _rarity: 0
   _canBeEquipped: 0
   _isEquipped: 0
@@ -23,4 +23,14 @@ MonoBehaviour:
   _stackSize: 1
   _maxStackSize: 1
   _hasStats: 0
-  _icon: {fileID: 21300000, guid: 212f7014b80f035428911a9d84b800ce, type: 3}
+  _stats:
+  - Name: Strength
+    _type: 1
+    _points: 0
+  - Name: Endurance
+    _type: 2
+    _points: 0
+  - Name: Dexterity
+    _type: 3
+    _points: 0
+  _icon: {fileID: 0}

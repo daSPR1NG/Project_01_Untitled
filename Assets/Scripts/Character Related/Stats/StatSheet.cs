@@ -12,8 +12,7 @@ namespace dnSR_Coding
     public enum StatType { Unassigned, Strength, Endurance, Dexterity, }
     public enum SubType
     {
-        Unassigned, Initiative_INI, HealthPoints_HP, DamageReduction_DMR, Resistance_RES, Damage_DMG, CounterAttackChance_CA,
-        Precision_PRE, Dodge_DOD
+        Unassigned, Initiative_INI, HealthPoints_HP, Defense_DEF, Resistance_RES, Damage_DMG, CounterAttackChance_CA, Dodge_DOD
     }
 
     ///<summary> StatSheet description <summary>
@@ -21,10 +20,10 @@ namespace dnSR_Coding
     public class StatSheet : ScriptableObject, IDebuggable
     {
         [Header( "Stats" )]
-        [SerializeField] private List<Stat> _stats = new();
+        [SerializeField] private List<Stat> _stats = new( System.Enum.GetValues( typeof( StatType ) ).Length - 1 );
 
         [Header( "Sub stats" )]
-        [SerializeField] private List<SubStat> _subStats = new( System.Enum.GetValues( typeof( SubType ) ).Length );
+        [SerializeField] private List<SubStat> _subStats = new( System.Enum.GetValues( typeof( SubType ) ).Length - 1 );
 
         [Header( "Attached stats experience" )]
         [SerializeField] private bool _usesAnExperienceManager = true;
@@ -76,23 +75,23 @@ namespace dnSR_Coding
         {
             if ( _stats.IsEmpty() )
             {
-                Debug.LogError( "There is no stat set, this means something is wrong." );
+                Debug.LogError( "There is no stat set, this means something is wrong.", this );
                 return null;
             }
 
             for ( int i = _stats.Count - 1; i >= 0; i-- )
             {
-                if ( _stats [ i ].Type != type ) { continue; }
+                if ( _stats [ i ].GetStatType() != type ) { continue; }
 
                 return _stats [ i ];
             }
 
-            Debug.LogError( "There is no stat of this Type, this means something is wrong." );
+            Debug.LogError( "There is no stat of this _type, this means something is wrong.", this );
             return null;
         }        
 
         /// <summary>
-        /// Resets the points of each stats.
+        /// Resets the _points of each stats.
         /// </summary>
         public void ResetStatsPointsToDefault( bool needsToBeReset )
         {
@@ -121,9 +120,9 @@ namespace dnSR_Coding
                 return;
             }
 
-            int strengthPts = GetStatByType( StatType.Strength ).Points;
-            int endurancePts = GetStatByType( StatType.Endurance ).Points;
-            int dexterityPts = GetStatByType( StatType.Dexterity ).Points;
+            int strengthPts = GetStatByType( StatType.Strength ).GetPoints();
+            int endurancePts = GetStatByType( StatType.Endurance ).GetPoints();
+            int dexterityPts = GetStatByType( StatType.Dexterity ).GetPoints();
 
             for ( int i = _subStats.Count - 1; i >= 0; i-- )
             {
@@ -153,7 +152,7 @@ namespace dnSR_Coding
                 return _subStats [ i ];
             }
 
-            Debug.LogError( "There is no subStat of this Type, this means something is wrong." );
+            Debug.LogError( "There is no subStat of this _type, this means something is wrong." );
             return null;
         }
 
@@ -164,7 +163,7 @@ namespace dnSR_Coding
 #if UNITY_EDITOR
 
         private const int STAT_AMOUNT = 3;
-        private const int SUB_STAT_AMOUNT = 8;
+        private const int SUB_STAT_AMOUNT = 7;
 
         [Button( "Reset sheet's stat and sub stats value" )]
         private void ResetSheet()
@@ -210,12 +209,7 @@ namespace dnSR_Coding
 
             for ( int i = 0; i < STAT_AMOUNT; i++ )
             {
-                Stat createdStat = new()
-                {
-                    Type = ( StatType ) statTypeIndex,
-                    Points = 0,
-                    Name = ( ( StatType ) statTypeIndex ).ToString(),
-                };
+                Stat createdStat = new( ( StatType ) statTypeIndex, 0 );
                 
                 if ( _stats.Count < STAT_AMOUNT )
                 {

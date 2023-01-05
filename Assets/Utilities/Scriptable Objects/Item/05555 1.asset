@@ -10,17 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b80bbecfdd3cdb64a87bc1897740f49c, type: 3}
-  m_Name: 05555 4
+  m_Name: 05555 1
   m_EditorClassIdentifier: 
-  _name: '[TYPE HERE]'
-  _id: 32622
-  _description: 56z5g4ze5g65zegz65gez
-  _rarity: 0
-  _canBeEquipped: 0
+  _name: dggezg
+  _id: 31568
+  _description: 
+  _rarity: 2
+  _canBeEquipped: 1
   _isEquipped: 0
-  _linkedBodyPart: 0
-  _isStackable: 0
+  _linkedBodyPart: 5
+  _isStackable: 1
   _stackSize: 1
-  _maxStackSize: 1
-  _hasStats: 0
+  _maxStackSize: 15
+  _hasStats: 1
+  _stats:
+  - Name: Strength
+    _type: 1
+    _points: 0
+  - Name: Endurance
+    _type: 2
+    _points: 0
+  - Name: Dexterity
+    _type: 3
+    _points: 0
   _icon: {fileID: 0}
