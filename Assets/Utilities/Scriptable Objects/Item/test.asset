@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: test
   m_EditorClassIdentifier: 
   _name: test
-  _id: 32754
+  _id: 32860
   _description: '[TYPE HERE]'
   _rarity: 0
   _canBeEquipped: 0

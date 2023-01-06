@@ -52,12 +52,14 @@ namespace dnSR_Coding
 
         [Header( "Stat Settings" )]
         [SerializeField, ReadOnly] private bool _hasStats = false;
-        [SerializeField, ShowIf( "_hasStats" )] private List<Stat> _stats = new();
+        [SerializeField, AllowNesting, ReadOnly] 
+        private List<Stat> _stats = new();
 
         //----------------------------------------------------------------------------------------------------
 
-        [Header( "UI elements" )]
-        [SerializeField, ReadOnly, ShowAssetPreview( 64, 64 )] private Sprite _icon = null;
+        [Header( "Visuals" )]
+        [SerializeField, ReadOnly] private Sprite _icon = null;
+        [SerializeField, ReadOnly] private GameObject _prefab = null;
 
         private ItemDatas _datas;
         public ItemDatas Datas
@@ -94,6 +96,7 @@ namespace dnSR_Coding
             public List<Stat> Stats { get; }
 
             public Sprite Icon { get; }
+            public GameObject Prefab { get; }
             
             public ItemDatas( Item item )
             {
@@ -116,6 +119,7 @@ namespace dnSR_Coding
                 Stats = _item._stats;
 
                 Icon = _item._icon;
+                Prefab = _item._prefab;
             }
 
             public void ReadDatas()
@@ -187,6 +191,7 @@ namespace dnSR_Coding
             //_stats.Clear();
 
             _icon = null;
+            _prefab = null;
         }
 
         #region Constructors

@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
-using UnityEngine.SocialPlatforms;
 
 namespace dnSR_Coding.Utilities
 {
@@ -69,17 +68,6 @@ namespace dnSR_Coding.Utilities
         
         #endregion
 
-        #region Enumerator things
-        private static readonly Dictionary<float, WaitForSeconds> WaitDictionary = new Dictionary<float, WaitForSeconds>();
-        public static WaitForSeconds GetDelay( float time )
-        {
-            if ( WaitDictionary.TryGetValue( time, out var wait ) ) return wait;
-
-            WaitDictionary [ time ] = new WaitForSeconds( time );
-            return WaitDictionary [ time ];
-        }
-        #endregion
-
         #region Debug
 
         public enum LogType { None, Warning, Error }
@@ -112,6 +100,8 @@ namespace dnSR_Coding.Utilities
 
         #endregion
 
+        #region Time scale
+
         public static void SetTimeScale( float value )
         {
             if ( Time.timeScale == value ) return;
@@ -124,11 +114,18 @@ namespace dnSR_Coding.Utilities
         }
 
         private static float deltaTime;
+        /// <summary>
+        /// Returns the real value of delta time depending if it ignores timeScale, scaled by it.
+        /// </summary>
         public static float RealDeltaTime( bool ignoreTimeScale )
         {
             deltaTime = ignoreTimeScale ? Time.deltaTime : Time.deltaTime * Time.timeScale;
             return deltaTime;
         }
+
+        #endregion
+
+        #region Enum
 
         public static System.Array GetEnumToArray( System.Type type )
         {
@@ -139,5 +136,96 @@ namespace dnSR_Coding.Utilities
         {
             return System.Enum.GetValues( type ).Length;
         }
+
+        #endregion
+
+        #region OnGui helpers
+
+        public static void DrawButton(
+           GUIContent content = default,                                            // Content
+           GUIStyle style = default,                                                // Style
+           GUILayoutOption [] options = null,                                       // Size
+           Color backgroundColor = default,                                         // Color
+           System.Action OnClickingButton = null )                                  // Execution
+        {
+            GUI.backgroundColor = backgroundColor;
+
+            if ( GUILayout.Button( content, style, options ) )
+            {
+                OnClickingButton?.Invoke();
+            }
+
+            // Reset background color to only affect this button
+            GUI.backgroundColor = Color.white;
+        }
+
+        public static void DrawButton(
+           GUIContent content = default,                                            // Content
+           GUIStyle style = default,                                                // Style
+           GUILayoutOption [] options = null,                                       // Size
+           System.Action OnClickingButton = null )                                  // Execution
+        {
+            if ( GUILayout.Button( content, style, options ) )
+            {
+                OnClickingButton?.Invoke();
+            }
+        }
+
+        public static void DrawButton(
+           GUIContent content = default,                                            // Content
+           GUILayoutOption [] options = null,                                       // Size
+           Color backgroundColor = default,                                         // Color
+           System.Action OnClickingButton = null )                                  // Execution
+        {
+            GUI.backgroundColor = backgroundColor;
+
+            if ( GUILayout.Button( content, options ) )
+            {
+                OnClickingButton?.Invoke();
+            }
+
+            // Reset background color to only affect this button
+            GUI.backgroundColor = Color.white;
+        }
+
+        public static void DrawButton(
+           GUIContent content = default,                                            // Content
+           GUILayoutOption [] options = null,                                       // Size
+           System.Action OnClickingButton = null )                                  // Execution
+        {
+            if ( GUILayout.Button( content, options ) )
+            {
+                OnClickingButton?.Invoke();
+            }
+        }
+
+        public static void DrawButton(
+           GUIContent content = default,                                            // Content
+           GUIStyle style = default,                                                // Style
+           float widthOffset = 0,                                                   // Size Offset
+           System.Action OnClickingButton = null )                                  // Execution
+        {
+            float width = style.CalcSize( content ).x + widthOffset;
+
+            if ( GUILayout.Button( content, style,
+                new GUILayoutOption [] { GUILayout.Width( width ) } ) )
+            {
+                OnClickingButton?.Invoke();
+            }
+        }
+
+        public static void DrawLabel( string content, bool toUpper = false, GUIStyle style = default, int yOffset = 0 )
+        {
+            GUIContent labelContent = new()
+            {
+                text = toUpper ? content.ToUpper() : content,
+            };
+
+            GUILayout.Space( yOffset );
+
+            GUILayout.Label( labelContent, style );
+        }
+
+        #endregion
     }
 }

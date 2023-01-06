@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b80bbecfdd3cdb64a87bc1897740f49c, type: 3}
   m_Name: 05555 1
   m_EditorClassIdentifier: 
-  _name: dggezg
+  _name: jejihgijhijhevij
   _id: 31568
-  _description: 
-  _rarity: 2
-  _canBeEquipped: 1
+  _description: Descpezlkzrplkbrezbre
+  _rarity: 0
+  _canBeEquipped: 0
   _isEquipped: 0
-  _linkedBodyPart: 5
+  _linkedBodyPart: 0
   _isStackable: 1
   _stackSize: 1
-  _maxStackSize: 15
+  _maxStackSize: 1
   _hasStats: 1
   _stats:
   - Name: Strength
@@ -33,4 +33,4 @@ MonoBehaviour:
   - Name: Dexterity
     _type: 3
     _points: 0
-  _icon: {fileID: 0}
+  _icon: {fileID: 21300000, guid: c1a2453c33edeed4ebc8c94cfd9df6ad, type: 3}

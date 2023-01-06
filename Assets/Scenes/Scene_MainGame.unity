@@ -16,18 +16,18 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 0
-  m_FogColor: {r: 0.25928134, g: 0.33302188, b: 0.38059643, a: 1}
+  m_FogColor: {r: 0.68631524, g: 0.8269224, b: 0.9911874, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.03
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.3073629, g: 0.33513406, b: 0.5573032, a: 1}
+  m_AmbientSkyColor: {r: 0.87601864, g: 0.87601864, b: 0.87601864, a: 1}
   m_AmbientEquatorColor: {r: 0.7264151, g: 0.56268424, b: 0.4762816, a: 1}
   m_AmbientGroundColor: {r: 0.2, g: 0.19607843, b: 0.18431373, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 1, g: 1, b: 1, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: e1bad13f395b3b64abd38ab7055e7ea0, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: d127b30f04bab46fe9610f70d1234ad1, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -39,7 +39,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.46969712, g: 0.5082404, b: 0.30121458, a: 1}
+  m_IndirectSpecularColor: {r: 0.24042447, g: 0.24228963, b: 0.26206315, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -48504,7 +48504,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 0.07843138}
+      maxColor: {r: 1, g: 1, b: 1, a: 0}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -58195,7 +58195,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 0.5019608}
+      maxColor: {r: 1, g: 1, b: 1, a: 0}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -62723,8 +62723,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.49017182, g: 0.49017182, b: 0.49017182, a: 1}
-  m_Intensity: 0.6319751
+  m_Color: {r: 0.95917946, g: 0.95917946, b: 0.95917946, a: 1}
+  m_Intensity: 1.774455
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -62769,7 +62769,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6500
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 1e-45, z: 9.78048e-39, w: 1.9348e-41}
+  m_BoundingSphereOverride: {x: 9.5e-44, y: 0, z: 0, w: 3.4e-44}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -67924,7 +67924,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8305290144eb4545b27ab3de7c85c8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isActive: 0
+  _isActive: 1
   _weatherType: 2
   _elementsFadeSpeed: 3.5
   _lightingSettings: {fileID: 11400000, guid: a89b30131de553e44990a02bfc85e3e7, type: 2}
@@ -68054,7 +68054,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8305290144eb4545b27ab3de7c85c8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isActive: 1
+  _isActive: 0
   _weatherType: 1
   _elementsFadeSpeed: 5
   _lightingSettings: {fileID: 11400000, guid: 901b6ab6f723fb0428f9deda32089080, type: 2}
@@ -73024,7 +73024,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ac33099a61623e47a1782395ce68f57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _weatherType: 1
+  _weatherType: 2
   _weatherSequences:
   - {fileID: 4863806953530561618}
   - {fileID: 4863806953517110049}
@@ -73237,7 +73237,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 0}
+      maxColor: {r: 1, g: 1, b: 1, a: 0.07843138}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -78083,7 +78083,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 620388649766684802}
-  m_LocalRotation: {x: 0.08649096, y: -0.122811735, z: -0.98859555, w: -0.010744642}
+  m_LocalRotation: {x: 0.065452084, y: 0.6578145, z: -0.74812025, w: 0.057551354}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -78341,7 +78341,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 0.5019608}
+      maxColor: {r: 1, g: 1, b: 1, a: 0}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -83330,7 +83330,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _updateTimeOfDay: 1
   _dayDuration: 480
-  _timeOfDay: 378.88397
+  _timeOfDay: 249.81964
   _isDebuggable: 1
 --- !u!1 &8336381315896712434
 GameObject:

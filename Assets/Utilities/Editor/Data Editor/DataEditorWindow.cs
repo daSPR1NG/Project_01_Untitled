@@ -7,8 +7,9 @@ public class DataEditorWindow : EditorWindow
 {
     private enum DisplaySelector { Items = 0, Units = 1, Competences = 2 }
 
-    private const float RIGHT_PANEL_HEADER_WIDTH = 125, RIGHT_PANEL_HEADER_HEIGHT = 25;
+    private const float LEFT_PANEL_HEADER_WIDTH = 125;
     private const float MIDDLE_PANEL_HEADER_WIDTH = 175, MIDDLE_PANEL_HEADER_HEIGHT = 25;
+    private const float RIGHT_PANEL_HEADER_HEIGHT = 25;
 
     private DisplaySelector _displaySelector = DisplaySelector.Items;
 
@@ -34,7 +35,7 @@ public class DataEditorWindow : EditorWindow
 
     private SerializedProperty
         /* Infos : */               _editedItemName, _editedItemID, _editedItemDescription,
-        /* Visuals : */             _editedItemIcon,
+        /* Visuals : */             _editedItemIcon, _editedItemPrefab,
         /* Setting : */             _editedItemCanBeEquipped, _editedItemRarity, _editedItemLinkedBodyPart,
         /* Setting - Stack : */     _editedItemIsStackable, _editedItemMaxStackSize,
         /* Settings - Stats : */    _editedItemHasStats, _editedItemStrengthStat, _editedItemEnduranceStat, _editedItemDexterityStat;
@@ -66,7 +67,7 @@ public class DataEditorWindow : EditorWindow
 
         window.titleContent = new GUIContent( "Data Manager" );
 
-        // Fixed size
+        // Fixed prefabPreviewSize
         window.minSize = new Vector2( 1350, 600 );
         window.maxSize = new Vector2( 1350, 600 );
     }
@@ -89,7 +90,7 @@ public class DataEditorWindow : EditorWindow
 
         //Convert it to Object and set active context object...
         _firstItemObject = AssetDatabase.LoadAssetAtPath( _firstItemPath, typeof( Object ) );
-        OnDisplayingItemContent();
+        OnDisplayingContentOfType( DisplaySelector.Items );
     }
 
     void OnGUI()
@@ -98,13 +99,13 @@ public class DataEditorWindow : EditorWindow
 
         using ( new EditorGUILayout.HorizontalScope() )
         {
-            DrawLeftPanel( RIGHT_PANEL_HEADER_WIDTH );
+            DrawLeftPanel( LEFT_PANEL_HEADER_WIDTH );
 
-            DrawMiddlePanelHeader( RIGHT_PANEL_HEADER_WIDTH, _displaySelector );
-            DrawMiddlePanel( RIGHT_PANEL_HEADER_WIDTH, MIDDLE_PANEL_HEADER_HEIGHT, _displaySelector );
+            DrawMiddlePanelHeader( LEFT_PANEL_HEADER_WIDTH, _displaySelector );
+            DrawMiddlePanel( LEFT_PANEL_HEADER_WIDTH, MIDDLE_PANEL_HEADER_HEIGHT, _displaySelector );
 
-            DrawRightPanelHeader( RIGHT_PANEL_HEADER_WIDTH + MIDDLE_PANEL_HEADER_WIDTH );
-            DrawRightPanel( RIGHT_PANEL_HEADER_WIDTH + MIDDLE_PANEL_HEADER_WIDTH );
+            DrawRightPanelHeader( LEFT_PANEL_HEADER_WIDTH + MIDDLE_PANEL_HEADER_WIDTH );
+            DrawRightPanel( LEFT_PANEL_HEADER_WIDTH + MIDDLE_PANEL_HEADER_WIDTH );
         }
     }
 
@@ -279,11 +280,6 @@ public class DataEditorWindow : EditorWindow
 
             using ( new EditorGUI.DisabledGroupScope( _middleSectionSelectedButtonIndex == i ) )
             {
-                GUIStyle buttonStyle = new( GUI.skin.button )
-                {
-                    alignment = TextAnchor.MiddleLeft,
-                };
-
                 string buttonText = item.Datas.Name;
 
                 if ( _middleSectionSelectedButtonIndex == i )
@@ -291,18 +287,16 @@ public class DataEditorWindow : EditorWindow
                     buttonText = _editedItemName.stringValue;
                 }
 
-                GUIContent buttonContent = new()
-                {
-                    text = buttonText,
-                };
-
-                if ( GUILayout.Button( buttonContent, buttonStyle, GUILayout.Height( 30 ) ) )
-                {
-                    _middleSectionSelectedButtonIndex = i;
-                    FocusThisItemAndDisplayItsDatas( item );
-
-                    EditorGUI.FocusTextInControl( null );
-                }
+                Helper.DrawButton( 
+                    new GUIContent() { text = buttonText, },
+                    new GUIStyle( GUI.skin.button ) { alignment = TextAnchor.MiddleLeft, },
+                    new GUILayoutOption [] { GUILayout.Height( 35 ) },
+                    OnClickingButton: () =>
+                    {
+                        _middleSectionSelectedButtonIndex = i;
+                        FocusThisItemAndDisplayItsDatas( item );
+                        EditorGUI.FocusTextInControl( null );
+                    } );
             }            
         }
     }   
@@ -323,12 +317,12 @@ public class DataEditorWindow : EditorWindow
         {
             alignment = TextAnchor.MiddleLeft,
             fontStyle = FontStyle.Bold,
-            fontSize = 14,
+            fontSize = 13,
         };
 
         GUILayout.Label( _rightPanelHeaderTitle, style );
 
-        DrawJumpToFileButton( _activeContextObject, _activeContextObject.name );
+        DrawJumpToFileButton( _activeContextObject );
 
         GUILayout.EndHorizontal();
         GUILayout.EndArea();
@@ -481,6 +475,7 @@ public class DataEditorWindow : EditorWindow
             _editedItemDescriptionField = null;
 
             _editedItemIconField = null;
+            _editedItemPrefabField = null;
 
             _editedItemCanBeEquippedField = null;
             _editedItemRarityField = null;
@@ -530,6 +525,13 @@ public class DataEditorWindow : EditorWindow
             _editedItemIconField = ( Sprite ) _editedItemIcon.objectReferenceValue;
         }
 
+        // Prefab
+        _editedItemPrefab = _editedItemSOReference.FindProperty( "_prefab" );
+        if ( _editedItemPrefabField.IsNull() )
+        {
+            _editedItemPrefabField = ( GameObject ) _editedItemPrefab.objectReferenceValue;
+        }
+
         #endregion
         #region Settings
 
@@ -576,13 +578,8 @@ public class DataEditorWindow : EditorWindow
         }
 
         //Stats List
-        // Strentgh
         SetStatSerializedProperty( StatType.Strength );
-
-        // Endurance
         SetStatSerializedProperty( StatType.Endurance );
-
-        // Dexterity
         SetStatSerializedProperty( StatType.Dexterity );
 
         #endregion
@@ -630,19 +627,12 @@ public class DataEditorWindow : EditorWindow
     {
         EditorGUI.BeginChangeCheck();
 
-        GUIStyle labelStyle = new( GUI.skin.label )
+        Helper.DrawLabel( "Infos", true, new GUIStyle( GUI.skin.label )
         {
             fontSize = 14,
             fontStyle = FontStyle.Bold,
-        };
-        GUIContent labelContent = new()
-        {
-            text = "Infos".ToUpper(),
-        };
-
-        GUILayout.Space( -15 );
-
-        GUILayout.Label( labelContent, labelStyle );
+        },
+        yOffset: -15 );
 
         GUILayout.Space( 5 );
 
@@ -694,19 +684,12 @@ public class DataEditorWindow : EditorWindow
     {
         EditorGUI.BeginChangeCheck();
 
-        GUIStyle labelStyle = new( GUI.skin.label )
+        Helper.DrawLabel( "Settings", true, new GUIStyle( GUI.skin.label )
         {
             fontSize = 14,
             fontStyle = FontStyle.Bold,
-        };
-        GUIContent labelContent = new()
-        {
-            text = "Settings".ToUpper(),
-        };
-
-        GUILayout.Space( -15 );
-
-        GUILayout.Label( labelContent, labelStyle );
+        },
+        yOffset: -15 );
 
         GUILayout.Space( 5 );
 
@@ -837,10 +820,10 @@ public class DataEditorWindow : EditorWindow
                 } );
 
                 // Max stack size int range
-                _editedItemMaxStackSizeField = EditorGUILayout.IntField( _editedItemMaxStackSizeField.Value, new GUIStyle( GUI.skin.textField )
-                {
-                    contentOffset = new Vector2( 0, 0 ),
-                } );
+                _editedItemMaxStackSizeField = 
+                    EditorGUILayout.IntField( 
+                        !_editedItemIsStackableField.Value ? 1 : _editedItemMaxStackSizeField.Value, 
+                        new GUIStyle( GUI.skin.textField ) { contentOffset = new Vector2( 0, 0 ) } );
             }
         }
 
@@ -866,24 +849,27 @@ public class DataEditorWindow : EditorWindow
         // Has Stats ?
         _editedItemHasStatsField = EditorGUILayout.ToggleLeft( " Does it have stats ?", _editedItemHasStatsField.Value );
 
-        if ( GUILayout.Button( "Reset All Stats", GUILayout.Width( 105 ) ) )
-        {
-            if ( EditorUtility.DisplayDialog( 
-                "Reset all stats point ?",
-                "Are you sure you want to reset all stats point ?", 
-                "Yes, Reset all", 
-                "Cancel") )
+        Helper.DrawButton( 
+            new GUIContent() { text = "Reset All Stats" },
+            new GUILayoutOption[] { GUILayout.Width( 105 ), },
+            OnClickingButton: () =>
             {
+                if ( EditorUtility.DisplayDialog(
+                   "Reset all stats point ?",
+                   "Are you sure you want to reset all stats point ?",
+                   "Yes, Reset all",
+                   "Cancel" ) )
+                {
+                    ResetStatPoint( StatType.Strength );
+                    ResetStatPoint( StatType.Endurance );
+                    ResetStatPoint( StatType.Dexterity );
+                }
+            } );
 
-            }
-            ResetStatPoint( StatType.Strength );
-            ResetStatPoint( StatType.Endurance );
-            ResetStatPoint( StatType.Dexterity );
-        }
 
         GUILayout.EndHorizontal();
 
-        using ( new EditorGUI.DisabledGroupScope( !_editedItemHasStatsField .Value ) )
+        using ( new EditorGUI.DisabledGroupScope( !_editedItemHasStatsField.Value ) )
         {
             GUILayout.BeginVertical();
 
@@ -949,9 +935,9 @@ public class DataEditorWindow : EditorWindow
             fontSize = 12,
         } );
 
-        float entryFieldWidth = entryWidth / 6;
+        float entryFieldWidth = entryWidth / 6.225f;
 
-        // Set field point according to statType
+        // Set objectField point according to statType
         switch ( statType )
         {
             case StatType.Strength:
@@ -976,20 +962,22 @@ public class DataEditorWindow : EditorWindow
 
         Texture2D resetIndividualStatButtonTexture = ( Texture2D ) AssetDatabase.LoadAssetAtPath( "Assets/Utilities/Editor/Icons/Spr_Editor_Reset_White.png", typeof( Texture2D ) );
 
-        int paddingMultipleValue = 2;
-        GUIStyle resetIndividualStatButtonStyle = new( GUI.skin.button )
-        {
-            padding = new RectOffset( paddingMultipleValue, paddingMultipleValue, paddingMultipleValue, paddingMultipleValue ),
-        };
-
-        if ( GUILayout.Button( resetIndividualStatButtonTexture, resetIndividualStatButtonStyle, new GUILayoutOption [] 
-        {
-            GUILayout.Width( 18 ),
-            GUILayout.Height( 18 ),
-        } ) )
-        {
-            ResetStatPoint( statType );
-        }
+        Helper.DrawButton(
+            new GUIContent()
+            {
+                image = resetIndividualStatButtonTexture,
+                tooltip = "Reset points of stat " + statType.ToString(),
+            },
+            new GUIStyle( GUI.skin.button )
+            {
+                padding = new RectOffset( 2, 2, 2, 2 ),
+            },
+            new GUILayoutOption []
+            {
+                GUILayout.Width( 18 ),
+                GUILayout.Height( 18 ),
+            },
+            OnClickingButton: () => ResetStatPoint( statType ) );
 
         GUILayout.EndHorizontal();
     }
@@ -1019,19 +1007,12 @@ public class DataEditorWindow : EditorWindow
     {
         EditorGUI.BeginChangeCheck();
 
-        GUIStyle labelStyle = new( GUI.skin.label )
+        Helper.DrawLabel( "Visuals", true, new GUIStyle( GUI.skin.label )
         {
             fontSize = 14,
             fontStyle = FontStyle.Bold,
-        };
-        GUIContent labelContent = new()
-        {
-            text = "Visuals".ToUpper(),
-        };
-
-        GUILayout.Space( -15 );
-
-        GUILayout.Label( labelContent, labelStyle );
+        }, 
+        yOffset: -15);
 
         GUILayout.Space( 5 );
 
@@ -1043,37 +1024,68 @@ public class DataEditorWindow : EditorWindow
 
             GUILayout.FlexibleSpace();
 
-            GUILayout.Label( "Icon preview" );
+            GUILayout.BeginHorizontal();
+
+            GUILayout.FlexibleSpace();
+
+            GUILayout.Label( "Icon" );
 
             _editedItemIconField = ( Sprite ) EditorGUILayout.ObjectField( _editedItemIconField, typeof( Sprite ), false, new GUILayoutOption []
             {
-                GUILayout.Width( ( subPanelWidth - 15 ) / 2 ),
+                GUILayout.Width( subPanelWidth / 6 ),
             } );
 
-            int iconPreviewSize = 150;
-            float iconPreviewXOffset = subPanelWidth / 4 - ( iconPreviewSize / 2 );
-            float iconPreviewYOffset = ( subPanelHeight / 2 ) - iconPreviewSize / 2 - 10;
+            using ( new EditorGUI.DisabledScope( _editedItemIconField.IsNull() ) )
+            {
+                Helper.DrawButton(
+                    new GUIContent()
+                    {
+                        image = EditorGUIUtility.FindTexture( "d_winbtn_win_close@2x" ),
+                        tooltip = "Erase the selection for this icon field",
+                    },
+                    new GUIStyle( GUI.skin.button )
+                    {
+                        padding = new RectOffset( 0, 0, 0, 0 ),
+                    },
+                    new GUILayoutOption[]
+                    {
+                        GUILayout.Width( 18 ),
+                        GUILayout.Height( 18 ),
+                    },
+                    Color.red,
+                    OnClickingButton: () => _editedItemIconField = null );
+            }
 
-            Rect iconRectPreview = new ( 
-                x: iconPreviewXOffset, 
-                y: iconPreviewYOffset,
-                width: iconPreviewSize, 
-                height: iconPreviewSize );
+            GUILayout.EndHorizontal();
+
+            int iconPreviewSize = 150;
 
             if ( !_editedItemIconField.IsNull() && Event.current.type.Equals( EventType.Repaint ) )
             {
-                Graphics.DrawTexture( iconRectPreview, _editedItemIconField.texture );
+
+                DrawTexture(
+                    _editedItemIconField.texture,
+                    iconPreviewSize,
+                    subPanelWidth / 4,
+                    subPanelHeight / 2,
+                    0,
+                    10 );
             }
             else
             {
-                GUI.Label(
-                    new Rect( iconPreviewXOffset + iconPreviewSize / 4, iconPreviewYOffset, iconPreviewSize, iconPreviewSize ),
-                    "No prefab set." );
+                GUI.Label( new Rect(
+                        x: subPanelWidth / 4 - iconPreviewSize / 4,
+                        y: ( subPanelHeight / 2 ) - iconPreviewSize / 2,
+                        width: iconPreviewSize,
+                        height: iconPreviewSize ),
+                    "No icon set." );
             }
 
             EditorGUILayout.EndVertical();
 
             #endregion
+
+            GUILayout.FlexibleSpace();
 
             #region Prefab field
 
@@ -1081,52 +1093,83 @@ public class DataEditorWindow : EditorWindow
 
             GUILayout.FlexibleSpace();
 
-            GUILayout.Label( "Prefab preview" );
+            GUILayout.BeginHorizontal();
+
+            GUILayout.FlexibleSpace();
+
+            GUILayout.Label( "Prefab" );
 
             _editedItemPrefabField = ( GameObject ) EditorGUILayout.ObjectField( _editedItemPrefabField, typeof( GameObject ), false, new GUILayoutOption []
             {
-                GUILayout.Width( ( subPanelWidth - 15 ) / 2 ),
+                GUILayout.Width( subPanelWidth / 6 ),
             } );
 
+            using ( new EditorGUI.DisabledScope( _editedItemPrefabField.IsNull() ) )
+            {
+                Helper.DrawButton( 
+                    new GUIContent()
+                    {
+                        image = EditorGUIUtility.FindTexture( "d_winbtn_win_close@2x" ),
+                        tooltip = "Erase the selection for this prefab field",
+                    },
+                    new GUIStyle( GUI.skin.button )
+                    {
+                        padding = new RectOffset( 0, 0, 0, 0 ),
+                    },
+                    new GUILayoutOption []
+                    {
+                        GUILayout.Width( 18 ),
+                        GUILayout.Height( 18 ),
+                    },
+                    Color.red,
+                    OnClickingButton: () => _editedItemPrefabField = null );
+
+            }
+
+            GUILayout.EndHorizontal();
+
             int prefabPreviewSize = 150;
-            float prefabPreviewXOffset = subPanelWidth - prefabPreviewSize / 2 - subPanelWidth / 4;
-            float prefabPreviewYOffset = ( subPanelHeight / 2 ) - prefabPreviewSize / 2 - 10;
 
-            Rect prefabRectPreview = new(
-                x: prefabPreviewXOffset,
-                y: prefabPreviewYOffset,
-                width: prefabPreviewSize,
-                height: prefabPreviewSize );
-
-            Texture prefabTexture = _editedItemPrefabField.IsNull() 
-                ? Texture2D.blackTexture
+            Texture prefabTexture = _editedItemPrefabField.IsNull()
+                ? Texture2D.whiteTexture
                 : AssetPreview.GetAssetPreview( _editedItemPrefabField );
 
             if ( !_editedItemPrefabField.IsNull() && Event.current.type.Equals( EventType.Repaint ) )
             {
-                Graphics.DrawTexture( prefabRectPreview, prefabTexture );
+
+                DrawTexture(
+                    prefabTexture,
+                    prefabPreviewSize,
+                    subPanelWidth,
+                    subPanelHeight / 2,
+                    subPanelWidth / 4,
+                    10 );
             }
-            else 
+            else
             {
-                GUI.Label(
-                    new Rect( prefabPreviewXOffset + prefabPreviewSize / 4, prefabPreviewYOffset, prefabPreviewSize, prefabPreviewSize ), 
-                    "No prefab set." ); 
+                GUI.Label( new Rect(
+                        x: subPanelWidth - prefabPreviewSize / 2 - subPanelWidth / 4 + prefabPreviewSize / 4,
+                        y: ( subPanelHeight / 2 ) - prefabPreviewSize / 2,
+                        width: prefabPreviewSize,
+                        height: prefabPreviewSize ),
+                    "No prefab set." );
             }
 
             EditorGUILayout.EndVertical();
 
             #endregion
+
+            GUILayout.FlexibleSpace();
         }
 
         if ( EditorGUI.EndChangeCheck() )
         {
             _editedItemIcon.objectReferenceValue = _editedItemIconField;
+            _editedItemPrefab.objectReferenceValue = _editedItemPrefabField;
 
             PushDatasToScriptableObject();
-
-            Debug.Log( "Save Icon" );
         }
-    }
+    }    
 
     private void PushDatasToScriptableObject()
     {
@@ -1142,12 +1185,13 @@ public class DataEditorWindow : EditorWindow
     {
         using ( new EditorGUI.DisabledScope( _displaySelector == DisplaySelector.Items ) )
         {
-            if ( GUILayout.Button( "Items".ToUpper(), GUILayout.Height( 35 ) ) )
+            Helper.DrawButton( new GUIContent()
             {
-                _displaySelector = DisplaySelector.Items;
-
-                OnDisplayingItemContent();
-            }
+                text = "Items".ToUpper(),
+                tooltip = "Displays item datas",
+            }, 
+            new GUILayoutOption[] { GUILayout.Height( 35 ), },
+            OnClickingButton: () => OnDisplayingContentOfType( DisplaySelector.Items ) );
         }
     }
 
@@ -1155,10 +1199,13 @@ public class DataEditorWindow : EditorWindow
     {
         using ( new EditorGUI.DisabledScope( _displaySelector == DisplaySelector.Competences ) )
         {
-            if ( GUILayout.Button( "Competences".ToUpper(), GUILayout.Height( 35 ) ) )
+            Helper.DrawButton( new GUIContent()
             {
-                _displaySelector = DisplaySelector.Competences;
-            }
+                text = "Competences".ToUpper(),
+                tooltip = "Displays competences datas",
+            },
+           new GUILayoutOption [] { GUILayout.Height( 35 ), },
+           OnClickingButton: () => OnDisplayingContentOfType( DisplaySelector.Competences ) );
         }
     }
 
@@ -1166,32 +1213,32 @@ public class DataEditorWindow : EditorWindow
     {
         using ( new EditorGUI.DisabledScope( _displaySelector == DisplaySelector.Units ) )
         {
-            if ( GUILayout.Button( "Units".ToUpper(), GUILayout.Height( 35 ) ) )
+            Helper.DrawButton( new GUIContent()
             {
-                _displaySelector = DisplaySelector.Units;
-            }
+                text = "Units".ToUpper(),
+                tooltip = "Displays units datas",
+            },
+           new GUILayoutOption [] { GUILayout.Height( 35 ), },
+           OnClickingButton: () => OnDisplayingContentOfType( DisplaySelector.Units ) );
         }
     }
 
-    private void DrawJumpToFileButton( Object contextObject, string fileName )
+    private void DrawJumpToFileButton( Object contextObject )
     {
-        GUIStyle style = new( GUI.skin.button )
+        using ( new EditorGUI.DisabledScope( _displaySelector == DisplaySelector.Units ) )
         {
-            alignment = TextAnchor.MiddleLeft,
-            fontStyle = FontStyle.Bold,
-        };
-
-        string contentText = "Select File";
-        GUIContent content = new()
-        {
-            text = contentText.ToUpper(),
-        };
-
-        Vector2 contentSize = style.CalcSize( content );
-
-        if ( GUILayout.Button( content, style, GUILayout.Width( contentSize.x + 5 ) ) )
-        {
-            Selection.activeObject = contextObject;
+            Helper.DrawButton( new GUIContent()
+            {
+                text = "Select File".ToUpper(),
+                tooltip = "Select the file you are currently editing.",
+            },
+            new GUIStyle( GUI.skin.button )
+            {
+                alignment = TextAnchor.MiddleLeft,
+                fontStyle = FontStyle.Bold,
+            }, 
+            widthOffset: 5,
+           OnClickingButton: () => Selection.activeObject = contextObject );
         }
 
         GUILayout.FlexibleSpace();
@@ -1239,10 +1286,36 @@ public class DataEditorWindow : EditorWindow
         SetRightPanelHeaderLabel( item.Datas.Name );
     }
 
-    private void OnDisplayingItemContent()
+    private void OnDisplayingContentOfType( DisplaySelector displaySelector )
     {
-        Item firstItem = ( Item ) _firstItemObject;
-        FocusThisItemAndDisplayItsDatas( firstItem );
+        _displaySelector = displaySelector;
+
+        switch ( _displaySelector )
+        {
+            case DisplaySelector.Items:
+                Item firstItem = ( Item ) _firstItemObject;
+                FocusThisItemAndDisplayItsDatas( firstItem );
+                break;
+
+            case DisplaySelector.Units:
+                break;
+
+            case DisplaySelector.Competences:
+                break;
+        }
+    }
+
+    private static void DrawTexture( Texture texture, int size, float totalWidth, float totalHeight, float xOffset, float yOffset )
+    {
+        float xPos = totalWidth - size / 2;
+        float yPos = totalHeight - size / 2;
+
+        xPos -= xOffset;
+        yPos -= yOffset;
+
+        Rect rect = new( xPos, yPos, width: size, height: size );
+
+        Graphics.DrawTexture( rect, texture );
     }
 
     void OnInspectorUpdate()
