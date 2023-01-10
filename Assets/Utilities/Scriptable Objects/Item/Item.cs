@@ -79,7 +79,7 @@ namespace dnSR_Coding
         {
             private readonly Item _item;
 
-            public string Name { get; }
+            public string Name { get; set; }
             public int ID { get; }
             public string Description { get; }
 
@@ -174,13 +174,14 @@ namespace dnSR_Coding
             }
         }
 
-        private void Reset()
+        public void Reset()
         {
             _name = "[TYPE HERE]";
-            _id = 0;
+            _id = GetInstanceID();
             _description = "[TYPE HERE]";
 
             _canBeEquipped = false;
+            _rarity = Rarity.Unassigned;
             _linkedBodyPart = LinkedBodyPart.Unassigned;
 
             _isStackable = false;
@@ -188,7 +189,9 @@ namespace dnSR_Coding
             _maxStackSize = 1;
 
             _hasStats = false;
-            //_stats.Clear();
+
+            _stats.Clear();
+            CreateStatEntriesInEditor();
 
             _icon = null;
             _prefab = null;

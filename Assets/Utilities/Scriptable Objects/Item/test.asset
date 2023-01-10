@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b80bbecfdd3cdb64a87bc1897740f49c, type: 3}
   m_Name: test
   m_EditorClassIdentifier: 
-  _name: test
-  _id: 32860
+  _name: '[TYPE HERE]'
+  _id: 32752
   _description: '[TYPE HERE]'
   _rarity: 0
   _canBeEquipped: 0
@@ -22,7 +22,7 @@ MonoBehaviour:
   _isStackable: 0
   _stackSize: 1
   _maxStackSize: 1
-  _hasStats: 1
+  _hasStats: 0
   _stats:
   - Name: Strength
     _type: 1
@@ -34,3 +34,4 @@ MonoBehaviour:
     _type: 3
     _points: 0
   _icon: {fileID: 0}
+  _prefab: {fileID: 0}

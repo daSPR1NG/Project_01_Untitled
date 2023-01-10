@@ -141,6 +141,8 @@ namespace dnSR_Coding.Utilities
 
         #region OnGui helpers
 
+        #region Drawing a button - surcharge options
+
         public static void DrawButton(
            GUIContent content = default,                                            // Content
            GUIStyle style = default,                                                // Style
@@ -194,6 +196,16 @@ namespace dnSR_Coding.Utilities
            System.Action OnClickingButton = null )                                  // Execution
         {
             if ( GUILayout.Button( content, options ) )
+            {
+                OnClickingButton?.Invoke();
+            }
+        }
+
+        public static void DrawButton(
+           GUIContent content = default,                                            // Content
+           System.Action OnClickingButton = null )                                  // Execution
+        {
+            if ( GUILayout.Button( content ) )
             {
                 OnClickingButton?.Invoke();
             }
@@ -214,6 +226,8 @@ namespace dnSR_Coding.Utilities
             }
         }
 
+        #endregion
+
         public static void DrawLabel( string content, bool toUpper = false, GUIStyle style = default, int yOffset = 0 )
         {
             GUIContent labelContent = new()
@@ -224,6 +238,29 @@ namespace dnSR_Coding.Utilities
             GUILayout.Space( yOffset );
 
             GUILayout.Label( labelContent, style );
+        }
+
+        public static void DrawLabel( string content, bool toUpper = false )
+        {
+            GUIContent labelContent = new()
+            {
+                text = toUpper ? content.ToUpper() : content,
+            };
+
+            GUILayout.Label( labelContent );
+        }
+
+        public static void DrawTexture( Texture texture, int size, float totalWidth, float totalHeight, float xOffset, float yOffset )
+        {
+            float xPos = totalWidth - size / 2;
+            float yPos = totalHeight - size / 2;
+
+            xPos -= xOffset;
+            yPos -= yOffset;
+
+            Rect rect = new( xPos, yPos, width: size, height: size );
+
+            Graphics.DrawTexture( rect, texture );
         }
 
         #endregion

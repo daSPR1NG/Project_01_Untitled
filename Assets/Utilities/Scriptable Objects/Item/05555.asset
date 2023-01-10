@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b80bbecfdd3cdb64a87bc1897740f49c, type: 3}
   m_Name: 05555
   m_EditorClassIdentifier: 
-  _name: aazaaa
-  _id: 32858
+  _name: '[TYPE HERE]'
+  _id: 32750
   _description: '[TYPE HERE]'
   _rarity: 0
   _canBeEquipped: 0
@@ -34,3 +34,4 @@ MonoBehaviour:
     _type: 3
     _points: 0
   _icon: {fileID: 0}
+  _prefab: {fileID: 0}

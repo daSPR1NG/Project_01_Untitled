@@ -1,7 +1,9 @@
 using dnSR_Coding;
 using dnSR_Coding.Utilities;
 using UnityEditor;
+using UnityEditor.Graphs;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DataEditorWindow : EditorWindow
 {
@@ -16,19 +18,17 @@ public class DataEditorWindow : EditorWindow
     private Vector2 _middleSectionScrollPos;
     private int _middleSectionSelectedButtonIndex = 0;
 
-    private const string ITEM_SCRIPTABLEOBJECT_PATH = "Assets/Utilities/Scriptable Objects/Item/";
-    private string _newFileNameField = null;
+    private const string ITEM_SCRIPTABLE_OBJECTS_CREATION_PATH = "Assets/Utilities/Scriptable Objects/Item/";
+    private string _newFileNameFieldRegister = null;
 
     private string _rightPanelHeaderTitle;
 
-    private Object _activeContextObject = null;
+    private Object _activeEditedObject = null;
 
+    private Texture2D _resetIcon = null;
     #region Items variables
     string [] _itemGuids = null;
     int _itemGuidsCountOnOppeningWindow = 0;
-
-    private string _firstItemPath = null;
-    private Object _firstItemObject;
 
     private Item _editedItem = null;
     private SerializedObject _editedItemSOReference = null;
@@ -56,7 +56,7 @@ public class DataEditorWindow : EditorWindow
     private bool? _editedItemHasStatsField;
     private int? _editedItemStrengthStatField, _editedItemEnduranceStatField, _editedItemDexterityStatField;
 
-    private string _descriptionSize;
+    private string _descriptionSizeInfo;
 
     #endregion
 
@@ -72,13 +72,15 @@ public class DataEditorWindow : EditorWindow
         window.maxSize = new Vector2( 1350, 600 );
     }
 
-    private void OnEnable()
-    {
-        OnOppeningWindow();       
-    }
+    private void OnEnable() => OnOppeningWindow();
 
     private void OnOppeningWindow()
     {
+        _resetIcon = ( Texture2D ) AssetDatabase.LoadAssetAtPath(
+            "Assets/Utilities/Editor/Icons/Spr_Editor_Reset_White.png",
+            typeof( Texture2D ) );
+        Debug.Log( _resetIcon.name );
+
         _displaySelector = DisplaySelector.Items;
 
         // Find all the component of type obj and store them as button...
@@ -86,10 +88,10 @@ public class DataEditorWindow : EditorWindow
         _itemGuidsCountOnOppeningWindow = _itemGuids.Length;
 
         // Get the first obj guid...
-        _firstItemPath = AssetDatabase.GUIDToAssetPath( _itemGuids [ 0 ] );
+        string firstItemPath = AssetDatabase.GUIDToAssetPath( _itemGuids [ 0 ] );
 
         //Convert it to Object and set active context object...
-        _firstItemObject = AssetDatabase.LoadAssetAtPath( _firstItemPath, typeof( Object ) );
+        _activeEditedObject = AssetDatabase.LoadAssetAtPath( firstItemPath, typeof( Object ) );
         OnDisplayingContentOfType( DisplaySelector.Items );
     }
 
@@ -107,29 +109,7 @@ public class DataEditorWindow : EditorWindow
             DrawRightPanelHeader( LEFT_PANEL_HEADER_WIDTH + MIDDLE_PANEL_HEADER_WIDTH );
             DrawRightPanel( LEFT_PANEL_HEADER_WIDTH + MIDDLE_PANEL_HEADER_WIDTH );
         }
-    }
-
-    private void HandleNullSelection()
-    {
-        if ( _activeContextObject.IsNull() ) { _middleSectionSelectedButtonIndex = 0; }
-
-        switch ( _displaySelector )
-        {
-            case DisplaySelector.Items:
-                if ( _editedItem.IsNull() )
-                {
-                    Item firstItem = ( Item ) _firstItemObject;
-                    FocusThisItemAndDisplayItsDatas( firstItem );
-                }
-                break;
-
-            case DisplaySelector.Units:
-                break;
-
-            case DisplaySelector.Competences:
-                break;
-        }
-    }
+    }    
 
     /// <summary>
     /// Draws the left panel, it shows button to navigate from one display to another.
@@ -143,16 +123,17 @@ public class DataEditorWindow : EditorWindow
 
         GUILayout.Space( -15f );
 
-        OnClickingItemButtonInLeftPanel();
-        OnClickingUnitButtonInLeftPanel();
-        OnClickingCompetencesButtonInLeftPanel();
+        DrawButtonsInLeftPanel();
 
         GUILayout.EndVertical();
         GUILayout.EndArea();
     }
 
-    #region Middle Panel
+    #region MIDDLE PANEL
 
+   /// <summary>
+   /// Draws the header's title for the middle panel, it is based on displaySelector value.
+   /// </summary>
     private void DrawMiddlePanelHeader( float xOffset, DisplaySelector displaySelector )
     {
         float width = MIDDLE_PANEL_HEADER_WIDTH;
@@ -190,6 +171,10 @@ public class DataEditorWindow : EditorWindow
         GUILayout.EndArea();
     }
 
+    /// <summary>
+    /// Draws the middle panel, it shows all the files correspoding to _displaySelector.
+    /// User can navigate from one file to another to edit them properly.
+    /// </summary>
     private void DrawMiddlePanel( float xOffset, float yOffset, DisplaySelector displaySelector )
     {
         float width = MIDDLE_PANEL_HEADER_WIDTH;
@@ -232,16 +217,16 @@ public class DataEditorWindow : EditorWindow
 
             if ( GUILayout.Button( createItemButtonContent, createItemButtonStyle ) )
             {
-                Debug.Log( "Create new Item : " + _newFileNameField );
+                Debug.Log( "Create new Item : " + _newFileNameFieldRegister );
 
-                Item newItem = new ( _newFileNameField );
+                Item newItem = new ( _newFileNameFieldRegister );
 
-                if ( ITEM_SCRIPTABLEOBJECT_PATH.IsNull() )
+                if ( ITEM_SCRIPTABLE_OBJECTS_CREATION_PATH.IsNull() )
                 {
-                    Debug.LogError( "The folder of path : " + ITEM_SCRIPTABLEOBJECT_PATH + " has not been found, please create this path before trying to create an item" );
+                    Debug.LogError( "The folder of path : " + ITEM_SCRIPTABLE_OBJECTS_CREATION_PATH + " has not been found, please create this path before trying to create an item" );
                 }
 
-                AssetDatabase.CreateAsset( newItem, ITEM_SCRIPTABLEOBJECT_PATH + _newFileNameField + ".asset" );
+                AssetDatabase.CreateAsset( newItem, ITEM_SCRIPTABLE_OBJECTS_CREATION_PATH + _newFileNameFieldRegister + ".asset" );
 
                 string createdItem = AssetDatabase.GetAssetPath( newItem );
 
@@ -255,17 +240,20 @@ public class DataEditorWindow : EditorWindow
             }
 
             // New File label next to the create button
-            if ( _newFileNameField.IsNull() ) { _newFileNameField = "New file Name"; }
-            _newFileNameField = EditorGUILayout.TextField( _newFileNameField );
+            if ( _newFileNameFieldRegister.IsNull() ) { _newFileNameFieldRegister = "New file Name"; }
+            _newFileNameFieldRegister = EditorGUILayout.TextField( _newFileNameFieldRegister );
         }
 
         GUILayout.EndArea();
     }
 
+    /// <summary>
+    /// Draw all the button, as entry, corresponding to every files matching _displaySelector type.
+    /// </summary>
     private void DrawMiddlePanelItemEntries()
     {
         // Then set reference for the obj currently edited
-        if ( _editedItem.IsNull() ) { SetSelectedItem( ( Item ) _firstItemObject ); }
+        if ( _editedItem.IsNull() ) { SetSelectedItem( ( Item ) _activeEditedObject ); }
 
         for ( int i = 0; i < _itemGuids.Length; i++ )
         {
@@ -282,11 +270,6 @@ public class DataEditorWindow : EditorWindow
             {
                 string buttonText = item.Datas.Name;
 
-                if ( _middleSectionSelectedButtonIndex == i )
-                {
-                    buttonText = _editedItemName.stringValue;
-                }
-
                 Helper.DrawButton( 
                     new GUIContent() { text = buttonText, },
                     new GUIStyle( GUI.skin.button ) { alignment = TextAnchor.MiddleLeft, },
@@ -295,15 +278,21 @@ public class DataEditorWindow : EditorWindow
                     {
                         _middleSectionSelectedButtonIndex = i;
                         FocusThisItemAndDisplayItsDatas( item );
+                        Selection.activeObject = _activeEditedObject;
                         EditorGUI.FocusTextInControl( null );
                     } );
             }            
         }
-    }   
+    }
 
     #endregion
 
-    #region Right Panel
+    #region RIGHT PANEL
+
+    #region Header
+    /// <summary>
+    /// Draw the right panel header title corresponding to _rightPanelHeaderTitle
+    /// </summary>
     private void DrawRightPanelHeader( float xOffset )
     {
         float width = position.width - ( xOffset );
@@ -313,27 +302,32 @@ public class DataEditorWindow : EditorWindow
         GUILayout.BeginArea( panelSize, GUI.skin.box );
         GUILayout.BeginHorizontal( GUI.skin.textArea );
 
-        GUIStyle style = new( GUI.skin.label )
+        Helper.DrawLabel( _rightPanelHeaderTitle, false, new GUIStyle( GUI.skin.label )
         {
             alignment = TextAnchor.MiddleLeft,
             fontStyle = FontStyle.Bold,
             fontSize = 13,
-        };
+        } );
 
-        GUILayout.Label( _rightPanelHeaderTitle, style );
-
-        DrawJumpToFileButton( _activeContextObject );
+        DrawSelectFileButton( _activeEditedObject );
 
         GUILayout.EndHorizontal();
         GUILayout.EndArea();
     }
+    private void SetRightPanelHeaderLabel( string newTitleValue )
+    {
+        _rightPanelHeaderTitle = newTitleValue;
+    }
+    #endregion
 
+    /// <summary>
+    /// Draws the right panel corresponding to _displaySelector type.
+    /// </summary>
     private void DrawRightPanel( float xOffset )
     {
         switch ( _displaySelector )
         {
-            case DisplaySelector.Items:
-                DrawItemsPanelContent( xOffset );
+            case DisplaySelector.Items: DrawItemContent( xOffset );
                 break;
             case DisplaySelector.Units:
                 break;
@@ -342,16 +336,127 @@ public class DataEditorWindow : EditorWindow
         }
     }
 
-    private void SetRightPanelHeaderLabel( string newTitleValue )
+    #endregion
+
+    #region ITEMS CONTENT
+
+    #region Item initialization
+
+    private void InitializeItemProperties( bool withFieldReset = false )
     {
-        _rightPanelHeaderTitle = newTitleValue;
+        Debug.Log( "InitializeItemProperties" );
+
+        if ( withFieldReset ) { ResetEditedItemFields(); }
+
+        #region Infos
+
+        // Name
+        _editedItemName = _editedItemSOReference.FindProperty( "_name" );
+        _editedItemNameField ??= _editedItemName.stringValue;
+
+        // ID
+        _editedItemID = _editedItemSOReference.FindProperty( "_id" );
+        if ( _editedItemID.intValue != _editedItem.GetInstanceID() )
+        {
+            _editedItemID.intValue = _editedItem.GetInstanceID();
+            _editedItemSOReference.ApplyModifiedProperties();
+        }
+
+        // Description
+        _editedItemDescription = _editedItemSOReference.FindProperty( "_description" );
+        _editedItemDescriptionField ??= _editedItemDescription.stringValue;
+
+        #endregion
+
+        #region Visuals
+
+        // Icon
+        _editedItemIcon = _editedItemSOReference.FindProperty( "_icon" );
+        _editedItemIconField ??= ( Sprite ) _editedItemIcon.objectReferenceValue;
+
+        // Prefab
+        _editedItemPrefab = _editedItemSOReference.FindProperty( "_prefab" );
+        _editedItemPrefabField ??= ( GameObject ) _editedItemPrefab.objectReferenceValue;
+
+        #endregion
+
+        #region Settings
+
+        // Rarity
+        _editedItemRarity = _editedItemSOReference.FindProperty( "_rarity" );
+        _editedItemRarityField ??= ( Rarity? ) _editedItemRarity.enumValueFlag;
+
+        // Can be equipped
+        _editedItemCanBeEquipped = _editedItemSOReference.FindProperty( "_canBeEquipped" );
+        _editedItemCanBeEquippedField ??= _editedItemCanBeEquipped.boolValue;
+
+        // Linked body part
+        _editedItemLinkedBodyPart = _editedItemSOReference.FindProperty( "_linkedBodyPart" );
+        _editedItemLinkedBodyPartField ??= ( LinkedBodyPart? ) _editedItemLinkedBodyPart.enumValueIndex;
+
+        // Is Stackable
+        _editedItemIsStackable = _editedItemSOReference.FindProperty( "_isStackable" );
+        _editedItemIsStackableField ??= _editedItemIsStackable.boolValue;
+
+        // Max Stack Size
+        _editedItemMaxStackSize = _editedItemSOReference.FindProperty( "_maxStackSize" );
+        _editedItemMaxStackSizeField ??= _editedItemMaxStackSize.intValue;
+
+        // Has Stats
+        _editedItemHasStats = _editedItemSOReference.FindProperty( "_hasStats" );
+        _editedItemHasStatsField ??= _editedItemHasStats.boolValue;
+
+        //Stats List
+        InitializeStatProperty( StatType.Strength );
+        InitializeStatProperty( StatType.Endurance );
+        InitializeStatProperty( StatType.Dexterity );
+
+        #endregion
+    }
+
+    private void InitializeStatProperty( StatType statType )
+    {
+        switch ( statType )
+        {
+            case StatType.Strength:
+                _editedItemStrengthStat = 
+                    _editedItemSOReference.FindProperty( "_stats" ).GetArrayElementAtIndex( 0 ).FindPropertyRelative( "_points" );
+
+                if ( _editedItemStrengthStatField.IsNull() )
+                {
+                    _editedItemStrengthStatField = _editedItemStrengthStat.intValue;
+                }
+                break;
+
+            case StatType.Endurance:
+                _editedItemEnduranceStat = 
+                    _editedItemSOReference.FindProperty( "_stats" ).GetArrayElementAtIndex( 1 ).FindPropertyRelative( "_points" );
+
+                Debug.Log( _editedItemEnduranceStat.intValue );
+
+                if ( _editedItemEnduranceStatField.IsNull() )
+                {
+                    _editedItemEnduranceStatField = _editedItemEnduranceStat.intValue;
+                }
+                break;
+
+            case StatType.Dexterity:
+                _editedItemDexterityStat =
+                    _editedItemSOReference.FindProperty( "_stats" ).GetArrayElementAtIndex( 2 ).FindPropertyRelative( "_points" );
+
+                if ( _editedItemDexterityStatField.IsNull() )
+                {
+                    _editedItemDexterityStatField = _editedItemDexterityStat.intValue;
+                }
+                break;
+        }
     }
 
     #endregion
 
-    #region Items Panel Content
+    #region Item drawer methods
 
-    private void DrawItemsPanelContent( float xOffset )
+    private void DrawItemContent( float xOffset )
     {
         float width = position.width - ( xOffset );
         float yOffset = RIGHT_PANEL_HEADER_HEIGHT;
@@ -361,13 +466,13 @@ public class DataEditorWindow : EditorWindow
         GUILayout.BeginArea( panelSize, GUI.skin.box );
         GUILayout.BeginVertical( GUI.skin.window );
 
-        ItemSubPanelDrawerHelper( width );
+        DrawItemSubPanels( width );
 
         GUILayout.EndVertical();
         GUILayout.EndArea();        
     }
 
-    private void ItemSubPanelDrawerHelper( float parentWidth )
+    private void DrawItemSubPanels( float parentWidth )
     {
         for ( int i = 0; i < 3; i++ )
         {
@@ -420,11 +525,11 @@ public class DataEditorWindow : EditorWindow
                     break;
             }
 
-            DrawItemsSubPanel( i, subPanelText, subPanelXOffset, subPanelYOffset, subPanelWidth, subPanelHeight );
+            DrawItemSubPanelsContent( i, subPanelText, subPanelXOffset, subPanelYOffset, subPanelWidth, subPanelHeight );
         }
     }
 
-    private void DrawItemsSubPanel( int index, string panelName, float xPos, float yPos, float totalWidth, float totalHeight )
+    private void DrawItemSubPanelsContent( int index, string panelName, float xPos, float yPos, float totalWidth, float totalHeight )
     {
         float recalculatedWidth = totalWidth / 2;
         float recalculatedHeight = totalHeight / 2;
@@ -464,165 +569,6 @@ public class DataEditorWindow : EditorWindow
         GUILayout.EndArea();
     }
 
-    private void SetItemSerializedObjectReferences( bool withFieldReset = false )
-    {
-        Debug.Log( "SetItemSerializedObjectReferences" );
-
-        if ( withFieldReset )
-        {
-            _editedItemNameField = null;
-            _editedItemIDField = _editedItem.GetInstanceID();
-            _editedItemDescriptionField = null;
-
-            _editedItemIconField = null;
-            _editedItemPrefabField = null;
-
-            _editedItemCanBeEquippedField = null;
-            _editedItemRarityField = null;
-            _editedItemLinkedBodyPartField = null;
-
-            _editedItemIsStackableField = null;
-            _editedItemMaxStackSizeField = null;
-
-            _editedItemHasStatsField = null;
-
-            _editedItemStrengthStatField = null;
-            _editedItemEnduranceStatField = null;
-            _editedItemDexterityStatField = null;
-        }
-
-        #region Infos
-
-        // Name
-        _editedItemName = _editedItemSOReference.FindProperty( "_name" );
-        if ( _editedItemNameField.IsNull() )
-        {
-            _editedItemNameField = _editedItemName.stringValue;
-        }
-
-        // ID
-        _editedItemID = _editedItemSOReference.FindProperty( "_id" );
-        if ( _editedItemID.intValue != _editedItem.GetInstanceID() )
-        {
-            _editedItemID.intValue = _editedItem.GetInstanceID();
-            _editedItemSOReference.ApplyModifiedProperties();
-        }
-
-        // Description
-        _editedItemDescription = _editedItemSOReference.FindProperty( "_description" );
-        if ( _editedItemDescriptionField.IsNull() )
-        {
-            _editedItemDescriptionField = _editedItemDescription.stringValue;
-        }
-
-        #endregion
-        #region Visuals
-
-        // Icon
-        _editedItemIcon = _editedItemSOReference.FindProperty( "_icon" );
-        if ( _editedItemIconField.IsNull() )
-        {
-            _editedItemIconField = ( Sprite ) _editedItemIcon.objectReferenceValue;
-        }
-
-        // Prefab
-        _editedItemPrefab = _editedItemSOReference.FindProperty( "_prefab" );
-        if ( _editedItemPrefabField.IsNull() )
-        {
-            _editedItemPrefabField = ( GameObject ) _editedItemPrefab.objectReferenceValue;
-        }
-
-        #endregion
-        #region Settings
-
-        // Rarity
-        _editedItemRarity = _editedItemSOReference.FindProperty( "_rarity" );
-        if ( _editedItemRarityField.IsNull() )
-        {
-            _editedItemRarityField = ( Rarity? ) _editedItemRarity.enumValueFlag;
-        }
-
-        // Can be equipped
-        _editedItemCanBeEquipped = _editedItemSOReference.FindProperty( "_canBeEquipped" );
-        if ( _editedItemCanBeEquippedField.IsNull() )
-        {
-            _editedItemCanBeEquippedField = _editedItemCanBeEquipped.boolValue;
-        }
-
-        // Linked body part
-        _editedItemLinkedBodyPart = _editedItemSOReference.FindProperty( "_linkedBodyPart" );
-        if ( _editedItemLinkedBodyPartField.IsNull() )
-        {
-            _editedItemLinkedBodyPartField = ( LinkedBodyPart? ) _editedItemLinkedBodyPart.enumValueIndex;
-        }
-
-        // Is Stackable
-        _editedItemIsStackable = _editedItemSOReference.FindProperty( "_isStackable" );
-        if ( _editedItemIsStackableField.IsNull() )
-        {
-            _editedItemIsStackableField = _editedItemIsStackable.boolValue;
-        }
-
-        // Max Stack Size
-        _editedItemMaxStackSize = _editedItemSOReference.FindProperty( "_maxStackSize" );
-        if ( _editedItemMaxStackSizeField.IsNull() )
-        {
-            _editedItemMaxStackSizeField = _editedItemMaxStackSize.intValue;
-        }
-
-        // Has Stats
-        _editedItemHasStats = _editedItemSOReference.FindProperty( "_hasStats" );
-        if ( _editedItemHasStatsField.IsNull() )
-        {
-            _editedItemHasStatsField = _editedItemHasStats.boolValue;
-        }
-
-        //Stats List
-        SetStatSerializedProperty( StatType.Strength );
-        SetStatSerializedProperty( StatType.Endurance );
-        SetStatSerializedProperty( StatType.Dexterity );
-
-        #endregion
-    }
-
-    private void SetStatSerializedProperty( StatType statType )
-    {
-        switch ( statType )
-        {
-            case StatType.Strength:
-                _editedItemStrengthStat = 
-                    _editedItemSOReference.FindProperty( "_stats" ).GetArrayElementAtIndex( 0 ).FindPropertyRelative( "_points" );
-
-                if ( _editedItemStrengthStatField.IsNull() )
-                {
-                    _editedItemStrengthStatField = _editedItemStrengthStat.intValue;
-                }
-                break;
-
-            case StatType.Endurance:
-                _editedItemEnduranceStat = 
-                    _editedItemSOReference.FindProperty( "_stats" ).GetArrayElementAtIndex( 1 ).FindPropertyRelative( "_points" );
-
-                Debug.Log( _editedItemEnduranceStat.intValue );
-
-                if ( _editedItemEnduranceStatField.IsNull() )
-                {
-                    _editedItemEnduranceStatField = _editedItemEnduranceStat.intValue;
-                }
-                break;
-
-            case StatType.Dexterity:
-                _editedItemDexterityStat =
-                    _editedItemSOReference.FindProperty( "_stats" ).GetArrayElementAtIndex( 2 ).FindPropertyRelative( "_points" );
-
-                if ( _editedItemDexterityStatField.IsNull() )
-                {
-                    _editedItemDexterityStatField = _editedItemDexterityStat.intValue;
-                }
-                break;
-        }
-    }
-
     private void DrawItemInfosContent( float subPanelWidth, float subPanelHeight )
     {
         EditorGUI.BeginChangeCheck();
@@ -639,11 +585,28 @@ public class DataEditorWindow : EditorWindow
         EditorGUILayout.BeginVertical();
         EditorGUILayout.BeginHorizontal();
 
-        GUILayout.Label( "Name" );
+        Helper.DrawLabel( "Name", false );
 
-        _editedItemNameField = EditorGUILayout.TextField( _editedItemNameField );        
+        _editedItemNameField = EditorGUILayout.TextField( _editedItemNameField );
 
-        GUILayout.Label( "ID" );
+        Helper.DrawButton(
+            new GUIContent()
+            {
+                image = _resetIcon,
+                tooltip = "Reset name",
+            },
+            new GUIStyle( GUI.skin.button )
+            {
+                padding = new RectOffset( 2, 2, 2, 2 ),
+            },
+            new GUILayoutOption []
+            {
+                GUILayout.Width( 18 ),
+                GUILayout.Height( 18 ),
+            },
+            OnClickingButton: () => _editedItemNameField = "[TYPE HERE]" );
+
+        Helper.DrawLabel( "ID", true );        
 
         using ( new EditorGUI.DisabledGroupScope( true ) )
         {
@@ -654,31 +617,40 @@ public class DataEditorWindow : EditorWindow
 
         GUILayout.Space( 5 );
 
-        _descriptionSize = _editedItemDescriptionField.IsNull() ? "" : _editedItemDescriptionField.Length.ToString();
-        string size = "Size : " + _descriptionSize;
+        _descriptionSizeInfo = _editedItemDescriptionField.IsNull() ? "" : _editedItemDescriptionField.Length.ToString();
+        string size = "Size : " + _descriptionSizeInfo;
         GUILayout.Label( "Description - " + size );
 
         _editedItemDescriptionField = EditorGUILayout.TextArea( _editedItemDescriptionField, new GUILayoutOption [] 
         {
             GUILayout.Width( subPanelWidth - 15 ),
-            GUILayout.Height( subPanelHeight / 1.425f ) 
+            GUILayout.Height( subPanelHeight / 1.525f ) 
         } );
+
+        GUILayout.Space( 2 );
+
+        Helper.DrawButton( 
+            new GUIContent() { text = "Reset description", },
+            new GUILayoutOption[] { GUILayout.Width( 125 ), },
+            OnClickingButton: () => _editedItemDescriptionField = "[TYPE HERE]" );
 
         EditorGUILayout.EndVertical();
 
         if ( EditorGUI.EndChangeCheck() )
         {
-            _descriptionSize = _editedItemDescriptionField.Length.ToString();
+            _descriptionSizeInfo = _editedItemDescriptionField.Length.ToString();
 
             _editedItemName.stringValue = _editedItemNameField;
             _editedItemID.intValue = _editedItemIDField.Value;
             _editedItemDescription.stringValue = _editedItemDescriptionField;
 
-            PushDatasToScriptableObject();
+            PushDatasToScriptableObject( DisplaySelector.Items );
 
             SetRightPanelHeaderLabel( _editedItemName.stringValue );
         }
     }
+
+    #region Item settings - General infos / stack / stats / visuals
 
     private void DrawItemSettingsContent( float subPanelWidth, float subPanelHeight )
     {
@@ -860,9 +832,9 @@ public class DataEditorWindow : EditorWindow
                    "Yes, Reset all",
                    "Cancel" ) )
                 {
-                    ResetStatPoint( StatType.Strength );
-                    ResetStatPoint( StatType.Endurance );
-                    ResetStatPoint( StatType.Dexterity );
+                    ResetItemStatPoint( StatType.Strength );
+                    ResetItemStatPoint( StatType.Endurance );
+                    ResetItemStatPoint( StatType.Dexterity );
                 }
             } );
 
@@ -904,7 +876,7 @@ public class DataEditorWindow : EditorWindow
             _editedItemEnduranceStat.intValue = _editedItemEnduranceStatField.Value;
             _editedItemDexterityStat.intValue = _editedItemDexterityStatField.Value;
 
-            PushDatasToScriptableObject();
+            PushDatasToScriptableObject( DisplaySelector.Items );
         }
     }
 
@@ -930,7 +902,7 @@ public class DataEditorWindow : EditorWindow
         }
 
         string labelContent = statType.ToString().ToUpper() + statTypeAbreviation;
-        GUILayout.Label( labelContent.ToUpper(), new GUIStyle( GUI.skin.label )
+        Helper.DrawLabel( labelContent, true, new GUIStyle( GUI.skin.label )
         {
             fontSize = 12,
         } );
@@ -960,12 +932,10 @@ public class DataEditorWindow : EditorWindow
                 break;
         }
 
-        Texture2D resetIndividualStatButtonTexture = ( Texture2D ) AssetDatabase.LoadAssetAtPath( "Assets/Utilities/Editor/Icons/Spr_Editor_Reset_White.png", typeof( Texture2D ) );
-
         Helper.DrawButton(
             new GUIContent()
             {
-                image = resetIndividualStatButtonTexture,
+                image = _resetIcon,
                 tooltip = "Reset points of stat " + statType.ToString(),
             },
             new GUIStyle( GUI.skin.button )
@@ -977,12 +947,12 @@ public class DataEditorWindow : EditorWindow
                 GUILayout.Width( 18 ),
                 GUILayout.Height( 18 ),
             },
-            OnClickingButton: () => ResetStatPoint( statType ) );
+            OnClickingButton: () => ResetItemStatPoint( statType ) );
 
         GUILayout.EndHorizontal();
     }
 
-    private void ResetStatPoint( StatType statType )
+    private void ResetItemStatPoint( StatType statType )
     {
         switch ( statType )
         {
@@ -1063,7 +1033,7 @@ public class DataEditorWindow : EditorWindow
             if ( !_editedItemIconField.IsNull() && Event.current.type.Equals( EventType.Repaint ) )
             {
 
-                DrawTexture(
+                Helper.DrawTexture(
                     _editedItemIconField.texture,
                     iconPreviewSize,
                     subPanelWidth / 4,
@@ -1137,7 +1107,7 @@ public class DataEditorWindow : EditorWindow
             if ( !_editedItemPrefabField.IsNull() && Event.current.type.Equals( EventType.Repaint ) )
             {
 
-                DrawTexture(
+                Helper.DrawTexture(
                     prefabTexture,
                     prefabPreviewSize,
                     subPanelWidth,
@@ -1167,104 +1137,63 @@ public class DataEditorWindow : EditorWindow
             _editedItemIcon.objectReferenceValue = _editedItemIconField;
             _editedItemPrefab.objectReferenceValue = _editedItemPrefabField;
 
-            PushDatasToScriptableObject();
+            PushDatasToScriptableObject( DisplaySelector.Items );
         }
-    }    
-
-    private void PushDatasToScriptableObject()
-    {
-        _editedItemSOReference.ApplyModifiedProperties();
-        _editedItem.Datas = new Item.ItemDatas( _editedItem );
     }
 
     #endregion
 
-    #region Buttons
+    #endregion    
 
-    private void OnClickingItemButtonInLeftPanel()
+    #endregion
+
+    #region BUTTONS
+
+    private void DrawButtonsInLeftPanel()
     {
-        using ( new EditorGUI.DisabledScope( _displaySelector == DisplaySelector.Items ) )
+        int selectionTypeAmount = Helper.GetEnumLength( typeof( DisplaySelector ) );
+
+        for ( int i = 0; i < selectionTypeAmount; i++ )
         {
-            Helper.DrawButton( new GUIContent()
+            string buttonText = ( ( DisplaySelector ) i ).ToString().ToUpper();
+            string buttonTooltip = "Display " + buttonText + " content";
+
+            using ( new EditorGUI.DisabledScope( _displaySelector == ( DisplaySelector ) i ) )
             {
-                text = "Items".ToUpper(),
-                tooltip = "Displays item datas",
-            }, 
-            new GUILayoutOption[] { GUILayout.Height( 35 ), },
-            OnClickingButton: () => OnDisplayingContentOfType( DisplaySelector.Items ) );
+                Helper.DrawButton( new GUIContent()
+                {
+                    text = buttonText,
+                    tooltip = buttonTooltip,
+                },
+                new GUILayoutOption [] { GUILayout.Height( 35 ), },
+                OnClickingButton: () => OnDisplayingContentOfType( ( DisplaySelector ) i ) );
+            }
         }
     }
 
-    private void OnClickingCompetencesButtonInLeftPanel()
+    private void DrawSelectFileButton( Object contextObject )
     {
-        using ( new EditorGUI.DisabledScope( _displaySelector == DisplaySelector.Competences ) )
+        Helper.DrawButton( new GUIContent()
         {
-            Helper.DrawButton( new GUIContent()
-            {
-                text = "Competences".ToUpper(),
-                tooltip = "Displays competences datas",
-            },
-           new GUILayoutOption [] { GUILayout.Height( 35 ), },
-           OnClickingButton: () => OnDisplayingContentOfType( DisplaySelector.Competences ) );
-        }
-    }
-
-    private void OnClickingUnitButtonInLeftPanel()
-    {
-        using ( new EditorGUI.DisabledScope( _displaySelector == DisplaySelector.Units ) )
+            text = "Select File".ToUpper(),
+            tooltip = "Select the file you are currently editing.",
+        },
+        new GUIStyle( GUI.skin.button )
         {
-            Helper.DrawButton( new GUIContent()
-            {
-                text = "Units".ToUpper(),
-                tooltip = "Displays units datas",
-            },
-           new GUILayoutOption [] { GUILayout.Height( 35 ), },
-           OnClickingButton: () => OnDisplayingContentOfType( DisplaySelector.Units ) );
-        }
-    }
-
-    private void DrawJumpToFileButton( Object contextObject )
-    {
-        using ( new EditorGUI.DisabledScope( _displaySelector == DisplaySelector.Units ) )
-        {
-            Helper.DrawButton( new GUIContent()
-            {
-                text = "Select File".ToUpper(),
-                tooltip = "Select the file you are currently editing.",
-            },
-            new GUIStyle( GUI.skin.button )
-            {
-                alignment = TextAnchor.MiddleLeft,
-                fontStyle = FontStyle.Bold,
-            }, 
-            widthOffset: 5,
-           OnClickingButton: () => Selection.activeObject = contextObject );
-        }
+            alignment = TextAnchor.MiddleLeft,
+            fontStyle = FontStyle.Bold,
+        },
+        widthOffset: 5,
+        OnClickingButton: () => Selection.activeObject = contextObject );
 
         GUILayout.FlexibleSpace();
     }
 
     #endregion
 
-    #region Helpers
+    #region HELPERS
 
-    private void TryToRefreshItemGuids()
-    {
-        if ( AssetDatabase.FindAssets( "t:item", null ).Length > _itemGuidsCountOnOppeningWindow )
-        {
-            Debug.Log( "An Item has been created or removed, item guids need to be updated." );
-            _itemGuids = AssetDatabase.FindAssets( "t:item", null );            
-        }
-    }
-
-    private void SetActiveContextObject( Object obj )
-    {
-        if ( _activeContextObject != obj )
-        {
-            _activeContextObject = obj;
-            Debug.Log( "Active contect object : " + _activeContextObject.name );
-        }
-    }
+    #region Item related
 
     private void SetSelectedItem( Item item )
     {
@@ -1282,8 +1211,73 @@ public class DataEditorWindow : EditorWindow
         SetActiveContextObject( item );
         SetSelectedItem( item );
 
-        SetItemSerializedObjectReferences( true );
+        InitializeItemProperties( true );
         SetRightPanelHeaderLabel( item.Datas.Name );
+    }
+
+    private void ResetEditedItemFields()
+    {
+        _editedItemNameField = null;
+        _editedItemIDField = _editedItem.GetInstanceID();
+        _editedItemDescriptionField = null;
+
+        _editedItemIconField = null;
+        _editedItemPrefabField = null;
+
+        _editedItemCanBeEquippedField = null;
+        _editedItemRarityField = null;
+        _editedItemLinkedBodyPartField = null;
+
+        _editedItemIsStackableField = null;
+        _editedItemMaxStackSizeField = null;
+
+        _editedItemHasStatsField = null;
+
+        _editedItemStrengthStatField = null;
+        _editedItemEnduranceStatField = null;
+        _editedItemDexterityStatField = null;
+    }
+
+    #endregion
+
+    private void HandleNullSelection()
+    {
+        if ( _activeEditedObject.IsNull() ) { _middleSectionSelectedButtonIndex = 0; }
+
+        switch ( _displaySelector )
+        {
+            case DisplaySelector.Items:
+                if ( _editedItem.IsNull() )
+                {
+                    Item firstItem = ( Item ) _activeEditedObject;
+                    FocusThisItemAndDisplayItsDatas( firstItem );
+                }
+                break;
+
+            case DisplaySelector.Units:
+                break;
+
+            case DisplaySelector.Competences:
+                break;
+        }
+    }
+
+    private void TryToRefreshItemGuids()
+    {
+        if ( AssetDatabase.FindAssets( "t:item", null ).Length > _itemGuidsCountOnOppeningWindow )
+        {
+            Debug.Log( "An Item has been created or removed, item guids need to be updated." );
+            _itemGuids = AssetDatabase.FindAssets( "t:item", null );            
+        }
+    }
+
+    private void SetActiveContextObject( Object obj )
+    {
+        if ( _activeEditedObject != obj )
+        {
+            _activeEditedObject = obj;
+            Debug.Log( "Active contect object : " + _activeEditedObject.name );
+        }
     }
 
     private void OnDisplayingContentOfType( DisplaySelector displaySelector )
@@ -1293,7 +1287,7 @@ public class DataEditorWindow : EditorWindow
         switch ( _displaySelector )
         {
             case DisplaySelector.Items:
-                Item firstItem = ( Item ) _firstItemObject;
+                Item firstItem = ( Item ) _activeEditedObject;
                 FocusThisItemAndDisplayItsDatas( firstItem );
                 break;
 
@@ -1305,17 +1299,21 @@ public class DataEditorWindow : EditorWindow
         }
     }
 
-    private static void DrawTexture( Texture texture, int size, float totalWidth, float totalHeight, float xOffset, float yOffset )
+    private void PushDatasToScriptableObject( DisplaySelector displaySelector )
     {
-        float xPos = totalWidth - size / 2;
-        float yPos = totalHeight - size / 2;
+        switch ( displaySelector )
+        {
+            case DisplaySelector.Items:
+                _editedItemSOReference.ApplyModifiedProperties();
+                _editedItem.Datas = new Item.ItemDatas( _editedItem );
+                break;
 
-        xPos -= xOffset;
-        yPos -= yOffset;
+            case DisplaySelector.Units:
+                break;
 
-        Rect rect = new( xPos, yPos, width: size, height: size );
-
-        Graphics.DrawTexture( rect, texture );
+            case DisplaySelector.Competences:
+                break;
+        }       
     }
 
     void OnInspectorUpdate()

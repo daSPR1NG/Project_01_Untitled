@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: 05555 2
   m_EditorClassIdentifier: 
   _name: '[TYPE HERE]'
-  _id: 32852
-  _description: 2222222222222222
+  _id: 32744
+  _description: '[TYPE HERE]'
   _rarity: 0
   _canBeEquipped: 0
   _isEquipped: 0
@@ -34,3 +34,4 @@ MonoBehaviour:
     _type: 3
     _points: 0
   _icon: {fileID: 0}
+  _prefab: {fileID: 0}
