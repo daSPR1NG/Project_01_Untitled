@@ -1,11 +1,6 @@
 using UnityEngine;
 using dnSR_Coding.Utilities;
 using ExternalPropertyAttributes;
-using System.Collections.Generic;
-using System.Collections;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
-using Unity.VisualScripting;
 using System;
 
 namespace dnSR_Coding
@@ -13,9 +8,6 @@ namespace dnSR_Coding
     // Required components or public findable enum here.
     [RequireComponent( typeof( WeatherSystemManager ) )]
     [RequireComponent( typeof( TimeController ) )]
-
-    // Uncomment this block right below if you need to use add component menu for this component.
-    // [AddComponentMenu( menuName:"Custom Scripts/EnvironmentLightingManager" )]
 
     ///<summary> NightDayCycleManager description <summary>
     [Component("EnvironmentLightingManager", "")]

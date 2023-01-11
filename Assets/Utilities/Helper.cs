@@ -175,6 +175,17 @@ namespace dnSR_Coding.Utilities
 
         public static void DrawButton(
            GUIContent content = default,                                            // Content
+           GUIStyle style = default,                                                // Style
+           System.Action OnClickingButton = null )                                  // Execution
+        {
+            if ( GUILayout.Button( content, style ) )
+            {
+                OnClickingButton?.Invoke();
+            }
+        }
+
+        public static void DrawButton(
+           GUIContent content = default,                                            // Content
            GUILayoutOption [] options = null,                                       // Size
            Color backgroundColor = default,                                         // Color
            System.Action OnClickingButton = null )                                  // Execution

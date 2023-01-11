@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace dnSR_Coding
 {
-    [CreateAssetMenu(fileName = "", menuName = "Scriptable Objects/Combat/UnitSet/Competences")]
-    public class Competences : ScriptableObject
+    [CreateAssetMenu(fileName = "", menuName = "Scriptable Objects/Combat/UnitSet/Competence")]
+    public class Competence : ScriptableObject
     {
         [Header( "Details" )]
         [SerializeField] private string _name;

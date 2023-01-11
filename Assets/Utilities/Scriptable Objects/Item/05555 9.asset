@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b80bbecfdd3cdb64a87bc1897740f49c, type: 3}
-  m_Name: 05555 2
+  m_Name: 05555 9
   m_EditorClassIdentifier: 
   _name: '[TYPE HERE]'
-  _id: 32744
+  _id: 50630
   _description: '[TYPE HERE]'
   _rarity: 0
   _canBeEquipped: 0
