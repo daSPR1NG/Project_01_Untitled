@@ -10,9 +10,9 @@ namespace dnSR_Coding
     [RequireComponent( typeof( TimeController ) )]
 
     ///<summary> NightDayCycleManager description <summary>
-    [Component("EnvironmentLightingManager", "")]
+    [Component("EnvironmentLightingController", "")]
     [DisallowMultipleComponent, ExecuteAlways]
-    public class EnvironmentLightingManager : MonoBehaviour, IDebuggable
+    public class EnvironmentLightingController : MonoBehaviour, IDebuggable
     {
         [Header( "DEPENDENCIES" )]
 
@@ -217,7 +217,7 @@ namespace dnSR_Coding
             if ( Application.isPlaying ) { OnLightingSettingsChanged?.Invoke( settings ); }
             else
             {
-                CameraVolumeManager cvm = ( CameraVolumeManager ) FindObjectOfType( typeof( CameraVolumeManager ) );
+                CameraVolumeController cvm = ( CameraVolumeController ) FindObjectOfType( typeof( CameraVolumeController ) );
                 cvm.NeedToBeUpdated( settings );
             }
         }

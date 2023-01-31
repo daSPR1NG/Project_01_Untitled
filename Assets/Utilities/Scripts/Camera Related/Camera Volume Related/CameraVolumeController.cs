@@ -8,11 +8,9 @@ namespace dnSR_Coding
 {
     [RequireComponent( typeof( CustomPostProcessVolume ) )]
 
-    ///<summary> CameraVolumeManager description <summary>
-    [Component("CameraVolumeManager", "")]
     [DisallowMultipleComponent]
     [ExecuteAlways]
-    public class CameraVolumeManager : MonoBehaviour, IDebuggable
+    public class CameraVolumeController : MonoBehaviour, IDebuggable
     {
         [Header( "SETTINGS" )]
 
@@ -22,7 +20,7 @@ namespace dnSR_Coding
         private CustomPostProcessVolume _volume;
         private VolumeProfile _profile;
         private WeatherSystemManager _weatherSystemManager;
-        private CameraVolumeManager _cameraVolumeManager;
+        private CameraVolumeController _cameraVolumeManager;
 
         EnvironmentLightingSettings _lightingSettings;
         LiftGammaGain _profileLGG = null;
@@ -41,12 +39,12 @@ namespace dnSR_Coding
 
         void OnEnable()
         {
-            EnvironmentLightingManager.OnLightingSettingsChanged += NeedToBeUpdated;
+            EnvironmentLightingController.OnLightingSettingsChanged += NeedToBeUpdated;
         }
 
         void OnDisable()
         {
-            EnvironmentLightingManager.OnLightingSettingsChanged -= NeedToBeUpdated;
+            EnvironmentLightingController.OnLightingSettingsChanged -= NeedToBeUpdated;
         }
 
         #endregion
@@ -123,7 +121,7 @@ namespace dnSR_Coding
         {
             GetLinkedComponents();
 
-            if ( _cameraVolumeManager.IsNull() ) { _cameraVolumeManager = GetComponent<CameraVolumeManager>(); }
+            if ( _cameraVolumeManager.IsNull() ) { _cameraVolumeManager = GetComponent<CameraVolumeController>(); }
 
             if ( _weatherSystemManager.IsNull() ) 
             { 

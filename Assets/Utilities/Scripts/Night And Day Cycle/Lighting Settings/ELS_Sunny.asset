@@ -10,22 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bb377a03418c4884290844ad761fbc42, type: 3}
-  m_Name: ELS_Default
+  m_Name: ELS_Sunny
   m_EditorClassIdentifier: 
-  _relatedWeatherType: 0
-  _relatedVolumeProfile: {fileID: 11400000, guid: 4eb86c936fc21874da754be6217f7f16,
+  _relatedWeatherType: 2
+  _relatedVolumeProfile: {fileID: 11400000, guid: c71f88abe3f3dd945a714034e722c80e,
     type: 2}
-  _greaterLightIntensity: 2.5
+  _relatedSkybox: {fileID: 2100000, guid: d127b30f04bab46fe9610f70d1234ad1, type: 2}
+  _greaterLightIntensity: 1.85
   _lowerLightIntensity: 0.025
   _ambientColor:
     serializedVersion: 2
     key0: {r: 0.24313727, g: 0.3137255, b: 0.87843144, a: 1}
-    key1: {r: 0.24313727, g: 0.3137255, b: 0.87843144, a: 1}
-    key2: {r: 0.76862746, g: 0.69555885, b: 0.5764706, a: 0}
+    key1: {r: 0.2943663, g: 0.37172186, b: 0.990566, a: 1}
+    key2: {r: 0.6313726, g: 0.39215687, b: 0.18039216, a: 0}
     key3: {r: 0.8470589, g: 0.8470589, b: 0.8470589, a: 0}
     key4: {r: 0.8980393, g: 0.8980393, b: 0.8980393, a: 0}
-    key5: {r: 0.7647059, g: 0.6846691, b: 0.4745098, a: 0}
-    key6: {r: 0.19607845, g: 0.27450982, b: 0.854902, a: 0}
+    key5: {r: 0.6320754, g: 0.39058906, b: 0.18187074, a: 0}
+    key6: {r: 0.29411766, g: 0.37254903, b: 0.99215686, a: 0}
     key7: {r: 0.20932718, g: 0.29124865, b: 0.9056604, a: 0}
     ctime0: 0
     ctime1: 8674
@@ -77,17 +78,17 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   _fogColor:
     serializedVersion: 2
-    key0: {r: 0.03773582, g: 0.03773582, b: 0.03773582, a: 1}
-    key1: {r: 0.13207549, g: 0.13207549, b: 0.13207549, a: 1}
-    key2: {r: 0.627451, g: 0.5058824, b: 0.19607845, a: 0}
+    key0: {r: 0, g: 0, b: 0, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
     key3: {r: 0.6839622, g: 0.8266061, b: 1, a: 0}
     key4: {r: 0.85882354, g: 0.8501154, b: 0.34509802, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 0
-    ctime1: 11180
-    ctime2: 16577
+    ctime1: 33539
+    ctime2: 65535
     ctime3: 33924
     ctime4: 47417
     ctime5: 53777
@@ -102,5 +103,5 @@ MonoBehaviour:
     atime6: 0
     atime7: 0
     m_Mode: 0
-    m_NumColorKeys: 7
+    m_NumColorKeys: 3
     m_NumAlphaKeys: 2

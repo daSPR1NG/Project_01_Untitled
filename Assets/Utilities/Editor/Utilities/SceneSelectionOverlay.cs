@@ -54,8 +54,6 @@ namespace dnSR_Coding
                         menu.AddItem( new GUIContent( name + "/Single" ), false, () => OpenScene( currentScene, path, OpenSceneMode.Single ) );
                         menu.AddItem( new GUIContent( name + "/Additive" ), false, () => OpenScene( currentScene, path, OpenSceneMode.Additive ) );
                     }
-
-                    //menu.AddItem( new GUIContent( name ), string.Compare( currentScene.name, name ) == 0, () => OpenScene( currentScene, path ) );
                 }
 
                 menu.ShowAsContext();

@@ -16,12 +16,12 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 0
-  m_FogColor: {r: 0.68631524, g: 0.8269224, b: 0.9911874, a: 1}
+  m_FogColor: {r: 0.44029784, g: 0.44029784, b: 0.44029784, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.03
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.87601864, g: 0.87601864, b: 0.87601864, a: 1}
+  m_AmbientSkyColor: {r: 0.34385702, g: 0.3752041, b: 0.872902, a: 1}
   m_AmbientEquatorColor: {r: 0.7264151, g: 0.56268424, b: 0.4762816, a: 1}
   m_AmbientGroundColor: {r: 0.2, g: 0.19607843, b: 0.18431373, a: 1}
   m_AmbientIntensity: 1
@@ -4073,7 +4073,7 @@ MonoBehaviour:
   m_Follow: {fileID: 0}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 12.5
+    OrthographicSize: 10
     NearClipPlane: 0.1
     FarClipPlane: 1000
     Dutch: 0
@@ -31977,6 +31977,54 @@ Transform:
   m_Father: {fileID: 699864551}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1694239515
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1694239517}
+  - component: {fileID: 1694239516}
+  m_Layer: 0
+  m_Name: Enum Writer Test
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1694239516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1694239515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77dc37455ecb6174ea0f6da92042bfe1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Value: CRIT
+  Key: 3
+  KeyToRemove: 0
+  ValueToRemove: 
+--- !u!4 &1694239517
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1694239515}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 15
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1704863038
 GameObject:
   m_ObjectHideFlags: 0
@@ -33012,7 +33060,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 12.5
+  orthographic size: 10
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -33090,12 +33138,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _projection: 1
   _verticalFov: 60
-  _orthographicSize: 12.5
+  _orthographicSize: 10
   _nearClipPlane: 0.1
   _farClipPlane: 1000
   _dutch: 0
   _position: {x: -12, y: 10, z: -12}
-  _pixelSize: 844
   _isDebuggable: 1
 --- !u!114 &1740937876
 MonoBehaviour:
@@ -33110,7 +33157,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isEnabled: 1
-  _pixelSize: 500
+  _pixelSize: 855
   _isDebuggable: 1
 --- !u!1 &1752061856
 GameObject:
@@ -62723,8 +62770,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.95917946, g: 0.95917946, b: 0.95917946, a: 1}
-  m_Intensity: 1.774455
+  m_Color: {r: 0.44029784, g: 0.44029784, b: 0.44029784, a: 1}
+  m_Intensity: 0.79537266
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -67926,7 +67973,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isActive: 1
   _weatherType: 2
-  _elementsFadeSpeed: 3.5
+  _elementsFadeSpeed: 2
   _lightingSettings: {fileID: 11400000, guid: a89b30131de553e44990a02bfc85e3e7, type: 2}
   _sunShaftMaterials:
   - {fileID: 2100000, guid: d2796aba5e93bcc4ebdda7a499b5e100, type: 2}
@@ -68056,7 +68103,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isActive: 0
   _weatherType: 1
-  _elementsFadeSpeed: 5
+  _elementsFadeSpeed: 2
   _lightingSettings: {fileID: 11400000, guid: 901b6ab6f723fb0428f9deda32089080, type: 2}
   _sunShaftMaterials:
   - {fileID: 2100000, guid: c17f2e1a207cba3439b160f293d65ff7, type: 2}
@@ -78083,7 +78130,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 620388649766684802}
-  m_LocalRotation: {x: 0.065452084, y: 0.6578145, z: -0.74812025, w: 0.057551354}
+  m_LocalRotation: {x: 0.08662843, y: -0.1094239, z: -0.9901668, w: -0.009573357}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -83329,8 +83376,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _updateTimeOfDay: 1
-  _dayDuration: 480
-  _timeOfDay: 249.81964
+  _dayDuration: 600
+  _timeOfDay: 471.354
   _isDebuggable: 1
 --- !u!1 &8336381315896712434
 GameObject:

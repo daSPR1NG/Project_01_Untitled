@@ -8,7 +8,7 @@ namespace dnSR_Coding
 {
     public enum WeatherType { None, Rainy, Sunny, }
 
-    [RequireComponent( typeof( EnvironmentLightingManager ) )]
+    [RequireComponent( typeof( EnvironmentLightingController ) )]
     [RequireComponent( typeof( TimeController ) )]
 
     ///<summary> WeatherSystemManager description <summary>
@@ -27,7 +27,7 @@ namespace dnSR_Coding
         [SerializeField] private List<WeatherSequence> _weatherSequences = new();
 
         private WeatherSequence _activeWeatherSequence;
-        private EnvironmentLightingManager _environmentLightingManager;
+        private EnvironmentLightingController _environmentLightingManager;
         private TimeController _timeController;
         private int _weatherTypeIndex;
 
@@ -67,7 +67,7 @@ namespace dnSR_Coding
         }
         void GetLinkedComponents()
         {
-            if ( _environmentLightingManager.IsNull() ) { _environmentLightingManager = GetComponent<EnvironmentLightingManager>(); }
+            if ( _environmentLightingManager.IsNull() ) { _environmentLightingManager = GetComponent<EnvironmentLightingController>(); }
             if ( _timeController.IsNull() ) { _timeController = GetComponent<TimeController>(); }
         }
 

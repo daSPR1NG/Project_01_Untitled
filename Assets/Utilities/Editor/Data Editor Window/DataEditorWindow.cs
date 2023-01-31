@@ -1,5 +1,7 @@
 using dnSR_Coding;
 using dnSR_Coding.Utilities;
+using System.Collections.Generic;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using UnityEditor;
 using UnityEngine;
 
@@ -59,7 +61,11 @@ public class DataEditorWindow : EditorWindow
 
     #endregion
 
-    [MenuItem( "Window/Custom Windows/Datas" )]
+    // Only here for test purpose
+    List<string> statNames = new() { "HP", "DEF ", "ATK", };
+    private string statField;
+
+[MenuItem( "Window/Custom Windows/Datas" )]
     public static void ShowWindow()
     {
         EditorWindow window = GetWindow( typeof( DataEditorWindow ) );
@@ -88,11 +94,19 @@ public class DataEditorWindow : EditorWindow
 
         SetActiveEditedObject( GetFirstGuid() );
         OnDisplayingContentOfType( _displaySelector );
-    }    
+
+        statField = statNames [ 0 ];
+    }
 
     void OnGUI()
     {
         HandleNullSelection();
+        
+        // This is used to create a popup using statNames entries...
+        // 
+        int index = statNames.IndexOf( statField );
+        index = EditorGUILayout.Popup( index, statNames.ToArray() );
+        statField = statNames[ index ];
 
         using ( new EditorGUILayout.HorizontalScope() )
         {

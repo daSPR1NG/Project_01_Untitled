@@ -8,7 +8,7 @@ namespace dnSR_Coding
 {
     // Required components or public findable enum here.
     [RequireComponent( typeof( WeatherSystemManager ) )]
-    [RequireComponent( typeof( EnvironmentLightingManager ) )]
+    [RequireComponent( typeof( EnvironmentLightingController ) )]
 
     // Uncomment this block right below if you need to use add component menu for this component.
     // [AddComponentMenu( menuName:"Custom Scripts/EnvironmentDaytimeManager" )]
@@ -22,8 +22,8 @@ namespace dnSR_Coding
 
         [SerializeField] private bool _updateTimeOfDay = true;
         [InfoBox( "The value is in seconds and does not exceeds 10 minutes realtime (600s)." )]
-        [SerializeField, Range( 1, 600)] private float _dayDuration = 480f;
-        [SerializeField, Range( 0, 480 ), ShowIf( "IsDebuggable" )] private float _timeOfDay = 240f;
+        [SerializeField, Range( 1, 600 )] private float _dayDuration = 480f;
+        [SerializeField, Range( 0, 600 ), ShowIf( "IsDebuggable" )] private float _timeOfDay = 240f;
         [ShowNonSerializedField] private string _daytimeInMinutesAndSecondsFormat;
         [ShowNonSerializedField] private string _daytimeInHoursFormat;
 
@@ -56,7 +56,7 @@ namespace dnSR_Coding
         }
 
         private WeatherSystemManager _weatherSystemManager;
-        private EnvironmentLightingManager _environmentLightingManager;
+        private EnvironmentLightingController _environmentLightingManager;
 
         public static Action<bool> OnFallingNight;
         public static Action<bool> OnRisingSun;
@@ -90,7 +90,7 @@ namespace dnSR_Coding
         void GetLinkedComponents()
         {
             if ( _weatherSystemManager.IsNull() ) { _weatherSystemManager = GetComponent<WeatherSystemManager>(); }
-            if ( _environmentLightingManager.IsNull() ) { _environmentLightingManager = GetComponent<EnvironmentLightingManager>(); }
+            if ( _environmentLightingManager.IsNull() ) { _environmentLightingManager = GetComponent<EnvironmentLightingController>(); }
         }
 
         private void Update() => UpdateTimeOfDay();
@@ -102,7 +102,7 @@ namespace dnSR_Coding
         {
             if ( !_updateTimeOfDay || Application.isPlaying && GameManager.Instance.IsGamePaused() ) { return; }
 
-            _timeOfDay += Helper.RealDeltaTime( true );
+            _timeOfDay += Helper.RealDeltaTime( false );
             _timeOfDay %= _dayDuration; //Modulus to ensure always between 0-maxValue
 
             _currentTimeOfDay = _timeOfDay / _dayDuration;

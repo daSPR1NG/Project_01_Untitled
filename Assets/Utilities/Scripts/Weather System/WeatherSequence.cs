@@ -133,7 +133,7 @@ namespace dnSR_Coding
 
             for ( int i = 0; i < _sunShaftMaterials.Count; i++ )
             {
-                Helper.Log( this, "Accesing Sun shafts material alpha" + transform.name );
+                //Helper.Log( this, "Accesing Sun shafts material alpha" + transform.name );
                 if ( _sunShaftMaterials [ i ].color.a == alphaToReach ) { continue; }
 
                 Helper.Log( this, "Fading Sun shafts material alpha" + transform.name );

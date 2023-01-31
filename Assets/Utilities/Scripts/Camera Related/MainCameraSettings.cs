@@ -6,7 +6,6 @@ using ExternalPropertyAttributes;
 
 namespace dnSR_Coding
 {
-    ///<summary> MainCameraSettings component is used to facilitate the modification of the main camera settings <summary>
     [Component("MainCameraSettings", "")]
     [DisallowMultipleComponent]
     public class MainCameraSettings : MonoBehaviour, IDebuggable
@@ -33,15 +32,6 @@ namespace dnSR_Coding
         private readonly List<CinemachineVirtualCamera> _virtualCameras = new();
         private Camera _attachedCameraComponent;
 
-        [Space( 10f )]
-
-        [Header( "Rendering settings" )]
-
-        [Range( 1, 1000 ), SerializeField] private int _pixelSize = 150;
-
-        private UnityEngine.Rendering.Universal.ScriptableRendererData ScriptableRendererData;
-        private FullScreenRenderPassFeature PixelizeFeature;
-
         #region Debug
 
         [Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
@@ -54,46 +44,11 @@ namespace dnSR_Coding
         void Init()
         {
             GetLinkedComponents();
-            SetPixelizerPixelSize( _pixelSize );
         }
         private void GetLinkedComponents()
         {
             if ( _attachedCameraComponent.IsNull() ) { _attachedCameraComponent = GetComponent<Camera>(); }
         }
-
-        /// <summary>
-        /// Is in charge to find the pixelize feature used by the current render setting.
-        /// </summary>
-        private void GetPixelizerFeature()
-        {
-            if ( ScriptableRendererData.IsNull() )
-            {
-                UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset pipeline =
-                ( UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset ) UnityEngine.Rendering.GraphicsSettings.renderPipelineAsset;
-
-                System.Reflection.FieldInfo fieldInfo =
-                    pipeline.GetType().GetField( "m_RendererDataList", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic );
-
-                ScriptableRendererData = ( ( UnityEngine.Rendering.Universal.ScriptableRendererData [] ) fieldInfo?.GetValue( pipeline ) )? [ 0 ];
-            }
-        }
-        /// <summary>
-        /// Sets the pixel value of the pixelizer feature.
-        /// </summary>
-        /// <param name="pixelSize"> Corresponds to the pixel size used by the pixelizer feature. </param>
-        private void SetPixelizerPixelSize( int pixelSize )
-        {
-            GetPixelizerFeature();
-
-            for ( int i = 0; i < ScriptableRendererData.rendererFeatures.Count; i++ )
-            {
-                if ( ScriptableRendererData.rendererFeatures [ i ] is FullScreenRenderPassFeature feature )
-                {
-                    PixelizeFeature = feature;
-                    PixelizeFeature.SetPixelSize( pixelSize );
-                }
-            }
-        }        
 
         public bool IsOrthographic => _projection == CameraProjection.Orthographic;
         public bool IsPerspective => _projection == CameraProjection.Perspective;
@@ -175,8 +130,6 @@ namespace dnSR_Coding
 
             TryToFindAnyVirtualCameraInSceneInEditor();
             ApplySettingsToAnyActiveVirtualCamerasInEditor();
-
-            SetPixelizerPixelSize( _pixelSize );
         }
 #endif
 
