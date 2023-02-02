@@ -2,8 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using dnSR_Coding.Utilities;
 using UnityEngine.UI;
-using ExternalPropertyAttributes;
-using TMPro;
+using NaughtyAttributes;
 
 namespace dnSR_Coding
 {

@@ -1,6 +1,6 @@
 using UnityEngine;
 using dnSR_Coding.Utilities;
-using ExternalPropertyAttributes;
+using NaughtyAttributes;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 

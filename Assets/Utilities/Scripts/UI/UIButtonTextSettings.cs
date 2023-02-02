@@ -1,5 +1,5 @@
 using UnityEngine;
-using ExternalPropertyAttributes;
+using NaughtyAttributes;
 using TMPro;
 using dnSR_Coding.Utilities;
 

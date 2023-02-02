@@ -1,5 +1,5 @@
 using UnityEngine;
-using ExternalPropertyAttributes;
+using NaughtyAttributes;
 using dnSR_Coding.Utilities;
 using System.Collections.Generic;
 

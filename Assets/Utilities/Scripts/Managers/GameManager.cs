@@ -1,10 +1,8 @@
 using UnityEngine;
 using dnSR_Coding.Utilities;
 using System;
-using ExternalPropertyAttributes;
+using NaughtyAttributes;
 using UnityEngine.InputSystem;
-using UnityEngine.SocialPlatforms;
-using UnityEngine.Events;
 
 namespace dnSR_Coding
 {

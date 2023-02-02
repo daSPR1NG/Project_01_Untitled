@@ -1,6 +1,6 @@
 using UnityEngine;
 using dnSR_Coding.Utilities;
-using ExternalPropertyAttributes;
+using NaughtyAttributes;
 using System.Collections.Generic;
 using System;
 using DG.Tweening;

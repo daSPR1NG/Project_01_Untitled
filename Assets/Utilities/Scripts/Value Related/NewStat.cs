@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using dnSR_Coding.Utilities;
-using ExternalPropertyAttributes;
+using NaughtyAttributes;
 
 namespace dnSR_Coding
 {

@@ -1,6 +1,6 @@
 using UnityEngine;
 using dnSR_Coding.Utilities;
-using ExternalPropertyAttributes;
+using NaughtyAttributes;
 using System;
 
 namespace dnSR_Coding

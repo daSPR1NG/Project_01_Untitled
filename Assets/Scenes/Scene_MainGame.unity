@@ -16,18 +16,18 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 0
-  m_FogColor: {r: 0.44029784, g: 0.44029784, b: 0.44029784, a: 1}
+  m_FogColor: {r: 0.08185608, g: 0.16538268, b: 0.18542907, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.03
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.34385702, g: 0.3752041, b: 0.872902, a: 1}
+  m_AmbientSkyColor: {r: 0.4383056, g: 0.4492318, b: 0.69286036, a: 1}
   m_AmbientEquatorColor: {r: 0.7264151, g: 0.56268424, b: 0.4762816, a: 1}
   m_AmbientGroundColor: {r: 0.2, g: 0.19607843, b: 0.18431373, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 1, g: 1, b: 1, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: d127b30f04bab46fe9610f70d1234ad1, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: feb697dee8034274cb562bb30e43be1e, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -4073,7 +4073,7 @@ MonoBehaviour:
   m_Follow: {fileID: 0}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 10
+    OrthographicSize: 13
     NearClipPlane: 0.1
     FarClipPlane: 1000
     Dutch: 0
@@ -33060,7 +33060,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 13
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -33138,7 +33138,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _projection: 1
   _verticalFov: 60
-  _orthographicSize: 10
+  _orthographicSize: 13
   _nearClipPlane: 0.1
   _farClipPlane: 1000
   _dutch: 0
@@ -62770,8 +62770,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.44029784, g: 0.44029784, b: 0.44029784, a: 1}
-  m_Intensity: 0.79537266
+  m_Color: {r: 0.38520187, g: 0.38520187, b: 0.38520187, a: 1}
+  m_Intensity: 0.55
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -78130,7 +78130,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 620388649766684802}
-  m_LocalRotation: {x: 0.08662843, y: -0.1094239, z: -0.9901668, w: -0.009573357}
+  m_LocalRotation: {x: 0.08574247, y: -0.17867532, z: -0.9800403, w: -0.015632076}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -83377,7 +83377,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _updateTimeOfDay: 1
   _dayDuration: 600
-  _timeOfDay: 471.354
+  _timeOfDay: 484.70087
   _isDebuggable: 1
 --- !u!1 &8336381315896712434
 GameObject:

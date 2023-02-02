@@ -1,8 +1,7 @@
 using UnityEngine;
 using dnSR_Coding.Utilities;
-using ExternalPropertyAttributes;
+using NaughtyAttributes;
 using System;
-using UnityEditor.ShaderGraph.Internal;
 
 namespace dnSR_Coding
 {
