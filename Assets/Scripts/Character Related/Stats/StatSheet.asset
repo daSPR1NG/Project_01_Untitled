@@ -10,44 +10,44 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2f5eb27f1af3fc84a95141485a57f20d, type: 3}
-  m_Name: Test
+  m_Name: StatSheet
   m_EditorClassIdentifier: 
   _stats:
-  - Name: Strength - 1
+  - Name: Strength - 0
     _type: 1
-    _points: 1
-  - Name: Endurance - 1
+    _points: 0
+  - Name: Endurance - 0
     _type: 2
-    _points: 1
-  - Name: Dexterity - 1
+    _points: 0
+  - Name: Dexterity - 0
     _type: 3
-    _points: 1
+    _points: 0
   _subStats:
-  - Name: Initiative_INI - 8
+  - Name: Initiative_INI - 5 (+ 0)
     _type: 1
     _baseValue: 5
-    CurrentValue: 8
-  - Name: HealthPoints_HP - 27
+    CurrentValue: 5
+  - Name: HealthPoints_HP - 25 (+ 0)
     _type: 2
     _baseValue: 25
-    CurrentValue: 27
-  - Name: Defense_DEF - 1
+    CurrentValue: 25
+  - Name: Defense_DEF - 0 (+ 0)
     _type: 3
     _baseValue: 0
-    CurrentValue: 1
-  - Name: Resistance_RES - 2
+    CurrentValue: 0
+  - Name: Resistance_RES - 0 (+ 0)
     _type: 4
     _baseValue: 0
-    CurrentValue: 2
-  - Name: Damage_DMG - 7
+    CurrentValue: 0
+  - Name: Damage_DMG - 5 (+ 0)
     _type: 5
     _baseValue: 5
-    CurrentValue: 7
-  - Name: CounterAttackChance_CA - 0
+    CurrentValue: 5
+  - Name: CounterAttackChance_CA - 0 (+ 0)
     _type: 6
     _baseValue: 0
     CurrentValue: 0
-  - Name: Dodge_DOD - 0
+  - Name: Dodge_DOD - 0 (+ 0)
     _type: 7
     _baseValue: 0
     CurrentValue: 0

@@ -1,16 +1,14 @@
 using UnityEngine;
 using dnSR_Coding.Utilities;
+using NaughtyAttributes;
 
 namespace dnSR_Coding
 {
-    [System.Serializable]
-    public class ExperienceData
+    public class ExperienceData : Subject, IValue<int>, IClampedValue<int>
     {
         [HideInInspector] public string Name = "[TYPE HERE]";
 
-        [Header( "Details" )]
-        [SerializeField] private bool _isDebuggable = true;
-        [SerializeField] private StatType _linkedStatType = StatType.Unassigned;
+        [SerializeField, ReadOnly, AllowNesting] private int _level;
 
         [Header( "Scaling Settings" )]
         [Tooltip( "This value is used to calculate the new max value on level up." )]
@@ -21,41 +19,61 @@ namespace dnSR_Coding
         [Header( "Multiplier Settings" )]
         [SerializeField] private float _multiplier = 1;
 
-        private int _level;
-        private int _currentValue;
-        private int _maxValue;
+        [field: SerializeField, ReadOnly, AllowNesting] public int Value { get; private set; }
 
-        public int Level => _level;
-        public int CurrentValue { get => _currentValue; private set => _currentValue = value; }
-        public int MaxValue { get => _maxValue; private set => _maxValue = value; }
-        public StatType LinkedStatType => _linkedStatType;
+        public bool HasMinValue { get => true; }
+        public bool HasMaxValue { get => true; }
+
+        public int MinValue => _initialMaxValue;
+        [field: SerializeField, ReadOnly, AllowNesting] public int MaxValue { get; private set; }
+
         public float Multiplier => _multiplier;
 
         public void LevelUp()
         {
-            _level++;
-            Debug.Log( "Level of " + LinkedStatType.ToString() + " : " + _level );
+            _level++;            
+            UpgradeMaxValue();
+
+            //Debug.Log( "Level of " + LinkedStatType.ToString() + " : " + _level );
         }
 
         public void AddToCurrentValue( int valueToAdd )
         {
-            SetCurrentValue( CurrentValue + valueToAdd );
-            Debug.Log( "Earned value for " + LinkedStatType.ToString() + " : " + valueToAdd );
+            for ( int i = Helper.MultipliedValue( valueToAdd, Multiplier ) - 1; i >= 0; i-- )
+            {
+                Value += 1;
+
+                if ( Value >= MaxValue )
+                {
+                    SetCurrentValue( 0 );
+                    LevelUp();
+                    NotifyObservers( this );
+                }
+
+                SetCurrentValue( Value );                
+            }
         }
         public void SetCurrentValue( int newValue )
         {
-            CurrentValue = newValue;
-            Debug.Log( "Current experience value of " + LinkedStatType.ToString() +  " : " + CurrentValue + " / " + MaxValue );
+            Value = newValue;
+            //Debug.Log( "Current experience value of " + LinkedStatType.ToString() + " : " + Value + " / " + MaxValue );
         }
 
         public void UpgradeMaxValue()
         {
             float raisedValue = Mathf.Pow( ( _initialMaxValue * _level ), _scalingFactor );
 
-            MaxValue = ExtMathfs.FloorToInt( raisedValue );
+            SetNewMaxValue( ExtMathfs.FloorToInt( raisedValue ) );
 
-            Debug.Log( "Max experience value of " + LinkedStatType.ToString() + " : " + MaxValue );
+            //Debug.Log( "Max experience value of " + LinkedStatType.ToString() + " : " + MaxValue );
         }
+
+        public void SetNewMaxValue( int newMaxValue )
+        {
+            if ( MaxValue != newMaxValue ) { MaxValue = newMaxValue; }
+        }
+
+        public int GetLevel() => _level;
 
         public void ResetToDefault()
         {
@@ -66,18 +84,10 @@ namespace dnSR_Coding
 
             _multiplier = 1;
 
-            MaxValue = _initialMaxValue;
+            MaxValue = MinValue;
             SetCurrentValue( 0 );
 
-            Debug.Log( "Reset " + LinkedStatType.ToString() + " experience data to default." );
-        }
-
-#if UNITY_EDITOR
-        public void SetName()
-        {
-            string newName = LinkedStatType.ToString();
-            if ( !Name.Equals( newName ) ) { Name = newName; }
-        }
-#endif
+            //Debug.Log( "Reset " + LinkedStatType.ToString() + " experience data to default." );
+        }       
     }
 }

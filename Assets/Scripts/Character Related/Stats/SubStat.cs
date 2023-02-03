@@ -193,7 +193,7 @@ namespace dnSR_Coding
 
         public void SetName()
         {
-            string name = Type.ToString() + " - " + CurrentValue.ToString();
+            string name = Type.ToString() + " - " + _baseValue + " (+ " + ( CurrentValue - _baseValue ).ToString() + ")";
             if ( !Name.Equals( name ) ) { Name = name; }
         }
 #endif

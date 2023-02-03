@@ -12,23 +12,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b081fc2e59013b14c8526b347dfb1801, type: 3}
   m_Name: New Stats Experience Manager
   m_EditorClassIdentifier: 
-  _isDebuggable: 1
   _experienceData:
   - Name: Strength
-    _isDebuggable: 0
-    _linkedStatType: 1
+    _level: 11
     _scalingFactor: 1.25
     _initialMaxValue: 25
     _multiplier: 1
+    <Value>k__BackingField: 848
+    <MaxValue>k__BackingField: 1119
+    _associatedStat: 1
   - Name: Endurance
-    _isDebuggable: 0
-    _linkedStatType: 2
+    _level: 0
     _scalingFactor: 1.25
     _initialMaxValue: 25
     _multiplier: 1
+    <Value>k__BackingField: 0
+    <MaxValue>k__BackingField: 25
+    _associatedStat: 2
   - Name: Dexterity
-    _isDebuggable: 0
-    _linkedStatType: 3
+    _level: 0
     _scalingFactor: 1.25
     _initialMaxValue: 25
     _multiplier: 1
+    <Value>k__BackingField: 0
+    <MaxValue>k__BackingField: 25
+    _associatedStat: 3

@@ -1,17 +1,16 @@
 using UnityEngine;
-using System.Collections;
-using dnSR_Coding.Utilities;
-using ExternalPropertyAttributes;
 using System;
+using dnSR_Coding.Utilities;
+using NaughtyAttributes;
 using System.Collections.Generic;
 
 namespace dnSR_Coding
 {
     ///<summary> CustomExperienceManager description <summary>
     [CreateAssetMenu( fileName = "", menuName = "Scriptable Objects/Character/New Stat Experience Manager" )]
-    public class StatsExperienceManager : ExperienceManager
+    public class StatsExperienceManager : ScriptableObject
     {
-        [SerializeField] private List<ExperienceData> _experienceData = new();
+        [SerializeField] private List<StatExperienceData> _experienceData = new();
 
         public static Action<StatType> OnStatLevelUp;
 
@@ -34,13 +33,13 @@ namespace dnSR_Coding
         #endregion
 
         /// <summary>
-        /// Adds a certain amount of experience to the given experience data.
+        /// Adds a certain addedAmount of experience to the given experience data.
         /// </summary>
         /// <param name="data"> the data you're looking for </param>
-        /// <param name="amount"> the amount to push to the current pool </param>
-        public void AddExperienceToAStat( StatType type, int amount )
+        /// <param name="addedAmount"> the addedAmount to push to the current pool </param>
+        public void AddExperienceToAStat( StatType type, int addedAmount )
         {
-            ExperienceData data = GetExperienceDataByType( type );
+            StatExperienceData data = GetExperienceDataByType( type );
 
             if ( data.IsNull() )
             {
@@ -48,34 +47,7 @@ namespace dnSR_Coding
                 return;
             }
 
-            // We recalculate the correct amount of exp to add, taking into account the current value of "Multiplier".
-            amount = MultipliedValue( amount, data.Multiplier );
-
-            int remainingExperience = data.MaxValue - data.CurrentValue;
-            bool itsALevelUp = amount >= remainingExperience;
-
-            // Here we check if by adding the amount given, the current value exceeds the max value or not...
-            // ... if so, we substract the possible remaining amount before re-adding it to the CurrentValue pool.
-            if ( itsALevelUp )
-            {
-                //remainingExperience = ( data.CurrentValue + amount ) - data.MaxValue;
-                remainingExperience = RemainingValue( data.CurrentValue, amount, data.MaxValue );
-                data.SetCurrentValue( 0 );
-
-                data.LevelUp();
-                data.UpgradeMaxValue();
-
-                if ( !Application.isPlaying )
-                {
-                    _relatedStatSheet.AddPointToStat( type );
-                }
-                else { OnStatLevelUp?.Invoke( type ); }
-            }
-
-            // We define the exact amount to add based on wether its a levelup or not...
-            amount = itsALevelUp ? remainingExperience : amount;
-            // ... then we add it.
-            data.AddToCurrentValue( PositiveValue( amount ) );
+            data.AddToCurrentValue( Helper.PositiveValue( addedAmount ) );
         }
 
         /// <summary>
@@ -83,7 +55,7 @@ namespace dnSR_Coding
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        private ExperienceData GetExperienceDataByType( StatType type )
+        private StatExperienceData GetExperienceDataByType( StatType type )
         {
             if ( _experienceData.IsEmpty() )
             {
@@ -93,7 +65,7 @@ namespace dnSR_Coding
 
             for ( int i = _experienceData.Count - 1; i >= 0; i-- )
             {
-                if ( _experienceData [ i ].LinkedStatType != type ) { continue; }
+                if ( _experienceData [ i ].GetAssociatedStat() != type ) { continue; }
 
                 return _experienceData [ i ];
             }
@@ -122,25 +94,30 @@ namespace dnSR_Coding
             }
         }
 
+        [Button]
+        public void SetupStatExperienceDatas()
+        {
+            ResetExperienceDatasToDefault( true );
+        }
+        [Button]
+        public void AddExperienceToStrength()
+        {
+            AddExperienceToAStat( StatType.Strength, 500 );
+        }
+        [Button]
+        public void AddExperienceToEndurance()
+        {
+            AddExperienceToAStat( StatType.Endurance, 250 );
+        }
+        [Button]
+        public void AddExperienceToDexterity()
+        {
+            AddExperienceToAStat( StatType.Dexterity, 50 );
+        }
+
         #region OnValidate
 
-#if UNITY_EDITOR
-
-        [Button]
-        private void AddExperienceToStrength()
-        {
-            AddExperienceToAStat( StatType.Strength, 10 );
-        }
-        [Button]
-        private void AddExperienceToEndurance()
-        {
-            AddExperienceToAStat( StatType.Endurance, 10 );
-        }
-        [Button]
-        private void AddExperienceToDexterity()
-        {
-            AddExperienceToAStat( StatType.Dexterity, 10 );
-        }
+#if UNITY_EDITOR        
 
         private void SetExperienceDatasName()
         {

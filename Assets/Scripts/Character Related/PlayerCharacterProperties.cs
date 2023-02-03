@@ -7,7 +7,6 @@ namespace dnSR_Coding
     public class PlayerCharacterProperties : Singleton<PlayerCharacterProperties>
     {
         [SerializeField] private StatSheet _characterStats;
-        [SerializeField] private ExperienceManager _characterExperience;
         
         protected override void Init( bool dontDestroyOnload )
         {

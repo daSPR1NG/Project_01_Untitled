@@ -7,6 +7,40 @@ namespace dnSR_Coding.Utilities
     ///<summary> Helper helps to create custom method to globalise method(s) that can be used throughout the project. <summary>
     public static class Helper
     {
+        #region MyRegion
+
+        /// <summary>
+        /// Calculates an amount of EXP, affected by a multiplier and adds it to the current EXP.
+        /// </summary>
+        /// <param name="amount"> The raw value </param>
+        /// <param name="multiplier"> The multiplier, less or equal to 1 </param>
+        /// <returns> A floored absolute value. </returns>
+        public static int MultipliedValue( int amount, float multiplier )
+        {
+            amount = ExtMathfs.Abs( ExtMathfs.FloorToInt( amount * multiplier ) );
+            return ExtMathfs.Abs( amount );
+        }
+
+        /// <summary>
+        /// Calculates the remaining amount of exp when an amount is added.
+        /// </summary>
+        /// <param name="current"></param>
+        /// <param name="amountAdded"></param>
+        /// <param name="maxValue"></param>
+        /// <returns> The remaining amount of exp to add to current exp. </returns>
+        public static int RemainingValue( int current, int amountAdded, int maxValue )
+        {
+            int value = ( current + amountAdded ) - maxValue;
+            return value;
+        }
+
+        public static int PositiveValue( int amount )
+        {
+            return ExtMathfs.Abs( amount );
+        }
+
+        #endregion
+
         #region Camera datas + Cinemachine
 
         private static Camera _mainCamera;

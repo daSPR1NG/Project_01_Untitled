@@ -1,6 +1,6 @@
 using UnityEngine;
 using dnSR_Coding.Utilities;
-using ExternalPropertyAttributes;
+using NaughtyAttributes;
 using System.Collections.Generic;
 
 namespace dnSR_Coding
@@ -158,15 +158,8 @@ namespace dnSR_Coding
 
         #endregion
 
-        #region OnValidate
-
-#if UNITY_EDITOR
-
-        private const int STAT_AMOUNT = 3;
-        private const int SUB_STAT_AMOUNT = 7;
-
-        [Button( "Reset sheet's stat and sub stats value" )]
-        private void ResetSheet()
+        [Button]
+        public void ResetSheet()
         {
             bool needToBeReset = true;
 
@@ -174,6 +167,13 @@ namespace dnSR_Coding
             SetStatsAndSubStatsNames();
             _attachedExperienceManager.ResetExperienceDatasToDefault( needToBeReset );
         }
+
+        #region OnValidate
+
+#if UNITY_EDITOR
+
+        private const int STAT_AMOUNT = 3;
+        private const int SUB_STAT_AMOUNT = 7;        
 
         private void SetStatsAndSubStatsNames()
         {
