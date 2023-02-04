@@ -50,10 +50,10 @@ namespace dnSR_Coding
 
         //----------------------------------------------------------------------------------------------------
 
-        [Header( "Stat Settings" )]
+        [Header( "StatBackUp Settings" )]
         [SerializeField, ReadOnly] private bool _hasStats = false;
         [SerializeField, AllowNesting, ReadOnly] 
-        private List<Stat> _stats = new();
+        private List<StatBackUp> _stats = new();
 
         //----------------------------------------------------------------------------------------------------
 
@@ -93,7 +93,7 @@ namespace dnSR_Coding
             public int MaxStackSize { get; }
 
             public bool HasStats { get; }
-            public List<Stat> Stats { get; }
+            public List<StatBackUp> Stats { get; }
 
             public Sprite Icon { get; }
             public GameObject Prefab { get; }
@@ -154,7 +154,7 @@ namespace dnSR_Coding
                 return readStats;
             }
 
-            public Stat GetStatByType( StatType statType )
+            public StatBackUp GetStatByType( StatType statType )
             {
                 if ( Stats.IsEmpty() )
                 {
@@ -223,7 +223,7 @@ namespace dnSR_Coding
             {
                 for ( int i = 0; i < amountOfStat; i++ )
                 {
-                    _stats.AppendItem( new Stat( ( StatType ) Helper.GetEnumToArray( typeof( StatType ) ).GetValue ( statTypeIndex ), 0 ) );
+                    _stats.AppendItem( new StatBackUp( ( StatType ) Helper.GetEnumToArray( typeof( StatType ) ).GetValue ( statTypeIndex ), 0 ) );
                     statTypeIndex++;
                 }                
             }

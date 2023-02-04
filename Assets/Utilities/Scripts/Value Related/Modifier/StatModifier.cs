@@ -8,14 +8,14 @@ namespace dnSR_Coding
     {
         public override void Apply( object valueToModify )
         {
-            NewStat modifiedStat = ( NewStat ) valueToModify;
+            Stat modifiedStat = ( Stat ) valueToModify;
 
             float value = modifiedStat.Value;
-            float modifierValue = _modType == ModType.FLAT ? Value : Value / 100;
+            float modifierValue = _modifierType == ModifierType.FLAT ? Value : Value / 100;
 
-            switch ( _modType )
+            switch ( _modifierType )
             {
-                case ModType.FLAT:
+                case ModifierType.FLAT:
                     switch ( _operand )
                     {
                         case Operand.PLUS:
@@ -42,16 +42,28 @@ namespace dnSR_Coding
                     }
                     break;
 
-                case ModType.PERCENTAGE:
+                case ModifierType.PERCENTAGE:
                     value *= modifierValue;
                     break;
 
-                case ModType.ADDITIVE_PERCENTAGE:
+                case ModifierType.ADDITIVE_PERCENTAGE:
                     value += value * modifierValue;
                     break;
             }
 
             modifiedStat.Value = value;
         }
+
+        #region Constructors
+
+        public StatModifier() : base() { }
+        public StatModifier( Operand operand, ModifierType modifierType, int value ) : base()
+        {
+            _operand = operand;
+            _modifierType = modifierType;
+            Value = value;
+        }
+
+        #endregion
     }
 }

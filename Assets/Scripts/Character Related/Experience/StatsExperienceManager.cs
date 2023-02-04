@@ -6,8 +6,7 @@ using System.Collections.Generic;
 
 namespace dnSR_Coding
 {
-    ///<summary> CustomExperienceManager description <summary>
-    [CreateAssetMenu( fileName = "", menuName = "Scriptable Objects/Character/New Stat Experience Manager" )]
+    [CreateAssetMenu( fileName = "", menuName = "Scriptable Objects/Character/New StatBackUp Experience Manager" )]
     public class StatsExperienceManager : ScriptableObject
     {
         [SerializeField] private List<StatExperienceData> _experienceData = new();
@@ -15,7 +14,7 @@ namespace dnSR_Coding
         public static Action<StatType> OnStatLevelUp;
 
 #if UNITY_EDITOR
-        private StatSheet _relatedStatSheet = null;
+        private StatSheetBackUp _relatedStatSheet = null;
 #endif
 
         #region Enable, Disable
@@ -47,7 +46,7 @@ namespace dnSR_Coding
                 return;
             }
 
-            data.AddToCurrentValue( Helper.PositiveValue( addedAmount ) );
+            data.AddExperience( Helper.PositiveValue( addedAmount ) );
         }
 
         /// <summary>
@@ -129,7 +128,7 @@ namespace dnSR_Coding
             }
         }
 
-        public void SetRelatedStatSheet( StatSheet sheet )
+        public void SetRelatedStatSheet( StatSheetBackUp sheet )
         {
             if ( _relatedStatSheet != sheet ) { _relatedStatSheet = sheet; }
         }

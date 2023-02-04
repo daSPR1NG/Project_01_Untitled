@@ -14,12 +14,12 @@ namespace dnSR_Coding
 
 //        [Header( "Scaling Settings" )]
 //        [Tooltip( "This value is used to calculate the new max value on level up." )]
-//        [SerializeField] private float _scalingFactor = 1.25f;
+//        [SerializeField] private float _scalingFactorOnLevelUp = 1.25f;
 //        [Tooltip( "This value is the max exp required for the first level, it is used after on level up when calculating the new max value." )]
 //        [SerializeField] private int _initialMaxValue = 25;
 
-//        [Header( "Multiplier Settings" )]
-//        [SerializeField] private float _multiplier = 1;
+//        [Header( "EarningMultiplier Settings" )]
+//        [SerializeField] private float _earningMultiplier = 1;
 
 //        private int _level;
 //        private int _currentValue;
@@ -29,7 +29,7 @@ namespace dnSR_Coding
 //        public int CurrentValue { get => _currentValue; private set => _currentValue = value; }
 //        public int MaxValue { get => _maxValue; private set => _maxValue = value; }
 //        public StatType LinkedStatType => _linkedStatType;
-//        public float Multiplier => _multiplier;
+//        public float EarningMultiplier => _earningMultiplier;
 
 //        public void LevelUp()
 //        {
@@ -37,12 +37,12 @@ namespace dnSR_Coding
 //            Debug.Log( "Level of " + LinkedStatType.ToString() + " : " + _level );
 //        }
 
-//        public void AddToCurrentValue( int valueToAdd )
+//        public void AddExperience( int valueToAdd )
 //        {
-//            SetCurrentValue( CurrentValue + valueToAdd );
+//            SetValue( CurrentValue + valueToAdd );
 //            Debug.Log( "Earned value for " + LinkedStatType.ToString() + " : " + valueToAdd );
 //        }
-//        public void SetCurrentValue( int newValue )
+//        public void SetValue( int newValue )
 //        {
 //            CurrentValue = newValue;
 //            Debug.Log( "Current experience value of " + LinkedStatType.ToString() +  " : " + CurrentValue + " / " + MaxValue );
@@ -50,7 +50,7 @@ namespace dnSR_Coding
 
 //        public void UpgradeMaxValue()
 //        {
-//            float raisedValue = Mathf.Pow( ( _initialMaxValue * _level ), _scalingFactor );
+//            float raisedValue = Mathf.Pow( ( _initialMaxValue * _level ), _scalingFactorOnLevelUp );
 
 //            MaxValue = ExtMathfs.FloorToInt( raisedValue );
 
@@ -61,13 +61,13 @@ namespace dnSR_Coding
 //        {
 //            _level = 0;
 
-//            _scalingFactor = 1.25f;
+//            _scalingFactorOnLevelUp = 1.25f;
 //            _initialMaxValue = 25;
 
-//            _multiplier = 1;
+//            _earningMultiplier = 1;
 
 //            MaxValue = _initialMaxValue;
-//            SetCurrentValue( 0 );
+//            SetValue( 0 );
 
 //            Debug.Log( "Reset " + LinkedStatType.ToString() + " experience data to default." );
 //        }

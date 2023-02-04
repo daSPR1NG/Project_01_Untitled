@@ -11,13 +11,13 @@ namespace dnSR_Coding
         [SerializeField, ReadOnly, AllowNesting] private int _level;
 
         [Header( "Scaling Settings" )]
-        [Tooltip( "This value is used to calculate the new max value on level up." )]
-        [SerializeField] private float _scalingFactor = 1.25f;
         [Tooltip( "This value is the max exp required for the first level, it is used after on level up when calculating the new max value." )]
         [SerializeField] private int _initialMaxValue = 25;
+        [Tooltip( "This value is used to calculate the new max value on level up." )]
+        [SerializeField] private float _scalingFactorOnLevelUp = 1.25f;
 
-        [Header( "Multiplier Settings" )]
-        [SerializeField] private float _multiplier = 1;
+        [Header( "EarningMultiplier Settings" )]
+        [SerializeField] private float _earningMultiplier = 1;
 
         [field: SerializeField, ReadOnly, AllowNesting] public int Value { get; private set; }
 
@@ -27,51 +27,50 @@ namespace dnSR_Coding
         public int MinValue => _initialMaxValue;
         [field: SerializeField, ReadOnly, AllowNesting] public int MaxValue { get; private set; }
 
-        public float Multiplier => _multiplier;
+        public float EarningMultiplier => _earningMultiplier;
 
+        /// <summary>
+        /// Adds a level and upgrade max value.
+        /// </summary>
         public void LevelUp()
         {
             _level++;            
             UpgradeMaxValue();
-
-            //Debug.Log( "Level of " + LinkedStatType.ToString() + " : " + _level );
         }
 
-        public void AddToCurrentValue( int valueToAdd )
+        /// <summary>
+        /// Add experience to the current value, by accounting the earning multiplier.
+        /// Able to handle multiple level ups.
+        /// </summary>
+        /// <param name="amount">The amount to add to current value.</param>
+        public void AddExperience( int amount )
         {
-            for ( int i = Helper.MultipliedValue( valueToAdd, Multiplier ) - 1; i >= 0; i-- )
+            int properAmount = Helper.MultipliedValue( amount, EarningMultiplier );
+            SetValue( Value + properAmount );
+
+            while ( Value >= MaxValue )
             {
-                Value += 1;
-
-                if ( Value >= MaxValue )
-                {
-                    SetCurrentValue( 0 );
-                    LevelUp();
-                    NotifyObservers( this );
-                }
-
-                SetCurrentValue( Value );                
+                Value -= MaxValue;
+                LevelUp();                
             }
-        }
-        public void SetCurrentValue( int newValue )
-        {
-            Value = newValue;
-            //Debug.Log( "Current experience value of " + LinkedStatType.ToString() + " : " + Value + " / " + MaxValue );
+
+            NotifyObservers( this );
         }
 
+        /// <summary>
+        /// Upgrades max value, raising ( current value * level ) by the scaling factor.
+        /// </summary>
         public void UpgradeMaxValue()
         {
-            float raisedValue = Mathf.Pow( ( _initialMaxValue * _level ), _scalingFactor );
+            float raisedValue = Mathf.Pow( ( _initialMaxValue * _level ), _scalingFactorOnLevelUp );
 
             SetNewMaxValue( ExtMathfs.FloorToInt( raisedValue ) );
 
             //Debug.Log( "Max experience value of " + LinkedStatType.ToString() + " : " + MaxValue );
         }
 
-        public void SetNewMaxValue( int newMaxValue )
-        {
-            if ( MaxValue != newMaxValue ) { MaxValue = newMaxValue; }
-        }
+        public void SetValue( int newValue ) => Value = newValue;
+        public void SetNewMaxValue( int newMaxValue ) => MaxValue = newMaxValue;
 
         public int GetLevel() => _level;
 
@@ -79,15 +78,13 @@ namespace dnSR_Coding
         {
             _level = 0;
 
-            _scalingFactor = 1.25f;
+            _scalingFactorOnLevelUp = 1.25f;
             _initialMaxValue = 25;
 
-            _multiplier = 1;
+            _earningMultiplier = 1;
 
             MaxValue = MinValue;
-            SetCurrentValue( 0 );
-
-            //Debug.Log( "Reset " + LinkedStatType.ToString() + " experience data to default." );
+            SetValue( 0 );
         }       
     }
 }

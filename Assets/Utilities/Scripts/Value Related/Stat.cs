@@ -6,15 +6,18 @@ using NaughtyAttributes;
 
 namespace dnSR_Coding
 {
+    public enum StatType { Unassigned, Strength, Endurance, Dexterity, }
+
     [Serializable]
-    public class NewStat : 
-        IInitializedValue<float>, 
-        IValue<float>, 
+    public class Stat :
+        IInitializedValue<float>,
+        IValue<float>,
         IClampedValue<float>,
         IModifiableStatValue<float>
     {
-        [SerializeField] private string _name;
-        [SerializeField, ReadOnly] private float _value;
+        [HideInInspector] public string Name;
+
+        [SerializeField] private StatType _type;
 
         [field: SerializeField] public float InitialValue { get; set; }
 
@@ -23,24 +26,23 @@ namespace dnSR_Coding
         [field: SerializeField] public float MinValue { get; set; }
         [field: SerializeField] public float MaxValue { get; set; }
 
-        public float Value { get => _value; set => _value = value; }
+        public float Value { get; set; }
 
         [field: SerializeField] public List<StatModifier> StatModifiers { get; set; }
-        public Action<float> OnStatValueModified { get; set; }
 
         public void InitializeValue( float initialValue )
         {
-            _value = initialValue;
+            Value = initialValue;
         }
 
         public float GetValue( float initialValue )
         {
-            _value = initialValue;
+            Value = initialValue;
 
             if ( StatModifiers.IsEmpty() )
             {
-                _value = GetClampedValue( _value, HasMinValue, HasMaxValue );
-                return _value;
+                Value = GetClampedValue( Value, HasMinValue, HasMaxValue );
+                return Value;
             }
 
             for ( int i = 0; i < StatModifiers.Count; i++ )
@@ -48,11 +50,9 @@ namespace dnSR_Coding
                 StatModifiers [ i ].Apply( this );
             }
 
-            _value = GetClampedValue( _value, HasMinValue, HasMaxValue );
+            Value = GetClampedValue( Value, HasMinValue, HasMaxValue );
 
-            OnStatValueModified?.Invoke( _value );
-
-            return _value;
+            return Value;
         }
 
         public float GetClampedValue( float valueToClamp, bool hasMinValue, bool hasMaxValue )
@@ -63,10 +63,31 @@ namespace dnSR_Coding
 
             return valueToClamp;
         }
+        public StatType GetStatType() => _type;
 
-        public void SetNewMaxValue( float newMaxValue )
+        public void SetNewMaxValue( float newMaxValue ) => MaxValue = newMaxValue;
+
+        #region Constructors
+
+        public Stat() : base() { }
+        public Stat( StatType type, int value ) : base()
         {
-            if ( MaxValue != newMaxValue ) { MaxValue = newMaxValue; }
+            Name = type.ToString();
+            _type = type;
+            Value = value;
         }
+
+        #endregion
+
+        #region Editor
+
+#if UNITY_EDITOR
+        public void SetName()
+        {
+            string name = _type.ToString() + " - " + Value.ToString();
+            if ( !Name.Equals( name ) ) { Name = name; }
+        }
+#endif
+        #endregion
     }
 }

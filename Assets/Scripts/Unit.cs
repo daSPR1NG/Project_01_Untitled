@@ -9,7 +9,7 @@ namespace dnSR_Coding
     {
         [Header( "Details" )]
         [SerializeField] private string _name;
-        [SerializeField] private StatSheet _stats;
+        [SerializeField] private StatSheetBackUp _stats;
         [SerializeField] private List<Item> _items = new();
         [SerializeField] private List<Competence> _competences = new();
 

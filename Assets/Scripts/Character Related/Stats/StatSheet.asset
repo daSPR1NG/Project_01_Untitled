@@ -12,46 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f5eb27f1af3fc84a95141485a57f20d, type: 3}
   m_Name: StatSheet
   m_EditorClassIdentifier: 
-  _stats:
-  - Name: Strength - 0
-    _type: 1
-    _points: 0
-  - Name: Endurance - 0
-    _type: 2
-    _points: 0
-  - Name: Dexterity - 0
-    _type: 3
-    _points: 0
-  _subStats:
-  - Name: Initiative_INI - 5 (+ 0)
-    _type: 1
-    _baseValue: 5
-    CurrentValue: 5
-  - Name: HealthPoints_HP - 25 (+ 0)
-    _type: 2
-    _baseValue: 25
-    CurrentValue: 25
-  - Name: Defense_DEF - 0 (+ 0)
-    _type: 3
-    _baseValue: 0
-    CurrentValue: 0
-  - Name: Resistance_RES - 0 (+ 0)
-    _type: 4
-    _baseValue: 0
-    CurrentValue: 0
-  - Name: Damage_DMG - 5 (+ 0)
-    _type: 5
-    _baseValue: 5
-    CurrentValue: 5
-  - Name: CounterAttackChance_CA - 0 (+ 0)
-    _type: 6
-    _baseValue: 0
-    CurrentValue: 0
-  - Name: Dodge_DOD - 0 (+ 0)
-    _type: 7
-    _baseValue: 0
-    CurrentValue: 0
-  _usesAnExperienceManager: 1
-  _attachedExperienceManager: {fileID: 11400000, guid: 5487383438693c047bd2a4e6c76b3179,
-    type: 2}
+  _stats: []
+  _subStats: []
   _isDebuggable: 1

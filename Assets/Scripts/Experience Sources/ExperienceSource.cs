@@ -18,8 +18,11 @@ namespace dnSR_Coding
 
         [Space( 5f ), SerializeField /*ShowIf( "_canGenerate" )*/] 
         private List<GeneratedExperienceData> _generatedExperiences = new();
-        public float CreationFrequency { get => _creationFrequency; 
-            private set => _creationFrequency =  value ; }
+        public float CreationFrequency 
+        { 
+            get => _creationFrequency;
+            private set => _creationFrequency =  value ; 
+        }
 
         [ShowNonSerializedField] private float _typeLimit = 0;
         [ShowNonSerializedField] private float _currentGenerationTimer = 0;

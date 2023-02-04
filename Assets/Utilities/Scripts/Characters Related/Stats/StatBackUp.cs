@@ -3,7 +3,7 @@
 namespace dnSR_Coding
 {
     [System.Serializable]
-    public class Stat
+    public class StatBackUp
     {
         [HideInInspector] public string Name;
 
@@ -20,8 +20,8 @@ namespace dnSR_Coding
         public StatType GetStatType() => _type;
         public int GetPoints() => _points;
 
-        public Stat() : base() {}
-        public Stat( StatType type, int points ) : base() 
+        public StatBackUp() : base() {}
+        public StatBackUp( StatType type, int points ) : base() 
         {
             Name = type.ToString();
             _type = type;
