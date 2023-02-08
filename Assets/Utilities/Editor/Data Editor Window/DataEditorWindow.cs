@@ -1234,7 +1234,8 @@ public class DataEditorWindow : EditorWindow
             //_middleSectionSelectedButtonIndex = _registeredGuids.Length;
             _middleSectionSelectedButtonIndex = GetGuidIndex( createdItem );
 
-            newItem.CreateStatEntriesInEditor();
+
+
             FocusThisItemAndDisplayItsDatas( newItem );
         }
     }

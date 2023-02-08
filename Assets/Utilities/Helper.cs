@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace dnSR_Coding.Utilities
 {
@@ -10,33 +11,49 @@ namespace dnSR_Coding.Utilities
         #region MyRegion
 
         /// <summary>
-        /// Calculates an amount of EXP, affected by a multiplier and adds it to the current EXP.
+        /// Calculates a value, affected by a multiplier.
         /// </summary>
-        /// <param name="amount"> The raw value </param>
-        /// <param name="multiplier"> The multiplier, less or equal to 1 </param>
-        /// <returns> A floored absolute value. </returns>
-        public static int MultipliedValue( int amount, float multiplier )
+        public static int GetMultipliedValueFrom( int amount, float multiplier )
         {
             amount = ExtMathfs.Abs( ExtMathfs.FloorToInt( amount * multiplier ) );
             return ExtMathfs.Abs( amount );
         }
 
         /// <summary>
-        /// Calculates the remaining amount of exp when an amount is added.
+        /// Calculates the remaining value from current value.
         /// </summary>
-        /// <param name="current"></param>
-        /// <param name="amountAdded"></param>
-        /// <param name="maxValue"></param>
-        /// <returns> The remaining amount of exp to add to current exp. </returns>
-        public static int RemainingValue( int current, int amountAdded, int maxValue )
+        public static int GetRemainingValueFrom( int current, int amountAdded, int maxValue )
         {
             int value = ( current + amountAdded ) - maxValue;
             return value;
         }
 
-        public static int PositiveValue( int amount )
+        public static int GetPositiveValueFrom( int amount )
         {
             return ExtMathfs.Abs( amount );
+        }
+
+        public static int GetClampedValueFrom( int valueToClamp, int minValue, int maxValue, bool hasMinValue, bool hasMaxValue )
+        {
+            valueToClamp = valueToClamp.Clamped(
+                hasMinValue ? minValue : valueToClamp,
+                hasMaxValue ? maxValue : valueToClamp );
+
+            return valueToClamp;
+        }
+
+        public static int GetClampedValueWithMinValueFrom( int valueToClamp, int minValue, bool hasMinValue )
+        {
+            valueToClamp = valueToClamp.Clamped( hasMinValue ? minValue : valueToClamp, valueToClamp );
+
+            return valueToClamp;
+        }
+
+        public static int GetClampedValueWithMaxValueFrom( int valueToClamp, int maxValue, bool hasMaxValue )
+        {
+            valueToClamp = valueToClamp.Clamped( 0, hasMaxValue ? maxValue : valueToClamp );
+
+            return valueToClamp;
         }
 
         #endregion
@@ -169,6 +186,33 @@ namespace dnSR_Coding.Utilities
         public static int GetEnumLength( System.Type type )
         {
             return System.Enum.GetValues( type ).Length;
+        }
+
+        #endregion
+
+        #region UI
+
+        public static void SetFilledBar( Image image, float value, float min, float max )
+        {
+            float fillAmountValue = value == 0 
+                ? 0 / max
+                : ( value / max ).Clamped( min, max );
+
+            if ( image.fillAmount != fillAmountValue ) { image.fillAmount = fillAmountValue; }
+        }
+
+        #endregion
+
+        #region Observer Pattern
+
+        public static void SubscribeToSubject( this IObserver observer, Subject subject )
+        {
+            subject.AddObserver( observer );
+        }
+
+        public static void UnsubscribeToSubject( this IObserver observer, Subject subject )
+        {
+            subject.RemoveObserver( observer );
         }
 
         #endregion

@@ -539,8 +539,19 @@ namespace dnSR_Coding.Utilities
         /// <param name="t"></param>
         /// <param name="debugMessage"></param>
         [MethodImpl( INLINE )]
-        public static void AppendItem<T>( this List<T> list, T t, bool debugMessage = false )
+        public static void AppendItem<T>( this List<T> list, T t, bool debugMessage = true )
         {
+            if ( t.IsNull() )
+            {
+                if ( debugMessage )
+                {
+                    Debug.Log( "This item does not exists: " 
+                        + t.ToLogComponent() );
+                }
+
+                return;
+            }
+
             if ( list.Contains( t ) )
             {
                 if ( debugMessage )
@@ -566,8 +577,19 @@ namespace dnSR_Coding.Utilities
         /// <param name="t"></param>
         /// <param name="debugMessage"></param>
         [MethodImpl( INLINE )]
-        public static void RemoveItem<T>( this List<T> list, T t, bool debugMessage = false )
+        public static void RemoveItem<T>( this List<T> list, T t, bool debugMessage = true )
         {
+            if ( t.IsNull() )
+            {
+                if ( debugMessage )
+                {
+                    Debug.Log( "This item does not exists: "
+                        + t.ToLogComponent() );
+                }
+
+                return;
+            }
+
             if ( list.IsEmpty() || !list.Contains( t ) )
             {
                 if ( debugMessage )

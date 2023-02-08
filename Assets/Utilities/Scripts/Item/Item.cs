@@ -52,8 +52,8 @@ namespace dnSR_Coding
 
         [Header( "StatBackUp Settings" )]
         [SerializeField, ReadOnly] private bool _hasStats = false;
-        [SerializeField, AllowNesting, ReadOnly] 
-        private List<StatBackUp> _stats = new();
+        //[SerializeField, AllowNesting, ReadOnly] 
+        //private List<StatBackUp> _stats = new();
 
         //----------------------------------------------------------------------------------------------------
 
@@ -93,7 +93,7 @@ namespace dnSR_Coding
             public int MaxStackSize { get; }
 
             public bool HasStats { get; }
-            public List<StatBackUp> Stats { get; }
+            //public List<StatBackUp> Stats { get; }
 
             public Sprite Icon { get; }
             public GameObject Prefab { get; }
@@ -116,7 +116,7 @@ namespace dnSR_Coding
                 MaxStackSize = _item._maxStackSize;
 
                 HasStats = _item._hasStats;
-                Stats = _item._stats;
+                //Stats = _item._stats;
 
                 Icon = _item._icon;
                 Prefab = _item._prefab;
@@ -138,40 +138,40 @@ namespace dnSR_Coding
                 "Stack Size : " + StackSize + '\n' +
                 "Max Stack Size : " + MaxStackSize + '\n' +
 
-                "Has stats ? : " + HasStats + '\n' +
-                ReadStats() );
+                "Has stats ? : " + HasStats + '\n' /*+*/
+                /*ReadStats()*/ );
             }
 
-            private string ReadStats()
-            {
-                string readStats = "Stats :" + '\n';
+            //private string ReadStats()
+            //{
+            //    string readStats = "Stats :" + '\n';
 
-                for ( int i = 0; i < Stats.Count; i++ )
-                {
-                    readStats += Stats [ i ].Name.ToString() + " - " + Stats [ i ].GetPoints().ToString() + '\n';
-                }
+            //    for ( int i = 0; i < Stats.Count; i++ )
+            //    {
+            //        readStats += Stats [ i ].Name.ToString() + " - " + Stats [ i ].GetPoints().ToString() + '\n';
+            //    }
 
-                return readStats;
-            }
+            //    return readStats;
+            //}
 
-            public StatBackUp GetStatByType( StatType statType )
-            {
-                if ( Stats.IsEmpty() )
-                {
-                    Debug.LogError( "No stats assigned, it might be a bug, try to refresh the item asset", _item );
-                    return null;
-                }
+            //public StatBackUp GetStatByType( StatType statType )
+            //{
+            //    if ( Stats.IsEmpty() )
+            //    {
+            //        Debug.LogError( "No stats assigned, it might be a bug, try to refresh the item asset", _item );
+            //        return null;
+            //    }
 
-                for ( int i = 0; i < Stats.Count; i++ )
-                {
-                    if ( Stats [ i ].GetStatType() != statType ) { continue; }
+            //    for ( int i = 0; i < Stats.Count; i++ )
+            //    {
+            //        if ( Stats [ i ].GetStatType() != statType ) { continue; }
 
-                    return Stats [ i ];
-                }
+            //        return Stats [ i ];
+            //    }
 
-                Debug.LogError( "No stats assigned, it might be a bug, try to refresh the item asset", _item );
-                return null;
-            }
+            //    Debug.LogError( "No stats assigned, it might be a bug, try to refresh the item asset", _item );
+            //    return null;
+            //}
         }
 
         public void Reset()
@@ -190,8 +190,8 @@ namespace dnSR_Coding
 
             _hasStats = false;
 
-            _stats.Clear();
-            CreateStatEntriesInEditor();
+            //_stats.Clear();
+            //CreateStatEntriesInEditor();
 
             _icon = null;
             _prefab = null;
@@ -208,36 +208,36 @@ namespace dnSR_Coding
 
         #endregion
 
-        #region Editor
+//        #region Editor
 
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
 
-        public void CreateStatEntriesInEditor()
-        {
-            int amountOfStat = Helper.GetEnumLength( typeof( StatType ) ) - 1;
-            int statTypeIndex = 1;
+//        public void CreateStatEntriesInEditor()
+//        {
+//            int amountOfStat = Helper.GetEnumLength( typeof( StatType ) ) - 1;
+//            int statTypeIndex = 1;
 
-            if ( _stats.Count >= amountOfStat ) { return; }
+//            if ( _stats.Count >= amountOfStat ) { return; }
 
-            if ( _stats.Count < amountOfStat )
-            {
-                for ( int i = 0; i < amountOfStat; i++ )
-                {
-                    _stats.AppendItem( new StatBackUp( ( StatType ) Helper.GetEnumToArray( typeof( StatType ) ).GetValue ( statTypeIndex ), 0 ) );
-                    statTypeIndex++;
-                }                
-            }
-        }
+//            if ( _stats.Count < amountOfStat )
+//            {
+//                for ( int i = 0; i < amountOfStat; i++ )
+//                {
+//                    _stats.AppendItem( new StatBackUp( ( StatType ) Helper.GetEnumToArray( typeof( StatType ) ).GetValue ( statTypeIndex ), 0 ) );
+//                    statTypeIndex++;
+//                }                
+//            }
+//        }
 
-        private void OnValidate()
-        {
-            if ( Application.isPlaying ) { return; }
+//        private void OnValidate()
+//        {
+//            if ( Application.isPlaying ) { return; }
 
-            CreateStatEntriesInEditor();
-        }
+//            CreateStatEntriesInEditor();
+//        }
 
-#endif
+//#endif
 
-        #endregion
+//        #endregion
     }
 }
