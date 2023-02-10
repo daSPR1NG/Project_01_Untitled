@@ -38,7 +38,7 @@ namespace dnSR_Coding
 
         protected override void Init( bool dontDestroyOnLoad = false )
         {
-            base.Init( true );
+            base.Init();
         }
 
         #region Displayed Windows Handle

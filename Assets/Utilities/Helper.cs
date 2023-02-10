@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace dnSR_Coding.Utilities
 {
@@ -129,7 +128,7 @@ namespace dnSR_Coding.Utilities
             if ( user is not IDebuggable ) return;
 
             IDebuggable debuggable = user as IDebuggable;
-            Object context = ( Object ) debuggable;
+            UnityEngine.Object context = ( UnityEngine.Object ) debuggable;
 
             if ( debuggable.IsDebuggable )
             {
@@ -190,27 +189,26 @@ namespace dnSR_Coding.Utilities
 
         #endregion
 
-        #region UI
-
-        public static void SetFilledBar( Image image, float value, float min, float max )
-        {
-            float fillAmountValue = value == 0 
-                ? 0 / max
-                : ( value / max ).Clamped( min, max );
-
-            if ( image.fillAmount != fillAmountValue ) { image.fillAmount = fillAmountValue; }
-        }
-
-        #endregion
-
         #region Observer Pattern
 
-        public static void SubscribeToSubject( this IObserver observer, Subject subject )
+        public static void PushNotificationToObservers( this ISubject subject, object value )
         {
-            subject.AddObserver( observer );
+            Debug.Log( "Number of observers : " + subject.Observers.Count );
+
+            foreach ( IObserver observer in subject.Observers )
+            {
+                Debug.Log( "Notify observers." );
+                observer.OnNotification( value );
+            }
         }
 
-        public static void UnsubscribeToSubject( this IObserver observer, Subject subject )
+        public static void SubscribeToSubject( this IObserver observer, ISubject subject, System.Action onInitialization = null )
+        {
+            subject.AddObserver( observer );
+            onInitialization?.Invoke();
+        }
+
+        public static void UnsubscribeToSubject( this IObserver observer, ISubject subject )
         {
             subject.RemoveObserver( observer );
         }
@@ -350,6 +348,37 @@ namespace dnSR_Coding.Utilities
             Rect rect = new( xPos, yPos, width: size, height: size );
 
             Graphics.DrawTexture( rect, texture );
+        }
+
+        #endregion
+
+        #region Generic
+
+        public static void Refresh( this GameObject gameObject )
+        {
+            gameObject.TryToHide();
+            gameObject.TryToDisplay();
+        }
+
+        public static void Refresh( this Canvas canvas )
+        {
+            canvas.Disable();
+            canvas.Enable();
+        }
+
+        /// <summary>
+        /// Quit the game : close the application in a build context and stops playmod in Editor.
+        /// </summary>
+        public static void QuitApplication()
+        {
+#if UNITY_EDITOR
+            if ( Application.isEditor )
+            {
+                UnityEditor.EditorApplication.isPlaying = false;
+                return;
+            }
+#endif
+            Application.Quit();
         }
 
         #endregion

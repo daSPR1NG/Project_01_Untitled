@@ -11,7 +11,7 @@ namespace dnSR_Coding
         public override void OnClick()
         {
             Helper.Log( this, "Quit the game" );
-            GameManager.QuitApplication();
+            Helper.QuitApplication();
         }
 
         #region OnValidate

@@ -9,10 +9,13 @@ namespace dnSR_Coding
     public enum StatType { Unassigned, Strength, Endurance, Dexterity, }
 
     [Serializable]
-    public class Stat : Subject, IMinValue<int>, IModifiableStatValue, ILevelable
+    public class Stat : ISubject, IMinValue<int>, IModifiableStatValue, ILevelable
     {
         [HideInInspector] public string Name;
         [SerializeField] private StatType _type;
+
+        private readonly List<IObserver> _observers = new();
+        public List<IObserver> Observers => _observers;
 
         public bool HasMinValue { get => true; }
         public int MinValue { get => 1; }
@@ -34,7 +37,7 @@ namespace dnSR_Coding
         {
             Value = value;
         }
-        public int GetValue()
+        public int GetTotalValue()
         {
             Value = Level;
 
@@ -81,9 +84,9 @@ namespace dnSR_Coding
             Level = value;
         }
 
-        protected override void NotifyObservers( object value )
+        public void NotifyObservers(object value)
         {
-            base.NotifyObservers( value );
+            this.PushNotificationToObservers( value );
 
 #if UNITY_EDITOR
             SetNameInEditor();
@@ -110,11 +113,11 @@ namespace dnSR_Coding
 
         public void SetNameInEditor()
         {
-            string name = _type.ToString() + " - " + GetValue().ToString();
+            string name = _type.ToString() + " - " + GetTotalValue().ToString();
             if ( !Name.Equals( name ) ) { Name = name; }
         }
         
-        public void InitializeStatPropertiesInEditor()
+        public void ResetStatPropertiesInEditor()
         {
             StatModifiers.Clear();
 
@@ -134,8 +137,9 @@ namespace dnSR_Coding
 
         public void SetValueInEditor()
         {
-            if ( Value != GetValue() ) { Value = GetValue(); }
+            if ( Value != GetTotalValue() ) { Value = GetTotalValue(); }
         }
+
 #endif
         #endregion
     }

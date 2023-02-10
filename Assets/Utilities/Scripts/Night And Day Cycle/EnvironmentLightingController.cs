@@ -79,11 +79,7 @@ namespace dnSR_Coding
 
         private void Update()
         {
-            if ( Application.isPlaying ) { UpdateLighting( _timeController.GetCurrentTimeOfDay(), _activeSettings ); }
-            else
-            {
-                UpdateLighting( _timeController.GetCurrentTimeOfDay(), _activeSettings );
-            }
+            UpdateLighting( _timeController.GetCurrentTimeOfDay(), _activeSettings );
         }
 
         #region Lighting handle on Update

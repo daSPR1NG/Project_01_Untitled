@@ -10,8 +10,10 @@ namespace dnSR_Coding
         
         protected override void Init( bool dontDestroyOnload )
         {
-            base.Init( true );
+            base.Init( true );            
         }
+
+        private void Start() => _characterStatSheet.InitialiazeStatSheet();
 
         public StatSheet GetStatSheet() => _characterStatSheet;
     }

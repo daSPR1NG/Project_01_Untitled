@@ -12,13 +12,13 @@ namespace dnSR_Coding
 
         protected virtual void Init( bool dontDestroyOnLoad = false )
         {
-            if ( !Instance.IsNull() && Instance != this as T ) 
+            if ( !Instance.IsNull() && Instance != this as T )
             { 
                 Instance.gameObject.DestroyInRuntimeOrEditor();
             }
 
             Instance = this as T;
-            if ( dontDestroyOnLoad ) { DontDestroyOnLoad( Instance ); }
+            //if ( dontDestroyOnLoad ) { DontDestroyOnLoad( Instance ); }
 
             //Debug.Log( "The instance of " + name +  " has been set on initialization.");
         }

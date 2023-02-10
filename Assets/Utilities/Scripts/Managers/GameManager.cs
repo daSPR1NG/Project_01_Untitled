@@ -3,6 +3,8 @@ using dnSR_Coding.Utilities;
 using System;
 using NaughtyAttributes;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace dnSR_Coding
 {
@@ -10,13 +12,13 @@ namespace dnSR_Coding
 
     ///<summary> GameManager description <summary>
     [Component( "GAME MANAGER", "Handles global things about the game." )]
-    public class GameManager : Singleton<GameManager>, IDebuggable
+    public class GameManager : Singleton<GameManager>, ISubject, IDebuggable
     {
         [SerializeField] private GameState _gameState = GameState.Playing;
         [SerializeField] private int _timeScale = 1;
 
-        public static Action OnGamePaused;
-        public static Action OnGameResumed;
+        private readonly List<IObserver> _observers = new();
+        public List<IObserver> Observers => _observers;
 
         #region Debug
 
@@ -90,11 +92,13 @@ namespace dnSR_Coding
         {
             if ( IsGamePaused() )
             {
-                OnGameResumed?.Invoke();
+                NotifyObservers( GameState.Playing );
+                //OnGameResumed?.Invoke();
                 return;
             }
 
-            OnGamePaused?.Invoke();
+            NotifyObservers( GameState.Paused );
+            //OnGamePaused?.Invoke();
         }
 
         /// <summary>
@@ -116,21 +120,11 @@ namespace dnSR_Coding
         public GameState GetCurrentGameState() { return _gameState; }
         public bool IsGamePaused() { return GetCurrentGameState() == GameState.Paused || Time.timeScale == 0; }
 
-        #endregion
+        #endregion        
 
-        /// <summary>
-        /// Quit the game : close the application in a build context and stops playmod in Editor.
-        /// </summary>
-        public static void QuitApplication()
+        public void NotifyObservers( object value )
         {
-#if UNITY_EDITOR
-            if ( Application.isEditor )
-            {
-                UnityEditor.EditorApplication.isPlaying = false;
-                return;
-            }
-#endif
-            Application.Quit();
+            this.PushNotificationToObservers( value );
         }
 
         #region On GUI

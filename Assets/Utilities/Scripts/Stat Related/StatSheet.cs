@@ -10,6 +10,14 @@ namespace dnSR_Coding
     {
         [SerializeField] private List<Stat> _stats = new();
 
+        public void InitialiazeStatSheet()
+        {
+            foreach ( Stat stat in _stats ) 
+            {
+                stat.NotifyObservers( stat );
+            }
+        }
+
         public Stat GetStatByType( StatType statType )
         {
             if ( _stats.IsEmpty() ) 
@@ -49,11 +57,11 @@ namespace dnSR_Coding
         }
 
         [Button]
-        private void InitializeStatPropertiesInEditor()
+        private void ResetStatPropertiesInEditor()
         {
             foreach ( var stat in _stats )
             {
-                stat.InitializeStatPropertiesInEditor();
+                stat.ResetStatPropertiesInEditor();
             }
         }
         

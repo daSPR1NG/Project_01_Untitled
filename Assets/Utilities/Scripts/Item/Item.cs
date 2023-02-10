@@ -223,7 +223,7 @@ namespace dnSR_Coding
 //            {
 //                for ( int i = 0; i < amountOfStat; i++ )
 //                {
-//                    _stats.AppendItem( new StatBackUp( ( StatType ) Helper.GetEnumToArray( typeof( StatType ) ).GetValue ( statTypeIndex ), 0 ) );
+//                    _stats.AppendItem( new StatBackUp( ( StatType ) Helper.GetEnumToArray( typeof( StatType ) ).GetTotalValue ( statTypeIndex ), 0 ) );
 //                    statTypeIndex++;
 //                }                
 //            }

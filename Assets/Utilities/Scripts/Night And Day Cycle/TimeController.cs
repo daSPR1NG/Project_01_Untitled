@@ -21,7 +21,7 @@ namespace dnSR_Coding
 
         [SerializeField] private bool _updateTimeOfDay = true;
         [InfoBox( "The value is in seconds and does not exceeds 10 minutes realtime (600s)." )]
-        [SerializeField, Range( 1, 600 )] private float _dayDuration = 480f;
+        [SerializeField] private float _dayDuration = 480f;
         [SerializeField, Range( 0, 600 ), ShowIf( "IsDebuggable" )] private float _timeOfDay = 240f;
         [ShowNonSerializedField] private string _daytimeInMinutesAndSecondsFormat;
         [ShowNonSerializedField] private string _daytimeInHoursFormat;

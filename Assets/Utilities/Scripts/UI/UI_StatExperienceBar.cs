@@ -1,24 +1,26 @@
 using UnityEngine;
 using dnSR_Coding.Utilities;
 using NaughtyAttributes;
-using UnityEngine.UI;
 using TMPro;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace dnSR_Coding
 {
     [DisallowMultipleComponent]
-    public class UI_StatExperienceBar : MonoBehaviour, IDebuggable, IObserver, IFilledBarWithText
+    public class UI_StatExperienceBar : UI_FilledBar, IDebuggable, IObserver
     {
-        [field: SerializeField] public Subject Subject { get; private set; }
-        [field: SerializeField] public StatType ObservedStatType { get; set; }
+        public ISubject Subject { get; private set; }
 
-        [Header( "UI COMPONENTS" )]
+        [Header( "Experience Bar details" )]
 
+        [SerializeField] private StatType _observedStatType;
         [SerializeField] private TMP_Text _levelValueText;
-        [field: SerializeField] public Image FilledImage { get; set; }
-        [field: SerializeField] public TMP_Text FilledBarValueText { get; set; }
 
-        PlayerCharacterProperties _playerCharacterProperties;
+        private PlayerCharacterProperties _playerCharacterProperties;
+
+        private Stat _observedStat = null;
+        private float _currentExperience;
+        private float _maxExperienceValue;
 
         #region Debug
 
@@ -33,14 +35,20 @@ namespace dnSR_Coding
         void OnEnable()
         {
             TryGetSubject();
-            Helper.SubscribeToSubject( observer: this, Subject );
+            Helper.SubscribeToSubject( observer: this, Subject, onInitialization: () => UpdateFillBarElements( Subject ) );
         }
         void OnDisable() => Helper.UnsubscribeToSubject( observer: this, Subject );
 
         #endregion
 
+        void Start() => gameObject.TryToHide();
+
         public void TryGetSubject()
         {
+            Debug.Log( "Try to get subject." );
+
+            Subject = null;
+
             if ( _playerCharacterProperties.IsNull() ) 
             {
                 _playerCharacterProperties = FindObjectOfType<PlayerCharacterProperties>();
@@ -48,20 +56,19 @@ namespace dnSR_Coding
 
             if ( _playerCharacterProperties.IsNull() )
             {
-                Debug.LogError( "Subject could not be found for this observer.", transform );
+                Debug.LogError( "ISubject could not be found for this observer.", transform );
                 return; 
             }
 
-            Stat lookedForStat = _playerCharacterProperties.GetStatSheet().GetStatByType( ObservedStatType );
+            Stat lookedForStat = _playerCharacterProperties.GetStatSheet().GetStatByType( _observedStatType );
 
             if ( lookedForStat.IsNull() ) 
             {
-                Debug.LogError( "The stat you're looking for doesn't exists.", transform );
+                Debug.LogError( "The _observedStat you're looking for doesn't exists.", transform );
                 return; 
             }
 
             Subject = lookedForStat;
-            //Debug.Log( Subject.ToLogValue() );
 
 #if UNITY_EDITOR
             if ( !Application.isPlaying )
@@ -71,34 +78,39 @@ namespace dnSR_Coding
 #endif
         }
 
-        private void SetLevelValueText( string input )
-        {
-            if ( !_levelValueText.Equals( input ) ) { _levelValueText.SetText( input ); }
-        }
-
-        public void OnNotify( object value )
+        public void OnNotification( object value )
         {
             Helper.Log( this, "On being notified" );
-            Stat stat = value as Stat;
+            UpdateFillBarElements( value );
+        }
 
-            float currentExperience = stat.CurrentExperience;
-            float minExperienceValue = 0;
-            float maxExperienceValue = stat.RequiredExperienceToNextLevel;
+        private void UpdateFillBarElements( object value )
+        {
+            _observedStat = ( Stat ) value;
 
-            Helper.SetFilledBar(
-                FilledImage,
-                currentExperience, minExperienceValue, maxExperienceValue );
+            _currentExperience = _observedStat.CurrentExperience;
+            _maxExperienceValue = _observedStat.RequiredExperienceToNextLevel;
 
-            string fillValueInput = currentExperience.ToString() + " / " + maxExperienceValue.ToString();
-            SetFillBarValueText( fillValueInput );
+            SetImageFillAmount( _currentExperience, _maxExperienceValue );
 
-            string levelValueInput = "Level - " + stat.Level.ToString();
-            SetLevelValueText( levelValueInput );
+            SetFillBarValueText( _currentExperience.ToString() + " / " + _maxExperienceValue.ToString() );
+            SetLevelValueText( "Level - " + _observedStat.Level.ToString() );
+        }
+
+        public override void SetImageFillAmount( float currentValue, float maxValue )
+        {
+            float fillAmount = currentValue / maxValue;
+            _fillImage.fillAmount = fillAmount;
+        }
+
+        private void SetLevelValueText( string input )
+        {
+            _levelValueText.text = input;
         }
 
         public void SetFillBarValueText( string input )
         {
-            if ( !FilledBarValueText.Equals( input ) ) { FilledBarValueText.SetText( input ); }
+            _fillAmountValueText.text = input;
         }
 
         #region OnValidate
@@ -107,9 +119,10 @@ namespace dnSR_Coding
 
         private void OnValidate()
         {
-            TryGetSubject();
-        }    
-        
+            if ( !Application.isPlaying )
+                TryGetSubject();
+        }        
+
 #endif
 
         #endregion
