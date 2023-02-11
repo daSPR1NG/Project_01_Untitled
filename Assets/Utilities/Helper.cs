@@ -187,33 +187,7 @@ namespace dnSR_Coding.Utilities
             return System.Enum.GetValues( type ).Length;
         }
 
-        #endregion
-
-        #region Observer Pattern
-
-        public static void PushNotificationToObservers( this ISubject subject, object value )
-        {
-            Debug.Log( "Number of observers : " + subject.Observers.Count );
-
-            foreach ( IObserver observer in subject.Observers )
-            {
-                Debug.Log( "Notify observers." );
-                observer.OnNotification( value );
-            }
-        }
-
-        public static void SubscribeToSubject( this IObserver observer, ISubject subject, System.Action onInitialization = null )
-        {
-            subject.AddObserver( observer );
-            onInitialization?.Invoke();
-        }
-
-        public static void UnsubscribeToSubject( this IObserver observer, ISubject subject )
-        {
-            subject.RemoveObserver( observer );
-        }
-
-        #endregion
+        #endregion        
 
         #region OnGui helpers
 
@@ -353,18 +327,6 @@ namespace dnSR_Coding.Utilities
         #endregion
 
         #region Generic
-
-        public static void Refresh( this GameObject gameObject )
-        {
-            gameObject.TryToHide();
-            gameObject.TryToDisplay();
-        }
-
-        public static void Refresh( this Canvas canvas )
-        {
-            canvas.Disable();
-            canvas.Enable();
-        }
 
         /// <summary>
         /// Quit the game : close the application in a build context and stops playmod in Editor.

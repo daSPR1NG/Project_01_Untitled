@@ -9,11 +9,9 @@ namespace dnSR_Coding
     [DisallowMultipleComponent]
     public class UI_StatExperienceBar : UI_FilledBar, IDebuggable, IObserver
     {
-        public ISubject Subject { get; private set; }
-
         [Header( "Experience Bar details" )]
 
-        [SerializeField] private StatType _observedStatType;
+        [SerializeField] private StatTypeEnum _observedStatType;
         [SerializeField] private TMP_Text _levelValueText;
 
         private PlayerCharacterProperties _playerCharacterProperties;
@@ -32,51 +30,10 @@ namespace dnSR_Coding
 
         #region Enable, Disable
 
-        void OnEnable()
-        {
-            TryGetSubject();
-            Helper.SubscribeToSubject( observer: this, Subject, onInitialization: () => UpdateFillBarElements( Subject ) );
-        }
-        void OnDisable() => Helper.UnsubscribeToSubject( observer: this, Subject );
+        void OnEnable() => Stat.OnStatModification += UpdateFillBarElements;
+        void OnDisable() => Stat.OnStatModification -= UpdateFillBarElements;
 
         #endregion
-
-        void Start() => gameObject.TryToHide();
-
-        public void TryGetSubject()
-        {
-            Debug.Log( "Try to get subject." );
-
-            Subject = null;
-
-            if ( _playerCharacterProperties.IsNull() ) 
-            {
-                _playerCharacterProperties = FindObjectOfType<PlayerCharacterProperties>();
-            }
-
-            if ( _playerCharacterProperties.IsNull() )
-            {
-                Debug.LogError( "ISubject could not be found for this observer.", transform );
-                return; 
-            }
-
-            Stat lookedForStat = _playerCharacterProperties.GetStatSheet().GetStatByType( _observedStatType );
-
-            if ( lookedForStat.IsNull() ) 
-            {
-                Debug.LogError( "The _observedStat you're looking for doesn't exists.", transform );
-                return; 
-            }
-
-            Subject = lookedForStat;
-
-#if UNITY_EDITOR
-            if ( !Application.isPlaying )
-            {
-                Subject.AddObserver( this );
-            }
-#endif
-        }
 
         public void OnNotification( object value )
         {
@@ -87,6 +44,12 @@ namespace dnSR_Coding
         private void UpdateFillBarElements( object value )
         {
             _observedStat = ( Stat ) value;
+
+            if ( _observedStat.IsNull() 
+                || _observedStat.GetStatType() != _observedStatType ) 
+            {
+                return; 
+            }
 
             _currentExperience = _observedStat.CurrentExperience;
             _maxExperienceValue = _observedStat.RequiredExperienceToNextLevel;
@@ -108,23 +71,9 @@ namespace dnSR_Coding
             _levelValueText.text = input;
         }
 
-        public void SetFillBarValueText( string input )
+        public override void SetFillBarValueText( string input )
         {
             _fillAmountValueText.text = input;
         }
-
-        #region OnValidate
-
-#if UNITY_EDITOR
-
-        private void OnValidate()
-        {
-            if ( !Application.isPlaying )
-                TryGetSubject();
-        }        
-
-#endif
-
-        #endregion
     }
 }

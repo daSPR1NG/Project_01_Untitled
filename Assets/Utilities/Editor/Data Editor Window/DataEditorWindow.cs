@@ -387,18 +387,18 @@ public class DataEditorWindow : EditorWindow
         _editedItemHasStatsField ??= _editedItemHasStats.boolValue;
 
         //Stats List
-        InitializeStatProperty( StatType.Strength );
-        InitializeStatProperty( StatType.Endurance );
-        InitializeStatProperty( StatType.Dexterity );
+        InitializeStatProperty( StatTypeEnum.Strength );
+        InitializeStatProperty( StatTypeEnum.Endurance );
+        InitializeStatProperty( StatTypeEnum.Dexterity );
 
         #endregion
     }
 
-    private void InitializeStatProperty( StatType statType )
+    private void InitializeStatProperty( StatTypeEnum statType )
     {
         switch ( statType )
         {
-            case StatType.Strength:
+            case StatTypeEnum.Strength:
                 _editedItemStrengthStat = 
                     _editedSerializedObject.FindProperty( "_stats" ).GetArrayElementAtIndex( 0 ).FindPropertyRelative( "_points" );
 
@@ -408,7 +408,7 @@ public class DataEditorWindow : EditorWindow
                 }
                 break;
 
-            case StatType.Endurance:
+            case StatTypeEnum.Endurance:
                 _editedItemEnduranceStat = 
                     _editedSerializedObject.FindProperty( "_stats" ).GetArrayElementAtIndex( 1 ).FindPropertyRelative( "_points" );
 
@@ -418,7 +418,7 @@ public class DataEditorWindow : EditorWindow
                 }
                 break;
 
-            case StatType.Dexterity:
+            case StatTypeEnum.Dexterity:
                 _editedItemDexterityStat =
                     _editedSerializedObject.FindProperty( "_stats" ).GetArrayElementAtIndex( 2 ).FindPropertyRelative( "_points" );
 
@@ -810,9 +810,9 @@ public class DataEditorWindow : EditorWindow
                    "Yes, Reset all",
                    "Cancel" ) )
                 {
-                    ResetItemStatPoint( StatType.Strength );
-                    ResetItemStatPoint( StatType.Endurance );
-                    ResetItemStatPoint( StatType.Dexterity );
+                    ResetItemStatPoint( StatTypeEnum.Strength );
+                    ResetItemStatPoint( StatTypeEnum.Endurance );
+                    ResetItemStatPoint( StatTypeEnum.Dexterity );
                 }
             } );
 
@@ -823,12 +823,12 @@ public class DataEditorWindow : EditorWindow
         {
             GUILayout.BeginVertical();
 
-            int statAmount = System.Enum.GetValues( typeof( StatType ) ).Length - 1;
+            int statAmount = System.Enum.GetValues( typeof( StatTypeEnum ) ).Length - 1;
             int statTypeIndex = 1;
 
             for ( int i = 0; i < statAmount; i++ )
             {
-                DrawItemStatEntries( ( StatType ) Helper.GetEnumToArray( typeof( StatType ) ).GetValue( statTypeIndex ), subPanelWidth );
+                DrawItemStatEntries( ( StatTypeEnum ) Helper.GetEnumToArray( typeof( StatTypeEnum ) ).GetValue( statTypeIndex ), subPanelWidth );
                 statTypeIndex++;
             }            
 
@@ -858,7 +858,7 @@ public class DataEditorWindow : EditorWindow
         }
     }
 
-    private void DrawItemStatEntries( StatType statType, float entryWidth )
+    private void DrawItemStatEntries( StatTypeEnum statType, float entryWidth )
     {
         GUILayout.BeginHorizontal();
 
@@ -866,15 +866,15 @@ public class DataEditorWindow : EditorWindow
         string statTypeAbreviation = "";
         switch ( statType )
         {
-            case StatType.Strength:
+            case StatTypeEnum.Strength:
                 statTypeAbreviation = " - STR";
                 break;
 
-            case StatType.Endurance:
+            case StatTypeEnum.Endurance:
                 statTypeAbreviation = " - END";
                 break;
 
-            case StatType.Dexterity:
+            case StatTypeEnum.Dexterity:
                 statTypeAbreviation = " - DEX";
                 break;
         }
@@ -890,20 +890,20 @@ public class DataEditorWindow : EditorWindow
         // Set objectField point according to statType
         switch ( statType )
         {
-            case StatType.Strength:
+            case StatTypeEnum.Strength:
                 GUILayout.FlexibleSpace();
                 _editedItemStrengthStatField = 
                     EditorGUILayout.IntField( _editedItemStrengthStatField.Value,
             new GUILayoutOption [] { GUILayout.Width( entryFieldWidth ), } );
                 break;
 
-            case StatType.Endurance:
+            case StatTypeEnum.Endurance:
                 GUILayout.FlexibleSpace();
                 _editedItemEnduranceStatField = EditorGUILayout.IntField( _editedItemEnduranceStatField.Value,
             new GUILayoutOption [] { GUILayout.Width( entryFieldWidth ), } );
                 break;
 
-            case StatType.Dexterity:
+            case StatTypeEnum.Dexterity:
                 GUILayout.FlexibleSpace();
                 _editedItemDexterityStatField = EditorGUILayout.IntField( _editedItemDexterityStatField.Value,
             new GUILayoutOption [] { GUILayout.Width( entryFieldWidth ), } );
@@ -930,21 +930,21 @@ public class DataEditorWindow : EditorWindow
         GUILayout.EndHorizontal();
     }
 
-    private void ResetItemStatPoint( StatType statType )
+    private void ResetItemStatPoint( StatTypeEnum statType )
     {
         switch ( statType )
         {
-            case StatType.Strength:
+            case StatTypeEnum.Strength:
                 _editedItemStrengthStat.intValue = 0;
                 _editedItemStrengthStatField = _editedItemStrengthStat.intValue;
                 break;
 
-            case StatType.Endurance:
+            case StatTypeEnum.Endurance:
                 _editedItemEnduranceStat.intValue = 0;
                 _editedItemEnduranceStatField = _editedItemEnduranceStat.intValue;
                 break;
 
-            case StatType.Dexterity:
+            case StatTypeEnum.Dexterity:
                 _editedItemDexterityStat.intValue = 0;
                 _editedItemDexterityStatField = _editedItemDexterityStat.intValue;
                 break;
@@ -1337,7 +1337,7 @@ public class DataEditorWindow : EditorWindow
         {
             case DisplaySelector.Item:
                 _editedSerializedObject.ApplyModifiedProperties();
-                _editedItem.Datas = new Item.ItemDatas( _editedItem );
+                _editedItem.Datas = new Item.ItemInfos( _editedItem );
                 break;
 
             case DisplaySelector.Unit:

@@ -61,21 +61,21 @@ namespace dnSR_Coding
         [SerializeField, ReadOnly] private Sprite _icon = null;
         [SerializeField, ReadOnly] private GameObject _prefab = null;
 
-        private ItemDatas _datas;
-        public ItemDatas Datas
+        private ItemInfos _datas;
+        public ItemInfos Datas
         {
             get 
             {
                 if ( _datas.IsNull() )
                 {
-                    _datas = new ItemDatas( this );
+                    _datas = new ItemInfos( this );
                 }
                 return _datas;
             }
             set { _datas = value; }
         }
 
-        public class ItemDatas
+        public class ItemInfos
         {
             private readonly Item _item;
 
@@ -98,7 +98,7 @@ namespace dnSR_Coding
             public Sprite Icon { get; }
             public GameObject Prefab { get; }
             
-            public ItemDatas( Item item )
+            public ItemInfos( Item item )
             {
                 _item = item;
 
@@ -122,7 +122,7 @@ namespace dnSR_Coding
                 Prefab = _item._prefab;
             }
 
-            public void ReadDatas()
+            public void ReadInfos()
             {
                 Debug.Log(
                 "Name : " + Name + '\n' +

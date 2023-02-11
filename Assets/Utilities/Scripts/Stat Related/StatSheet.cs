@@ -12,13 +12,13 @@ namespace dnSR_Coding
 
         public void InitialiazeStatSheet()
         {
-            foreach ( Stat stat in _stats ) 
-            {
-                stat.NotifyObservers( stat );
-            }
+            //foreach ( Stat stat in _stats ) 
+            //{
+            //    stat.NotifyObservers( stat );
+            //}
         }
 
-        public Stat GetStatByType( StatType statType )
+        public Stat GetStatByType( StatTypeEnum statType )
         {
             if ( _stats.IsEmpty() ) 
             {
@@ -68,19 +68,19 @@ namespace dnSR_Coding
         [Button]
         private void AddExperienceToStrengthStatInEditor()
         {
-            GetStatByType( StatType.Strength ).AddExperience( 5 );
+            GetStatByType( StatTypeEnum.Strength ).AddExperience( 5 );
         }
 
         [Button]
         private void AddExperienceToEnduranceStatInEditor()
         {
-            GetStatByType( StatType.Endurance ).AddExperience( 5 );
+            GetStatByType( StatTypeEnum.Endurance ).AddExperience( 5 );
         }
 
         [Button]
         private void AddExperienceToDexterityStatInEditor()
         {
-            GetStatByType( StatType.Dexterity ).AddExperience( 5 );
+            GetStatByType( StatTypeEnum.Dexterity ).AddExperience( 5 );
         }
 
         private void OnValidate()

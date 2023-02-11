@@ -27,7 +27,7 @@ namespace dnSR_Coding
         [ShowNonSerializedField] private float _typeLimit = 0;
         [ShowNonSerializedField] private float _currentGenerationTimer = 0;
 
-        public static Action<StatType, int> OnGeneratingExperience;
+        public static Action<StatTypeEnum, int> OnGeneratingExperience;
 
         [System.Serializable]
         public class GeneratedExperienceData
@@ -40,7 +40,7 @@ namespace dnSR_Coding
             public enum ValueType { High, Medium, Low, VeryLow }
 
             [SerializeField] private string Name;
-            public StatType LinkedStatType;
+            public StatTypeEnum LinkedStatType;
             [SerializeField] private ValueType Type;
             public int GenerationCapacity { get; private set; }
 
@@ -76,7 +76,7 @@ namespace dnSR_Coding
                 }
             }
 
-            public GeneratedExperienceData( StatType linkedStatType )
+            public GeneratedExperienceData( StatTypeEnum linkedStatType )
             {
                 LinkedStatType = linkedStatType;
                 Type = ValueType.VeryLow;
@@ -147,7 +147,7 @@ namespace dnSR_Coding
         /// </summary>
         /// <param name="type"> The type of experience being pushed </param>
         /// <param name="value"> The amount pushed </param>
-        public void PushExperience( StatType type, int value )
+        public void PushExperience( StatTypeEnum type, int value )
         {
             Helper.Log( this, "Pushing " + value + " experience _points for " + type.ToString() );
 
@@ -164,7 +164,7 @@ namespace dnSR_Coding
             CreationFrequency = value;
         }
 
-        public void UpgradeGeneratedCapacity( StatType type, int value )
+        public void UpgradeGeneratedCapacity( StatTypeEnum type, int value )
         {
             if ( _generatedExperiences.IsEmpty() ) 
             {
@@ -183,10 +183,10 @@ namespace dnSR_Coding
         [Button]
         private void TestAddExperienceDataOfType()
         {
-            AddExperienceDataOfType( StatType.Dexterity );
+            AddExperienceDataOfType( StatTypeEnum.Dexterity );
         }
 
-        public void AddExperienceDataOfType( StatType statType )
+        public void AddExperienceDataOfType( StatTypeEnum statType )
         {
             if ( _generatedExperiences.Count >= _typeLimit )
             {

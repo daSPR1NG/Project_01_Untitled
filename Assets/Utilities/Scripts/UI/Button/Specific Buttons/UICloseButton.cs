@@ -12,6 +12,8 @@ namespace dnSR_Coding
         [Validation( "Need to reference the Window to close component." )]
         [SerializeField] private DefaultUIWindow _windowToClose;
 
+        public bool IsValid => !_windowToClose.IsNull();
+
         public override void OnClick()
         {
             Debug.Log( "ON CLICK" );
@@ -26,8 +28,7 @@ namespace dnSR_Coding
         {
             base.OnValidate();
         }
-
-        public bool IsValid => !_windowToClose.IsNull();
+        
 #endif
         #endregion
     }

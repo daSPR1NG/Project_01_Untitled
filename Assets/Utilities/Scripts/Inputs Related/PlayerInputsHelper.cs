@@ -1,7 +1,7 @@
 using UnityEngine;
 using dnSR_Coding.Utilities;
 using UnityEngine.InputSystem;
-using ExternalPropertyAttributes;
+using NaughtyAttributes;
 
 namespace dnSR_Coding
 {

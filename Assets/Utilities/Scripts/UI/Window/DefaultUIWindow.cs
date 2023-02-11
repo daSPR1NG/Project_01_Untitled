@@ -50,6 +50,7 @@ namespace dnSR_Coding
         private void Awake() => Init();
         protected virtual void Init()
         {
+            SetWindowTransform();
             HideWindow();
         }
 
@@ -198,6 +199,23 @@ namespace dnSR_Coding
 
         #endregion
 
+        private void SetWindowTransform()
+        {
+            if ( transform.HasNoChild() )
+            {
+                Debug.LogError( "The window element cannot be found, this means that something is wrong.", transform );
+                return;
+            }
+
+            if ( _window.IsNull()
+                && transform.GetChild( 0 ).TryGetComponent( out CanvasGroup cG ) )
+            {
+                _window = transform.GetChild( 0 );
+                _canvasGroup = cG;
+                return;
+            }
+        }
+
         /// <summary>
         /// Set the canvas group attached settings weither it is hiding or displaying.
         /// </summary>
@@ -227,7 +245,7 @@ namespace dnSR_Coding
                 windowGo.AddComponent<RectTransform>();
                 windowGo.AddComponent<CanvasGroup>();
 
-                SetWindowTransformInEditor();
+                SetWindowTransform();
 
                 return;
             }
@@ -240,25 +258,10 @@ namespace dnSR_Coding
                 //    + "<b>Trying to get Child( 0 ) as Window object.</b>");
                 _window = null;
 
-                SetWindowTransformInEditor();
+                SetWindowTransform();
             }
         }
-        private void SetWindowTransformInEditor()
-        {
-            if ( transform.HasNoChild() )
-            {
-                Debug.LogError( "The window element cannot be found, this means that something is wrong.", transform );
-                return; 
-            }
-
-            if ( _window.IsNull()
-                && transform.GetChild( 0 ).TryGetComponent( out CanvasGroup cG ) )
-            {
-                _window = transform.GetChild( 0 );
-                _canvasGroup = cG;
-                return;
-            }
-        }
+       
 
         protected virtual void OnValidate()
         {

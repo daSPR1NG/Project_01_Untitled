@@ -6,13 +6,13 @@ using NaughtyAttributes;
 
 namespace dnSR_Coding
 {
-    public enum StatType { Unassigned, Strength, Endurance, Dexterity, }
+    public enum StatTypeEnum { Unassigned, Strength, Endurance, Dexterity, }
 
     [Serializable]
     public class Stat : ISubject, IMinValue<int>, IModifiableStatValue, ILevelable
     {
         [HideInInspector] public string Name;
-        [SerializeField] private StatType _type;
+        [SerializeField] private StatTypeEnum _type;
 
         private readonly List<IObserver> _observers = new();
         public List<IObserver> Observers => _observers;
@@ -21,6 +21,9 @@ namespace dnSR_Coding
         public int MinValue { get => 1; }
 
         [field: SerializeField, AllowNesting, ReadOnly] public int Value { get; private set; }
+
+        #region Experience variables
+
         [field: SerializeField, AllowNesting, ReadOnly] public int Level { get; private set; }
 
         [field: SerializeField] public int InitialRequiredExperience { get; set; }
@@ -31,7 +34,11 @@ namespace dnSR_Coding
         [field: SerializeField] public float RequiredExperienceScalingFactor { get; set; }
         [field: SerializeField] public int ExperienceMultiplier { get; set; }
 
+        #endregion
+
         [field: SerializeField] public List<StatModifier> StatModifiers { get; set; }
+
+        public static Action<object> OnStatModification;
 
         public void SetValue( int value )
         {
@@ -65,7 +72,7 @@ namespace dnSR_Coding
             }
 
             Debug.Log( CurrentExperience );
-            NotifyObservers( this );
+            OnModification( OnStatModification, this );
         }
         public void IncreaseRequiredExperienceToNextLevel()
         {
@@ -77,28 +84,24 @@ namespace dnSR_Coding
         {
             Level++;
             IncreaseRequiredExperienceToNextLevel();
-            NotifyObservers( this );
+            OnModification( OnStatModification, this );
         }
         public void SetLevel( int value )
         {
             Level = value;
         }
 
-        public void NotifyObservers(object value)
+        public void OnModification( Action<object> actionToExecute, object dataToPush )
         {
-            this.PushNotificationToObservers( value );
-
-#if UNITY_EDITOR
-            SetNameInEditor();
-#endif
+            ISubjectExtensions.TriggerEvent( actionToExecute, dataToPush );
         }
 
-        public StatType GetStatType() => _type;
+        public StatTypeEnum GetStatType() => _type;
 
         #region Constructors
 
         public Stat() : base() { }
-        public Stat( StatType type, int level ) : base()
+        public Stat( StatTypeEnum type, int level ) : base()
         {
             Name = type.ToString();
             _type = type;
@@ -132,13 +135,13 @@ namespace dnSR_Coding
             RequiredExperienceToNextLevel = InitialRequiredExperience;
 
             SetNameInEditor();
-            NotifyObservers( this );
+            OnModification( OnStatModification, this );
         }
 
         public void SetValueInEditor()
         {
             if ( Value != GetTotalValue() ) { Value = GetTotalValue(); }
-        }
+        }       
 
 #endif
         #endregion

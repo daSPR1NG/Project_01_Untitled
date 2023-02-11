@@ -28,6 +28,7 @@ namespace dnSR_Coding
         void Init()
         {
             SetPixelizerPixelSize( _pixelSize );
+            ToggleFeature();
         }
 
         /// <summary>
@@ -64,14 +65,8 @@ namespace dnSR_Coding
             }
         }
 
-        #region OnValidate
-
-#if UNITY_EDITOR
-
-        private void OnValidate()
+        private void ToggleFeature()
         {
-            SetPixelizerPixelSize( _pixelSize );
-
             if ( PixelizeFeature.IsNull() ) { return; }
 
             switch ( _isEnabled )
@@ -85,6 +80,16 @@ namespace dnSR_Coding
                     break;
             }
         }
+
+        #region OnValidate
+
+#if UNITY_EDITOR
+
+        private void OnValidate()
+        {
+            SetPixelizerPixelSize( _pixelSize );
+            ToggleFeature();
+        }        
 #endif
 
         #endregion

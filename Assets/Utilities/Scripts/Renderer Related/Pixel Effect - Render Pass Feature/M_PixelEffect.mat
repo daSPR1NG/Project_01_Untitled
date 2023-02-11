@@ -39,6 +39,6 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _PixelSize: 500
+    - _PixelSize: 560
     m_Colors: []
   m_BuildTextureStacks: []

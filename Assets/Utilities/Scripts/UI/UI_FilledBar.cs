@@ -14,5 +14,6 @@ namespace dnSR_Coding
         [SerializeField, ShowIf( "_hasText" )] protected TMP_Text _fillAmountValueText;
 
         public abstract void SetImageFillAmount( float currentValue, float maxValue );
+        public abstract void SetFillBarValueText( string input );
     }
 }

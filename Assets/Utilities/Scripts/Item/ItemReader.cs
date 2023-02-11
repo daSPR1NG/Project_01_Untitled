@@ -12,10 +12,10 @@ namespace dnSR_Coding
     public class ItemReader : MonoBehaviour, IItemReader
     {
         [SerializeField] private Item _item;
-        private Item.ItemDatas _infosData;
+        private Item.ItemInfos _infosData;
 
         public Item Item => _item;
-        public Item.ItemDatas InfoData => _infosData;
+        public Item.ItemInfos InfoData => _infosData;
 
         [Button]
         private void ReadItemInfosButton()
@@ -27,7 +27,7 @@ namespace dnSR_Coding
         {
             _infosData = new( item );
 
-            _infosData.ReadDatas();
+            _infosData.ReadInfos();
 
             // Add the stats reading, name + value
         }

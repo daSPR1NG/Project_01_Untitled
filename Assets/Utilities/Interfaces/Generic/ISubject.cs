@@ -1,32 +1,17 @@
-using System.Collections.Generic;
-using dnSR_Coding.Utilities;
-using UnityEngine;
+using System;
 
 namespace dnSR_Coding
 {
     public interface ISubject
     {
-        public List<IObserver> Observers { get; }
+        public abstract void OnModification( Action<object> actionToExecute, object dataToPush );
+    }
 
-        public void AddObserver( IObserver observer )
+    public interface ISubjectExtensions
+    {
+        public static void TriggerEvent( Action<object> actionToExecute, object dataToPush )
         {
-            if ( observer.IsNull() )
-            {
-                Debug.LogError( "Observer you are trying to add is null." );
-            }
-
-            Observers.AppendItem( observer, debugMessage: false );
+            actionToExecute?.Invoke( dataToPush );
         }
-        public void RemoveObserver( IObserver observer )
-        {
-            if ( observer.IsNull() )
-            {
-                Debug.LogError( "Observer you are trying to remove is null." );
-            }
-
-            Observers.RemoveItem( observer, debugMessage: false );
-        }
-
-        public abstract void NotifyObservers( object value );
     }
 }

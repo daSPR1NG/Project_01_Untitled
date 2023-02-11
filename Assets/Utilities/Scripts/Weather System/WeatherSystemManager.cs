@@ -165,10 +165,6 @@ namespace dnSR_Coding
 
         #endregion
 
-        #region OnValidate
-
-#if UNITY_EDITOR
-
         private void PopulateWeatherSequences()
         {
             if ( transform.HasNoChild() ) { return; }
@@ -182,6 +178,10 @@ namespace dnSR_Coding
                 _weatherSequences.AppendItem( wS, false );
             }
         }
+
+        #region OnValidate
+
+#if UNITY_EDITOR        
 
         private void OnValidate()
         {
@@ -198,7 +198,7 @@ namespace dnSR_Coding
 
         private void OnGUI()
         {
-            if ( !Application.isEditor || _activeWeatherSequence.IsNull() )
+            if ( !Application.isEditor && _activeWeatherSequence.IsNull() )
             {
                 GUIContent nullContent = new( "WeatherSystem Manager - No active weather found." );
                 GUI.Label( new Rect( 5, Screen.height - 45, 350, 25 ), nullContent );

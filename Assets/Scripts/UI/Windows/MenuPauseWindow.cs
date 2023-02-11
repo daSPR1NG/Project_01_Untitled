@@ -12,11 +12,10 @@ namespace dnSR_Coding
 
         private void OnEnable() 
         {
-            TryGetSubject();
-            Helper.SubscribeToSubject( observer: this, Subject );
+            GameManager.OnGameStateChanged += OnNotification;
         }
 
-        private void OnDisable() => Helper.UnsubscribeToSubject( observer: this, Subject );
+        private void OnDisable() => GameManager.OnGameStateChanged -= OnNotification;
 
         #endregion
 

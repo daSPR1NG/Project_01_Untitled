@@ -4,21 +4,23 @@ using System;
 using NaughtyAttributes;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
-using static UnityEngine.Rendering.DebugUI;
+using UnityEngine.SceneManagement;
+using System.Collections;
 
 namespace dnSR_Coding
 {
-    public enum GameState { Playing, Paused }
+    public enum GameState { Playing, Paused }    
 
     ///<summary> GameManager description <summary>
     [Component( "GAME MANAGER", "Handles global things about the game." )]
     public class GameManager : Singleton<GameManager>, ISubject, IDebuggable
     {
-        [SerializeField] private GameState _gameState = GameState.Playing;
-        [SerializeField] private int _timeScale = 1;
+        [Header( "Game State details" )]
 
-        private readonly List<IObserver> _observers = new();
-        public List<IObserver> Observers => _observers;
+        [SerializeField] private GameState _gameState = GameState.Playing;
+        [SerializeField] private int _timeScale = 1;        
+
+        public static Action<object> OnGameStateChanged;        
 
         #region Debug
 
@@ -28,23 +30,10 @@ namespace dnSR_Coding
 
         #endregion
 
-        #region Enable, Disable
-
-        void OnEnable()
-        {
-            
-        }
-
-        void OnDisable()
-        {
-            
-        }
-
-        #endregion
-
         protected override void Init( bool dontDestroyOnLoad = false )
         {
             base.Init( true );
+            Application.targetFrameRate = 24;
         }
 
         private void Update()
@@ -81,6 +70,12 @@ namespace dnSR_Coding
                 ResumeOrPauseTheGame();
             }
         }
+        
+        public void OnModification( Action<object> actionToExecute, object dataToPush )
+        {
+            ISubjectExtensions.TriggerEvent( actionToExecute, dataToPush );
+            Debug.Log( "On modification", transform );
+        }
 
         #region GameState Handle
 
@@ -92,12 +87,12 @@ namespace dnSR_Coding
         {
             if ( IsGamePaused() )
             {
-                NotifyObservers( GameState.Playing );
+                OnModification( OnGameStateChanged, GameState.Playing );
                 //OnGameResumed?.Invoke();
                 return;
             }
 
-            NotifyObservers( GameState.Paused );
+            OnModification( OnGameStateChanged, GameState.Paused );
             //OnGamePaused?.Invoke();
         }
 
@@ -117,15 +112,11 @@ namespace dnSR_Coding
             Helper.Log( this, "GameState changed to: " + gameState.ToString().ToLogValue() );
         }
 
+
         public GameState GetCurrentGameState() { return _gameState; }
         public bool IsGamePaused() { return GetCurrentGameState() == GameState.Paused || Time.timeScale == 0; }
 
         #endregion        
-
-        public void NotifyObservers( object value )
-        {
-            this.PushNotificationToObservers( value );
-        }
 
         #region On GUI
 

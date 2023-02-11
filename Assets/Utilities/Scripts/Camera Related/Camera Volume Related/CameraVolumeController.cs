@@ -68,6 +68,13 @@ namespace dnSR_Coding
 
             // Set this script profile.
             if ( _profile.TryGet( out LiftGammaGain foundProfileLGG ) ) { _profileLGG = foundProfileLGG; }
+
+            if ( _cameraVolumeManager.IsNull() ) { _cameraVolumeManager = GetComponent<CameraVolumeController>(); }
+
+            if ( _weatherSystemManager.IsNull() )
+            {
+                _weatherSystemManager = ( WeatherSystemManager ) FindObjectOfType( typeof( WeatherSystemManager ) );
+            }
         }
 
         void Update()
@@ -119,14 +126,7 @@ namespace dnSR_Coding
         
         private void OnValidate()
         {
-            GetLinkedComponents();
-
-            if ( _cameraVolumeManager.IsNull() ) { _cameraVolumeManager = GetComponent<CameraVolumeController>(); }
-
-            if ( _weatherSystemManager.IsNull() ) 
-            { 
-                _weatherSystemManager = ( WeatherSystemManager ) FindObjectOfType( typeof( WeatherSystemManager ) ); 
-            }
+            GetLinkedComponents();            
         }
 #endif
 

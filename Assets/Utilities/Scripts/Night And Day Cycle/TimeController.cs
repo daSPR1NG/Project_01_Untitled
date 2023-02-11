@@ -202,7 +202,7 @@ namespace dnSR_Coding
 
         private void OnGUI()
         {
-            if ( !Application.isEditor || !_updateTimeOfDay )
+            if ( !Application.isEditor && !_updateTimeOfDay )
             {
                 GUIContent nullContent = new( "Time Controller is not updated." );
                 GUI.Label( new Rect( 5, Screen.height - 65, 350, 25 ), nullContent );

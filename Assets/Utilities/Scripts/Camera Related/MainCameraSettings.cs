@@ -44,26 +44,21 @@ namespace dnSR_Coding
         void Init()
         {
             GetLinkedComponents();
+            TryToFindAnyVirtualCameraInScene();
+            ApplySettingsToAnyActiveVirtualCamera();
         }
         private void GetLinkedComponents()
         {
             if ( _attachedCameraComponent.IsNull() ) { _attachedCameraComponent = GetComponent<Camera>(); }
         }
 
-        public bool IsOrthographic => _projection == CameraProjection.Orthographic;
-        public bool IsPerspective => _projection == CameraProjection.Perspective;
-
-        #region OnValidate
-
-#if UNITY_EDITOR
-
-        void TryToFindAnyVirtualCameraInSceneInEditor()
+        void TryToFindAnyVirtualCameraInScene()
         {
             var cvc = FindObjectOfType<CinemachineVirtualCamera>();
 
             _virtualCameras.AppendItem( cvc );
         }
-        void ApplySettingsToAnyActiveVirtualCamerasInEditor()
+        void ApplySettingsToAnyActiveVirtualCamera()
         {
             if ( _virtualCameras.IsEmpty() ) { return; }
 
@@ -88,6 +83,14 @@ namespace dnSR_Coding
                 Debug.Log( "Virtual cameras lens settings set." );
             }
         }
+
+        public bool IsOrthographic => _projection == CameraProjection.Orthographic;
+        public bool IsPerspective => _projection == CameraProjection.Perspective;
+
+        #region OnValidate
+
+#if UNITY_EDITOR
+        
         void ApplyProjectionInEditor()
         {
             if ( !_attachedCameraComponent.IsNull() )
@@ -128,8 +131,8 @@ namespace dnSR_Coding
             ApplyProjectionInEditor();
             ApplyPositionInEditor();
 
-            TryToFindAnyVirtualCameraInSceneInEditor();
-            ApplySettingsToAnyActiveVirtualCamerasInEditor();
+            TryToFindAnyVirtualCameraInScene();
+            ApplySettingsToAnyActiveVirtualCamera();
         }
 #endif
 
