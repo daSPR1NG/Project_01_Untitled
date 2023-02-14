@@ -78,6 +78,25 @@ namespace dnSR_Coding.Utilities
 
             return transform.GetChild( transform.childCount - 1 ); 
         }
+        [MethodImpl( INLINE )] public static int GetExactChildCount( this Transform transform, bool countInactive = false )
+        {
+            if ( transform.HasNoChild() ) { return 0; }
+
+            int childCount = 0;
+
+            foreach ( Transform trs in transform )
+            {
+                if ( countInactive && !trs.gameObject.IsActive() )
+                {
+                    childCount++;
+                    continue;
+                }
+
+                if ( trs.gameObject.IsActive() ) { childCount++; }
+            }
+
+            return childCount;
+        }
 
         #endregion
 

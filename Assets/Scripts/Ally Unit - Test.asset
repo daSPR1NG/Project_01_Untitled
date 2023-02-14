@@ -13,9 +13,7 @@ MonoBehaviour:
   m_Name: Ally Unit - Test
   m_EditorClassIdentifier: 
   _name: Ally Unit - Test
-  _stats: {fileID: 11400000, guid: 680057e7da0188848a293d87b6c7ed3e, type: 2}
-  _items:
-  - {fileID: 11400000, guid: 02c4bfef8ea3b6649845a28e3ed6f719, type: 2}
+  _items: []
   _competences:
   - {fileID: 11400000, guid: eaf8504d0c1b54f4cb7bebaf6ea55fa0, type: 2}
   - {fileID: 11400000, guid: 63dd9276904ffa04b92d81f9204f8736, type: 2}

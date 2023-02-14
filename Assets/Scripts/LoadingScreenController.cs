@@ -5,17 +5,9 @@ using NaughtyAttributes;
 namespace dnSR_Coding
 {
     [DisallowMultipleComponent]
-    public class LoadingScreenController : MonoBehaviour, IObserver, IDebuggable
+    public class LoadingScreenController : MonoBehaviour, IObserver
     {
         private Transform Content => transform.GetFirstChild();
-
-        #region Debug
-
-        [Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
-        [SerializeField] private bool _isDebuggable = true;
-        public bool IsDebuggable => _isDebuggable;
-
-        #endregion
 
         #region Enable, Disable
 
@@ -30,7 +22,9 @@ namespace dnSR_Coding
             HideContent();
         }
 
+        [Button]
         public void DisplayContent() => Content.gameObject.TryToDisplay();
+        [Button]
         public void HideContent() => Content.gameObject.TryToHide();
 
         public void OnNotification( object value )

@@ -3,9 +3,6 @@ using dnSR_Coding.Utilities;
 using System;
 using NaughtyAttributes;
 using UnityEngine.InputSystem;
-using System.Collections.Generic;
-using UnityEngine.SceneManagement;
-using System.Collections;
 
 namespace dnSR_Coding
 {
@@ -33,7 +30,7 @@ namespace dnSR_Coding
         protected override void Init( bool dontDestroyOnLoad = false )
         {
             base.Init( true );
-            Application.targetFrameRate = 24;
+            Application.targetFrameRate = 60;
         }
 
         private void Update()
@@ -73,7 +70,7 @@ namespace dnSR_Coding
         
         public void OnModification( Action<object> actionToExecute, object dataToPush )
         {
-            ISubjectExtensions.TriggerEvent( actionToExecute, dataToPush );
+            ISubjectExtensions.TriggerAction( actionToExecute, dataToPush );
             Debug.Log( "On modification", transform );
         }
 

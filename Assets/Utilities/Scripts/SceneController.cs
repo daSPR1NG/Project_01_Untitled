@@ -1,10 +1,10 @@
 using UnityEngine;
 using System.Collections;
-using dnSR_Coding.Utilities;
 using NaughtyAttributes;
 using System;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using dnSR_Coding.Utilities;
 
 namespace dnSR_Coding
 {
@@ -70,12 +70,12 @@ namespace dnSR_Coding
 
             float artificialWaiting = 0;
 
-            while ( /*!_loadingLevelOperation.isDone*/ artificialWaiting < 30 )
+            while ( !_loadingLevelOperation.isDone /*artificialWaiting < 30*/ )
             {
                 artificialWaiting++;
-                //float loadingProgress = _loadingLevelOperation.progress / 0.9f;
-                float loadingProgress = artificialWaiting / 30;
+                float loadingProgress = Mathf.Clamp01( _loadingLevelOperation.progress / .9f );
                 OnModification( OnGameSceneLoading, loadingProgress );
+                Debug.Log( loadingProgress );
                 yield return null;
             }
         }
@@ -86,8 +86,8 @@ namespace dnSR_Coding
 
         public void OnModification( Action<object> actionToExecute, object dataToPush )
         {
-            ISubjectExtensions.TriggerEvent( actionToExecute, dataToPush );
-            Debug.Log( "On modification", transform );
+            ISubjectExtensions.TriggerAction( actionToExecute, dataToPush );
+            //Debug.Log( "On modification", transform );
         }       
 
         private void OnSceneLoaded( Scene scene, LoadSceneMode loadSceneMode )

@@ -6,7 +6,7 @@ using NaughtyAttributes;
 namespace dnSR_Coding
 {
     [DisallowMultipleComponent]
-    public class UI_ProgressBar : UI_FilledBar, IObserver
+    public class UI_LoadingBar : UI_FilledBar, IObserver
     {
 
         #region Enable, Disable
@@ -21,14 +21,14 @@ namespace dnSR_Coding
 
         private void Init()
         {
-            SetImageFillAmount( 0, 100 );
+            SetImageFillAmount( 0, 1 );
         }
 
         public override void SetImageFillAmount( float currentValue, float maxValue )
         {
-            _fillImage.fillAmount = ( currentValue / maxValue ) * 100;
+            _fillImage.fillAmount = currentValue / maxValue;
             Debug.Log( _fillImage.fillAmount + " / " + ExtMathfs.FloorToInt( _fillImage.fillAmount * 100 ).ToString() );
-            SetFillBarValueText( ExtMathfs.FloorToInt( _fillImage.fillAmount * 100 ).ToString() + "%" );
+            SetFillBarValueText( currentValue * 100 + "%" );
         }
 
         public override void SetFillBarValueText( string input )
@@ -38,7 +38,7 @@ namespace dnSR_Coding
 
         public void OnNotification( object value )
         {
-            SetImageFillAmount( ( float ) value, 100 );
+            SetImageFillAmount( ( float ) value, 1 );
         }
     }
 }

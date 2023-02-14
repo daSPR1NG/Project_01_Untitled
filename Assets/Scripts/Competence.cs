@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace dnSR_Coding
 {
-    [CreateAssetMenu(fileName = "", menuName = "Scriptable Objects/Combat/Unit/Competence")]
+    [CreateAssetMenu(fileName = "", menuName = "Scriptable Objects/CurrentCombat/Unit/Competence")]
     public class Competence : ScriptableObject
     {
         [Header( "Details" )]

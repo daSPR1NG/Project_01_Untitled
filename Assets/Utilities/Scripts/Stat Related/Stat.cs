@@ -93,7 +93,7 @@ namespace dnSR_Coding
 
         public void OnModification( Action<object> actionToExecute, object dataToPush )
         {
-            ISubjectExtensions.TriggerEvent( actionToExecute, dataToPush );
+            ISubjectExtensions.TriggerAction( actionToExecute, dataToPush );
         }
 
         public StatTypeEnum GetStatType() => _type;

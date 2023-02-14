@@ -9,7 +9,7 @@ namespace dnSR_Coding
 
     public interface ISubjectExtensions
     {
-        public static void TriggerEvent( Action<object> actionToExecute, object dataToPush )
+        public static void TriggerAction( Action<object> actionToExecute, object dataToPush )
         {
             actionToExecute?.Invoke( dataToPush );
         }

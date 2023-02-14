@@ -3,12 +3,13 @@ using dnSR_Coding.Utilities;
 using System.Collections.Generic;
 using Cinemachine;
 using NaughtyAttributes;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace dnSR_Coding
 {
     [Component("MainCameraSettings", "")]
     [DisallowMultipleComponent]
-    public class MainCameraSettings : MonoBehaviour, IDebuggable
+    public class MainCameraSettings : Singleton<MainCameraSettings>, IObserver, IDebuggable
     {
         private enum CameraProjection { Perspective, Orthographic }
 
@@ -29,7 +30,7 @@ namespace dnSR_Coding
         [Header( "Position settings" )]
         [SerializeField] private Vector3 _position = Vector3.zero;
 
-        private readonly List<CinemachineVirtualCamera> _virtualCameras = new();
+        /*private readonly*/ public List<CinemachineVirtualCamera> _virtualCameras = new();
         private Camera _attachedCameraComponent;
 
         #region Debug
@@ -40,41 +41,59 @@ namespace dnSR_Coding
 
         #endregion
 
-        void Awake() => Init();
-        void Init()
+
+        #region Enable, Disable
+
+        void OnEnable() { SceneController.OnGameSceneChanged += OnNotification; }
+
+        void OnDisable() { SceneController.OnGameSceneChanged -= OnNotification; }
+
+        #endregion
+
+        protected override void Init( bool dontDestroyOnLoad )
         {
+            base.Init( true );
             GetLinkedComponents();
-            TryToFindAnyVirtualCameraInScene();
-            ApplySettingsToAnyActiveVirtualCamera();
+            ManageAnyVirtualCameraInTheScene();
         }
         private void GetLinkedComponents()
         {
             if ( _attachedCameraComponent.IsNull() ) { _attachedCameraComponent = GetComponent<Camera>(); }
         }
 
-        void TryToFindAnyVirtualCameraInScene()
+        private void ManageAnyVirtualCameraInTheScene()
         {
+            TryToFindAnyVirtualCameraInScene();
+            ApplySettingsToAnyActiveVirtualCamera( !Application.isPlaying );
+        }
+        private void TryToFindAnyVirtualCameraInScene()
+        {
+            _virtualCameras.Clear();
+
             var cvc = FindObjectOfType<CinemachineVirtualCamera>();
 
             _virtualCameras.AppendItem( cvc );
         }
-        void ApplySettingsToAnyActiveVirtualCamera()
+        private void ApplySettingsToAnyActiveVirtualCamera( bool setFOV )
         {
             if ( _virtualCameras.IsEmpty() ) { return; }
 
             for ( int i = 0; i < _virtualCameras.Count; i++ )
             {
-                switch ( _projection )
+                if ( setFOV )
                 {
-                    case CameraProjection.Perspective:
+                    switch ( _projection )
+                    {
+                        case CameraProjection.Perspective:
 
-                        _virtualCameras [ i ].m_Lens.FieldOfView = _verticalFov;
-                        break;
-                    case CameraProjection.Orthographic:
+                            _virtualCameras [ i ].m_Lens.FieldOfView = _verticalFov;
+                            break;
+                        case CameraProjection.Orthographic:
 
-                        _virtualCameras [ i ].m_Lens.OrthographicSize = _orthographicSize;
-                        break;
-                }
+                            _virtualCameras [ i ].m_Lens.OrthographicSize = _orthographicSize;
+                            break;
+                    }
+                }               
 
                 _virtualCameras [ i ].m_Lens.NearClipPlane = _nearClipPlane;
                 _virtualCameras [ i ].m_Lens.FarClipPlane = _farClipPlane;
@@ -112,6 +131,8 @@ namespace dnSR_Coding
 
             for ( int i = 0; i < _virtualCameras.Count; i++ )
             {
+                if ( _virtualCameras [ i ].IsNull() ) { continue; }
+
                 bool hasAParent = !_virtualCameras [ i ].transform.parent.IsNull();
 
                 if ( hasAParent )
@@ -131,8 +152,12 @@ namespace dnSR_Coding
             ApplyProjectionInEditor();
             ApplyPositionInEditor();
 
-            TryToFindAnyVirtualCameraInScene();
-            ApplySettingsToAnyActiveVirtualCamera();
+            ManageAnyVirtualCameraInTheScene();
+        }
+
+        public void OnNotification( object value )
+        {
+            ManageAnyVirtualCameraInTheScene();
         }
 #endif
 
