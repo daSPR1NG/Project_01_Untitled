@@ -6,20 +6,18 @@ using System.Collections.Generic;
 
 namespace dnSR_Coding
 {
-    public enum TurnInfluence { Unassigned, Player, IA }
-    public enum Team { Ally, Enemy }
-
     [Component("CombatManager", "")]
     [DisallowMultipleComponent]
-    public class CombatManager : Singleton<CombatManager>, IDebuggable, ISubject
+    public class CombatManager : Singleton<CombatManager>, IDebuggable/*,*/ /*ISubject*/
     {
+        public const int COMBAT_POSITION_LIMIT = 3;
+
         //public List<CombatTurnAction> _combatTurnActions = new();
         [Header("CurrentCombat infos")]
 
         public int TurnCounter = 0;
-        public TurnInfluence TurnInfluence;
-        public CombatInfos CurrentCombat;
-        public Opponent InfluencerTarget = null;
+        public Enums.TurnInfluence TurnInfluence;
+        //public CombatInfos CurrentCombat;
 
         [Header( "Combat location dependencies" )]
 
@@ -28,6 +26,10 @@ namespace dnSR_Coding
         private readonly List<Transform> _combatLocations = new();
 
         private Transform CombatContent => transform.GetFirstChild();
+
+#if UNITY_EDITOR
+        private bool HidesContentOnStart => !IsDebuggable;
+#endif
 
         public static Action<object> OnSceneChanged;
         public static Action<object> OnEnteringCombat;
@@ -40,374 +42,349 @@ namespace dnSR_Coding
 
         #endregion
 
-        [Serializable]
-        public class CombatInfos
-        {
-            public List<Opponent> Opponents = new();
+//        [Serializable]
+//        public class CombatInfos
+//        {
+//            public List<Combatant> Combatants = new();
 
-            public int PlayerUnitCount = 0;
-            public int EnemyUnitCount = 0;
+//            public int PlayerCombatantCount = 0;
+//            public int EnemyCombatantCount = 0;
 
-            public void AddOpponent( Opponent opponent )
-            {
-                Opponents.AppendItem( opponent );
+//            public void AddCombatant( Combatant combatant )
+//            {
+//                Combatants.AppendItem( combatant );
 
-                if ( opponent.Team == Team.Ally )
-                {
-                    PlayerUnitCount++;
-                    return;
-                }
+//                if ( combatant.GetTeam() == Enums.Team.Ally )
+//                {
+//                    PlayerCombatantCount++;
+//                    return;
+//                }
 
-                EnemyUnitCount++;
-            }
+//                EnemyCombatantCount++;
+//            }
 
-            public Opponent GetOpponentByTeam( Team team )
-            {
-                foreach ( Opponent opponent in Opponents )
-                {
-                    if ( opponent.Team == team )
-                    {
-                        return opponent;
-                    }
-                }
+//            public Combatant GetCombatantByTeam( Enums.Team team )
+//            {
+//                foreach ( Combatant combatant in Combatants )
+//                {
+//                    if ( combatant.GetTeam() == team )
+//                    {
+//                        return combatant;
+//                    }
+//                }
 
-                return null;
-            }
+//                return null;
+//            }
 
-            public void ClearCombatOpponents()
-            {
-                Opponents.Clear();
-                PlayerUnitCount = 0;
-                EnemyUnitCount = 0;
-            }
-        }
+//            public void ClearCombat()
+//            {
+//                Combatants.Clear();
+//                PlayerCombatantCount = 0;
+//                EnemyCombatantCount = 0;
+//            }
+//        }        
 
-        [Serializable]
-        public class Opponent
-        {
-            public string Name;
-            public Team Team;
-            public int Initiative;
-            public int Health;
-            public int Damage;
-        }
+//        #region Enable, Disable
 
-        #region Enable, Disable
+//        void OnEnable() { }
 
-        void OnEnable() { }
+//        void OnDisable() { }
 
-        void OnDisable() { }
-
-        #endregion
+//        #endregion
         
-        // Set all datas that need it at the start of the game
-        protected override void Init( bool dontDestroyOnLoad )
-        {
-            base.Init( true );
-            GetLinkedComponents();
-        }
-        // Put all the get component here, it'll be easier to follow what we need and what we collect.
-        // This method is called on Awake() + OnValidate() to set both in game mod and in editor what this script needs.
-        void GetLinkedComponents()
-        {
-            GetCombatLocations();
-            HideCombatElements();
-        }
+//        // Set all datas that need it at the start of the game
+//        protected override void Init( bool dontDestroyOnLoad )
+//        {
+//            base.Init();
+//            GetLinkedComponents();
+//        }
+//        // Put all the get component here, it'll be easier to follow what we need and what we collect.
+//        // This method is called on Awake() + OnValidate() to set both in game mod and in editor what this script needs.
+//        void GetLinkedComponents()
+//        {
+//            GetCombatLocations();
+//            if ( Application.isPlaying && HidesContentOnStart ) { HideCombatElements(); }
+//        }
 
-        private void Update()
-        {
-            if ( KeyCode.Alpha1.IsPressed() )
-            {
-                EnterCombat();
-            }
+//        private void Update()
+//        {
+//            if ( KeyCode.Alpha1.IsPressed() )
+//            {
+//                EnterCombat();
+//            }
 
-            if ( KeyCode.Alpha2.IsPressed() )
-            {
-                ExitCombat();
-            }        
-        }
+//            if ( KeyCode.Alpha2.IsPressed() )
+//            {
+//                ExitCombat();
+//            }        
+//        }
 
-        #region Combat Elements Handle
+//        #region Combat Elements Handle
 
-        private void GetCombatLocations()
-        {
-            if ( _combatLocationsParent.IsNull() ) { return; }
+//        private void GetCombatLocations()
+//        {
+//            if ( _combatLocationsParent.IsNull() ) { return; }
 
-            foreach ( Transform trs in _combatLocationsParent )
-            {
-                _combatLocations.AppendItem( trs );
-            }
+//            foreach ( Transform trs in _combatLocationsParent )
+//            {
+//                _combatLocations.AppendItem( trs, false );
+//            }
 
-            HideEachCombatLocationsOnExitingCombat();
+//            HideEachCombatLocationsOnExitingCombat();
 
-            //Debug.Log( "CurrentCombat locations : " + _combatLocations.Count );
-        }
+//            //Debug.Log( "CurrentCombat locations : " + _combatLocations.Count );
+//        }
 
-        private void DisplayRandomCombatLocationOnEnteringCombat()
-        {
-            int randomLocation = UnityEngine.Random.Range( 0, _combatLocations.Count - 1 );
-            _combatLocations [ randomLocation ].gameObject.TryToDisplay();
-        }
+//        private void DisplayRandomCombatLocationOnEnteringCombat()
+//        {
+//            int randomLocation = UnityEngine.Random.Range( 0, _combatLocations.Count - 1 );
+//            _combatLocations [ randomLocation ].gameObject.TryToDisplay();
+//        }
 
-        private void HideEachCombatLocationsOnExitingCombat()
-        {
-            if ( _combatLocations.IsEmpty() || !Application.isPlaying ) { return; }
+//        private void HideEachCombatLocationsOnExitingCombat()
+//        {
+//            if ( _combatLocations.IsEmpty() || !Application.isPlaying ) { return; }
 
-            for ( int i = 0; i < _combatLocations.Count; i++ )
-            {
-                _combatLocations [ i ].gameObject.TryToHide();
-            }
-        }
+//            for ( int i = 0; i < _combatLocations.Count; i++ )
+//            {
+//                _combatLocations [ i ].gameObject.TryToHide();
+//            }
+//        }
 
-        private void DisplayCombatElements()
-        {
-            CombatContent.gameObject.TryToDisplay();
-        }
+//        private void DisplayCombatElements()
+//        {
+//            CombatContent.gameObject.TryToDisplay();
+//        }
 
-        private void HideCombatElements()
-        {
-            CombatContent.gameObject.TryToHide();
-        }
+//        private void HideCombatElements()
+//        {
+//            CombatContent.gameObject.TryToHide();
+//        }
 
-        #endregion
+//        #endregion
 
-        // 1. Gère le passage en mode combat :
+//        // 1. Gère le passage en mode combat :
 
-        private void EnterCombat()
-        {
-            DisplayRandomCombatLocationOnEnteringCombat();
-            DisplayCombatElements();
+//        private void EnterCombat()
+//        {
+//            DisplayRandomCombatLocationOnEnteringCombat();
+//            DisplayCombatElements();
 
-            SceneController.Instance.LoadSceneByType( GameSceneType.Combat );
-            OnModification( OnSceneChanged, GameSceneType.Combat ); // => notifie l'UI qui s'affiche
+//            SceneController.Instance.LoadSceneByType( GameSceneType.Combat );
+//            OnModification( OnSceneChanged, GameSceneType.Combat ); // => notifie l'UI qui s'affiche
 
-            CombatInfos combatInfos = new();           
+//            CombatInfos combatInfos = new();           
 
-            Opponent ally = new()
-            {
-                Name = "Ally",
-                Team = Team.Ally,
-                Initiative = 20,
-                Health = 50,
-                Damage = 5,
-            };
-            combatInfos.AddOpponent( ally );
+//            Combatant ally = new();
+//            ally.SetTeam( Enums.Team.Ally );
+//            combatInfos.AddCombatant( ally );
 
-            Opponent enemy = new()
-            {
-                Name = "Enemy",
-                Team = Team.Enemy,
-                Initiative = 15,
-                Health = 50,
-                Damage = 5,
-            };
-            combatInfos.AddOpponent( enemy );
+//            Combatant enemy = new();
+//            enemy.SetTeam( Enums.Team.Enemy );
+//            combatInfos.AddCombatant( enemy );
 
-            Opponent enemy2 = new()
-            {
-                Name = "HENRY",
-                Team = Team.Enemy,
-                Initiative = 10,
-                Health = 50,
-                Damage = 5,
-            };
-            combatInfos.AddOpponent( enemy2 );
+//            Combatant enemy2 = new();
+//            enemy2.SetTeam( Enums.Team.Enemy );
+//            combatInfos.AddCombatant( enemy2 );
 
-            CurrentCombat = combatInfos;
+//            CurrentCombat = combatInfos;
             
-            SetTurnOrderOnCombatStart( combatInfos );
+//            SetTurnOrderOnCombatStart( combatInfos );
 
-            TurnCounter = 1;
+//            TurnCounter = 1;
 
-            OnModification( OnEnteringCombat, CurrentCombat );
-        }
+//            OnModification( OnEnteringCombat, CurrentCombat );
+//        }
 
-        private void ExitCombat()
-        {
-            HideEachCombatLocationsOnExitingCombat();
+//        private void ExitCombat()
+//        {
+//            HideEachCombatLocationsOnExitingCombat();
 
-            SceneController.Instance.LoadSceneByType( GameSceneType.World );
-            OnModification( OnSceneChanged, GameSceneType.World );
+//            SceneController.Instance.LoadSceneByType( GameSceneType.World );
+//            OnModification( OnSceneChanged, GameSceneType.World );
 
-            // Clear combat infos
-            CurrentCombat.ClearCombatOpponents();
-            CurrentCombat = null;
+//            // Clear combat infos
+//            CurrentCombat.ClearCombat();
+//            CurrentCombat = null;
 
-            // Reset Turn influence
-            TurnInfluence = TurnInfluence.Unassigned;
-            TurnCounter = 0;
-            InfluencerTarget = null;
+//            // Reset Turn influence
+//            TurnInfluence = Enums.TurnInfluence.Unassigned;
+//            TurnCounter = 0;
+//            InfluencerTarget = null;
 
-            HideCombatElements();
-        }
+//            HideCombatElements();
+//        }
 
-        private void SetTurnOrderOnCombatStart( CombatInfos combatInfos )
-        {
-            combatInfos.Opponents.Sort( ( i, j ) => j.Initiative.CompareTo( i.Initiative ) );
+//        private void SetTurnOrderOnCombatStart( CombatInfos combatInfos )
+//        {
+//            combatInfos.Combatants.Sort( ( i, j ) => 
+//            j.GetStats().GetStatByType( Enums.StatType.Initiative_INI ).Value.
+//            CompareTo( i.GetStats().GetStatByType( Enums.StatType.Initiative_INI ).Value ) );
 
-            TurnInfluence = 
-                combatInfos.Opponents [ 0 ].Team == Team.Ally ? TurnInfluence.Player : TurnInfluence.IA;
-            ApplyInfluence( TurnInfluence );
+//            TurnInfluence = 
+//                combatInfos.Combatants [ 0 ].GetTeam() == Enums.Team.Ally ? Enums.TurnInfluence.Player : Enums.TurnInfluence.IA;
+//            ApplyInfluence( TurnInfluence );
 
-            // Play VFX and SFX on combat started
+//            // Play VFX and SFX on combat started
 
-            Debug.Log( combatInfos.Opponents [ 0 ].Name );
-        }
+//            Debug.Log( combatInfos.Combatants [ 0 ].Get );
+//        }
 
-        private void ApplyInfluence( TurnInfluence currentInfluence )
-        {
-            Debug.Log( "Apply Influence" );
+//        private void ApplyInfluence( Enums.TurnInfluence currentInfluence )
+//        {
+//            Debug.Log( "Apply Influence" );
 
-            if ( TurnInfluence != currentInfluence ) { TurnInfluence = currentInfluence; }
+//            if ( TurnInfluence != currentInfluence ) { TurnInfluence = currentInfluence; }
 
-            switch ( currentInfluence )
-            {
-                case TurnInfluence.Player:
-                    // Display UI for the player
-                    Debug.Log( "Display Player UI" );
-                    break;
+//            switch ( currentInfluence )
+//            {
+//                case Enums.TurnInfluence.Player:
+//                    // Display UI for the player
+//                    Debug.Log( "Display Player UI" );
+//                    break;
 
-                case TurnInfluence.IA:
-                    // Do something ?
-                    Debug.Log( "Hide Player UI" );
-                    break;
-            }        
-        }
+//                case Enums.TurnInfluence.IA:
+//                    // Do something ?
+//                    Debug.Log( "Hide Player UI" );
+//                    break;
+//            }        
+//        }
 
-        private void StartNewTurn()
-        {
-            TurnCounter++;
-            Debug.Log( "New turn : " + TurnCounter );
-            // Update turn text counter
-            // Update selector UI on who is currently playing
-            // Play VFX and SFX on turn started ?_?
-            ApplyTimerForThisTurn();
-            InfluencerTarget = null;
-        }
+//        private void StartNewTurn()
+//        {
+//            TurnCounter++;
+//            Debug.Log( "New turn : " + TurnCounter );
+//            // Update turn text counter
+//            // Update selector UI on who is currently playing
+//            // Play VFX and SFX on turn started ?_?
+//            ApplyTimerForThisTurn();
+//            InfluencerTarget = null;
+//        }
 
-        private void ApplyTimerForThisTurn()
-        {
-            // Reset timer before applying
-            // timer --;
+//        private void ApplyTimerForThisTurn()
+//        {
+//            // Reset timer before applying
+//            // timer --;
 
-            // When timer is under a certain threshold do something
-            // if timer ends =>
-            //EndTurn( TurnInfluence );
-        }
+//            // When timer is under a certain threshold do something
+//            // if timer ends =>
+//            //EndTurn( TurnInfluence );
+//        }
 
-        private void EndTurn( TurnInfluence currentInfluence )
-        {
-            Debug.Log( "End Turn" );
+//        private void EndTurn( Enums.TurnInfluence currentInfluence )
+//        {
+//            Debug.Log( "End Turn" );
 
-            currentInfluence =
-                currentInfluence == TurnInfluence.Player ? TurnInfluence.IA : TurnInfluence.Player;
+//            currentInfluence =
+//                currentInfluence == Enums.TurnInfluence.Player ? Enums.TurnInfluence.IA : Enums.TurnInfluence.Player;
 
-            ApplyInfluence( currentInfluence );
-            Debug.Log( "Current Influence on turn ended : " + currentInfluence );
+//            ApplyInfluence( currentInfluence );
+//            Debug.Log( "Current Influence on turn ended : " + currentInfluence );
 
-            StartNewTurn();
+//            StartNewTurn();
 
-            // Play VFX and SFX on turn ended ??
-        }
+//            // Play VFX and SFX on turn ended ??
+//        }
 
-        [Button]
-        private void ApplyDamageToAlly()
-        {
-            InfluencerTarget = CurrentCombat.GetOpponentByTeam( Team.Ally );
+//        [Button]
+//        private void ApplyDamageToAlly()
+//        {
+//            InfluencerTarget = CurrentCombat.GetCombatantByTeam( Enums.Team.Ally );
 
-            if ( InfluencerTarget.IsNull() ) 
-            {
-                Debug.Log( "Target isn't selected" );
-                return; 
-            }
+//            if ( InfluencerTarget.IsNull() ) 
+//            {
+//                Debug.Log( "Target isn't selected" );
+//                return; 
+//            }
 
-            // Apply Damage to Ally
-            if ( TurnInfluence == TurnInfluence.IA )
-            {
-                CurrentCombat.GetOpponentByTeam( Team.Ally ).Health -= CurrentCombat.GetOpponentByTeam( Team.Enemy ).Damage;
-                Debug.Log( "Ally lost : " + CurrentCombat.GetOpponentByTeam( Team.Enemy ).Damage );
+//            // Apply Damage to Ally
+//            if ( TurnInfluence == Enums.TurnInfluence.IA )
+//            {
+//                CurrentCombat.GetCombatantByTeam( Enums.Team.Ally ).GetStats().GetStatByType( Enums.StatType.Health_HP ).Value -= 
+//                    CurrentCombat.GetCombatantByTeam( Enums.Team.Enemy ).GetStats().GetStatByType( Enums.StatType.Damage_DMG ).Value;
+//                Debug.Log( "Ally lost : " + CurrentCombat.GetCombatantByTeam( Enums.Team.Enemy ).Damage );
 
-                if ( CurrentCombat.GetOpponentByTeam( Team.Ally ).Health <= 0 )
-                {
-                    Debug.Log( "Defeat" );
-                    ExitCombat();
-                }
+//                if ( CurrentCombat.GetCombatantByTeam( Enums.Team.Ally ).Health <= 0 )
+//                {
+//                    Debug.Log( "Defeat" );
+//                    ExitCombat();
+//                }
 
-                EndTurn( TurnInfluence.IA );
-            }
-        }
+//                EndTurn( Enums.TurnInfluence.IA );
+//            }
+//        }
 
-        [Button]
-        private void ApplyDamageToEnemy()
-        {
-            InfluencerTarget = CurrentCombat.GetOpponentByTeam( Team.Enemy );
+//        [Button]
+//        private void ApplyDamageToEnemy()
+//        {
+//            InfluencerTarget = CurrentCombat.GetCombatantByTeam( Enums.Team.Enemy );
 
-            if ( InfluencerTarget.IsNull() )
-            {
-                Debug.Log( "Target isn't selected" );
-                return;
-            }
+//            if ( InfluencerTarget.IsNull() )
+//            {
+//                Debug.Log( "Target isn't selected" );
+//                return;
+//            }
 
-            // Apply Damage to Enemy
-            if ( TurnInfluence == TurnInfluence.Player )
-            {
-                InfluencerTarget.Health -= CurrentCombat.GetOpponentByTeam( Team.Ally ).Damage;
-                Debug.Log( "Enemy lost : " + CurrentCombat.GetOpponentByTeam( Team.Ally ).Damage );
+//            // Apply Damage to Enemy
+//            if ( TurnInfluence == Enums.TurnInfluence.Player )
+//            {
+//                InfluencerTarget.Health -= CurrentCombat.GetCombatantByTeam( Enums.Team.Ally ).Damage;
+//                Debug.Log( "Enemy lost : " + CurrentCombat.GetCombatantByTeam( Enums.Team.Ally ).Damage );
 
-                if ( InfluencerTarget.Health <= 0 )
-                {
-                    Debug.Log( "Victory" );
-                    ExitCombat();
-                }
+//                if ( InfluencerTarget.Health <= 0 )
+//                {
+//                    Debug.Log( "Victory" );
+//                    ExitCombat();
+//                }
 
-                EndTurn( TurnInfluence.Player );
-            }
-        }
+//                EndTurn( Enums.TurnInfluence.Player );
+//            }
+//        }
 
-        [Button]
-        private void SwapEnemyTarget()
-        {
-            if ( TurnInfluence != TurnInfluence.Player ) { return; }
+//        [Button]
+//        private void SwapEnemyTarget()
+//        {
+//            if ( TurnInfluence != Enums.TurnInfluence.Player ) { return; }
 
-            List<Opponent> targets = new();
+//            List<Combatant> targets = new();
 
-            foreach ( Opponent opponent in CurrentCombat.Opponents )
-            {
-                if ( opponent.Team == Team.Enemy )
-                {
-                    targets.AppendItem( opponent );
-                }
-            }
+//            foreach ( Combatant opponent in CurrentCombat.Combatants )
+//            {
+//                if ( opponent._team == Enums.Team.Enemy )
+//                {
+//                    targets.AppendItem( opponent );
+//                }
+//            }
 
-            Debug.Log( "Swapped target" );
+//            Debug.Log( "Swapped target" );
 
-            if ( InfluencerTarget.IsNull() ) 
-            {
-                InfluencerTarget = targets [ 0 ];
-                Debug.Log( "New target : " + InfluencerTarget.Name );
-                return; 
-            }
+//            if ( InfluencerTarget.IsNull() ) 
+//            {
+//                InfluencerTarget = targets [ 0 ];
+//                Debug.Log( "New target : " + InfluencerTarget.Name );
+//                return; 
+//            }
 
-            InfluencerTarget = InfluencerTarget == targets [ 0 ] ? targets [ 1 ] : targets [ 0 ];
-            Debug.Log( "New target : " + InfluencerTarget.Name );
-        }
+//            InfluencerTarget = InfluencerTarget == targets [ 0 ] ? targets [ 1 ] : targets [ 0 ];
+//            Debug.Log( "New target : " + InfluencerTarget.Name );
+//        }
 
-        public void OnModification( Action<object> actionToExecute, object dataToPush )
-        {
-           ISubjectExtensions.TriggerAction( actionToExecute, dataToPush );
-        }
+//        public void OnModification( Action<object> actionToExecute, object dataToPush )
+//        {
+//           ISubjectExtensions.TriggerAction( actionToExecute, dataToPush );
+//        }
         
-        #region OnValidate
+//        #region OnValidate
 
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
 
-        private void OnValidate()
-        {
-            GetLinkedComponents();
-        }
-#endif
+//        private void OnValidate()
+//        {
+//            GetLinkedComponents();
+//        }
+//#endif
 
-        #endregion
+//        #endregion
 
         // => Changement de scène avec transition animée comme dans Pokémon, le temps du chargement de cette scène
         // Contenu de cette scène :
@@ -427,7 +404,7 @@ namespace dnSR_Coding
 
         // - UI de combat :
         // - Ordre de jeu (Similaire à DOFUS ou The Ruined King)
-        // - Stats personnages :
+        // - _statSheet personnages :
         // - Pour tout le monde : Nom, Niveau, PV (?)
         // - Pour le joueur : les commandes de jeu (actions sous forme de boutons)
         // - Temps restant (Affichage distinct et répété autour du cadre de l'ordre de jeu et d'une barre de temps (DOFUS))

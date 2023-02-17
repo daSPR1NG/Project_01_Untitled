@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace dnSR_Coding
 {
-    public interface IModifiableStatValue
+    public interface IModifiableStat
     {
         public List<StatModifier> StatModifiers { get; set; }
     }

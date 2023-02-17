@@ -6,15 +6,9 @@ namespace dnSR_Coding
     [DisallowMultipleComponent]
     public class PlayerCharacterProperties : Singleton<PlayerCharacterProperties>
     {
-        [SerializeField] private StatSheet _characterStatSheet;
-        
         protected override void Init( bool dontDestroyOnload )
         {
-            base.Init( true );            
+            base.Init();            
         }
-
-        private void Start() => _characterStatSheet.InitialiazeStatSheet();
-
-        public StatSheet GetStatSheet() => _characterStatSheet;
     }
 }

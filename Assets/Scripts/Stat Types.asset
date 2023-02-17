@@ -13,15 +13,33 @@ MonoBehaviour:
   m_Name: Stat Types
   m_EditorClassIdentifier: 
   _types:
-  - Name: Health
+  - Name: Strength_STR
+    Abbreviation: STR
+    Type: 1
+    HasAnIcon: 0
+    Icon: {fileID: 21300000, guid: a04ecc9d5e12d5d449077414eb86635e, type: 3}
+  - Name: Endurance_END
+    Abbreviation: END
+    Type: 2
+    HasAnIcon: 0
+    Icon: {fileID: 21300000, guid: a04ecc9d5e12d5d449077414eb86635e, type: 3}
+  - Name: Dexterity_DEX
+    Abbreviation: DEX
+    Type: 3
+    HasAnIcon: 0
+    Icon: {fileID: 21300000, guid: a04ecc9d5e12d5d449077414eb86635e, type: 3}
+  - Name: Damage_DMG
+    Abbreviation: INI
+    Type: 5
+    HasAnIcon: 0
+    Icon: {fileID: 21300000, guid: a04ecc9d5e12d5d449077414eb86635e, type: 3}
+  - Name: Health_HP
     Abbreviation: HP
+    Type: 4
     HasAnIcon: 0
     Icon: {fileID: 21300000, guid: a04ecc9d5e12d5d449077414eb86635e, type: 3}
-  - Name: Critical Chance
-    Abbreviation: CC
-    HasAnIcon: 0
-    Icon: {fileID: 21300000, guid: a04ecc9d5e12d5d449077414eb86635e, type: 3}
-  - Name: Damage
+  - Name: Damage_DMG
     Abbreviation: DMG
+    Type: 5
     HasAnIcon: 0
     Icon: {fileID: 21300000, guid: a04ecc9d5e12d5d449077414eb86635e, type: 3}

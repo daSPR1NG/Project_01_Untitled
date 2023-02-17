@@ -30,7 +30,7 @@ namespace dnSR_Coding
         [Header( "Position settings" )]
         [SerializeField] private Vector3 _position = Vector3.zero;
 
-        /*private readonly*/ public List<CinemachineVirtualCamera> _virtualCameras = new();
+        private List<CinemachineVirtualCamera> _virtualCameras = new();
         private Camera _attachedCameraComponent;
 
         #region Debug
@@ -52,7 +52,7 @@ namespace dnSR_Coding
 
         protected override void Init( bool dontDestroyOnLoad )
         {
-            base.Init( true );
+            base.Init();
             GetLinkedComponents();
             ManageAnyVirtualCameraInTheScene();
         }
@@ -78,29 +78,34 @@ namespace dnSR_Coding
         {
             if ( _virtualCameras.IsEmpty() ) { return; }
 
+            LensSettings lensSettings = new()
+            {
+                FieldOfView = _verticalFov,
+                OrthographicSize = _orthographicSize,
+                NearClipPlane = _nearClipPlane,
+                FarClipPlane = _farClipPlane,
+                Dutch = _dutch,
+            };
+
             for ( int i = 0; i < _virtualCameras.Count; i++ )
             {
                 if ( setFOV )
                 {
-                    switch ( _projection )
-                    {
-                        case CameraProjection.Perspective:
-
-                            _virtualCameras [ i ].m_Lens.FieldOfView = _verticalFov;
-                            break;
-                        case CameraProjection.Orthographic:
-
-                            _virtualCameras [ i ].m_Lens.OrthographicSize = _orthographicSize;
-                            break;
-                    }
+                    _virtualCameras [ i ].m_Lens.FieldOfView = lensSettings.FieldOfView;
+                    _virtualCameras [ i ].m_Lens.OrthographicSize = lensSettings.OrthographicSize;
+                    Debug.Log( "Set Camera FOV" );
                 }               
 
-                _virtualCameras [ i ].m_Lens.NearClipPlane = _nearClipPlane;
-                _virtualCameras [ i ].m_Lens.FarClipPlane = _farClipPlane;
-                _virtualCameras [ i ].m_Lens.Dutch = _dutch;
-
+                _virtualCameras [ i ].m_Lens.NearClipPlane = lensSettings.NearClipPlane;
+                _virtualCameras [ i ].m_Lens.FarClipPlane = lensSettings.FarClipPlane;
+                _virtualCameras [ i ].m_Lens.Dutch = lensSettings.Dutch;
                 Debug.Log( "Virtual cameras lens settings set." );
             }
+        }
+
+        public void OnNotification( object value )
+        {
+            ManageAnyVirtualCameraInTheScene();
         }
 
         public bool IsOrthographic => _projection == CameraProjection.Orthographic;
@@ -153,12 +158,7 @@ namespace dnSR_Coding
             ApplyPositionInEditor();
 
             ManageAnyVirtualCameraInTheScene();
-        }
-
-        public void OnNotification( object value )
-        {
-            ManageAnyVirtualCameraInTheScene();
-        }
+        }        
 #endif
 
         #endregion

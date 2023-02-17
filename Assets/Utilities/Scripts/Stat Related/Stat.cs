@@ -6,13 +6,11 @@ using NaughtyAttributes;
 
 namespace dnSR_Coding
 {
-    public enum StatTypeEnum { Unassigned, Strength, Endurance, Dexterity, }
-
     [Serializable]
-    public class Stat : ISubject, IMinValue<int>, IModifiableStatValue, ILevelable
+    public class Stat : ISubject, IMinValue<int>, IModifiableStat, ILevelable
     {
         [HideInInspector] public string Name;
-        [SerializeField] private StatTypeEnum _type;
+        [SerializeField] private Enums.StatType _type;
 
         private readonly List<IObserver> _observers = new();
         public List<IObserver> Observers => _observers;
@@ -96,12 +94,12 @@ namespace dnSR_Coding
             ISubjectExtensions.TriggerAction( actionToExecute, dataToPush );
         }
 
-        public StatTypeEnum GetStatType() => _type;
+        public Enums.StatType GetStatType() => _type;
 
         #region Constructors
 
         public Stat() : base() { }
-        public Stat( StatTypeEnum type, int level ) : base()
+        public Stat( Enums.StatType type, int level ) : base()
         {
             Name = type.ToString();
             _type = type;

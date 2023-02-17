@@ -1,4 +1,3 @@
-using UnityEngine;
 using System;
 using dnSR_Coding.Utilities;
 
@@ -12,43 +11,15 @@ namespace dnSR_Coding
             Stat modifiedStat = ( Stat ) valueToModify;
 
             float value = modifiedStat.Value;
-            float modifierValue = _modifierType == ModifierType.FLAT ? Value : Value / 100;
 
-            switch ( _modifierType )
+            switch ( _operand )
             {
-                case ModifierType.FLAT:
-                    switch ( _operand )
-                    {
-                        case Operand.PLUS:
-                            value += modifierValue;
-                            break;
-
-                        case Operand.MINUS:
-                            value -= modifierValue;
-                            break;
-
-                        case Operand.DIVIDE:
-                            if ( modifierValue == 0 )
-                            {
-                                value = 0;
-                                Debug.LogError( "Can't divide by zero." );
-                            }
-
-                            value /= modifierValue;
-                            break;
-
-                        case Operand.MULTIPLICATE:
-                            value *= modifierValue;
-                            break;
-                    }
+                case Enums.Operand.PLUS:
+                    value += Value;
                     break;
 
-                case ModifierType.PERCENTAGE:
-                    value *= modifierValue;
-                    break;
-
-                case ModifierType.ADDITIVE_PERCENTAGE:
-                    value += value * modifierValue;
+                case Enums.Operand.MINUS:
+                    value -= Value;
                     break;
             }
 
@@ -58,10 +29,9 @@ namespace dnSR_Coding
         #region Constructors
 
         public StatModifier() : base() { }
-        public StatModifier( Operand operand, ModifierType modifierType, int value ) : base()
+        public StatModifier( Enums.Operand operand, int value ) : base()
         {
             _operand = operand;
-            _modifierType = modifierType;
             Value = value;
         }
 

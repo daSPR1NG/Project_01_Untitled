@@ -39,7 +39,7 @@ namespace dnSR_Coding
 
         protected override void Init( bool dontDestroyOnLoad )
         {
-            base.Init( true );
+            base.Init();
         }
 
         #region Scene Management

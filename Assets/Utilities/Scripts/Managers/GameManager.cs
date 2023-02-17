@@ -17,7 +17,7 @@ namespace dnSR_Coding
         [SerializeField] private GameState _gameState = GameState.Playing;
         [SerializeField] private int _timeScale = 1;        
 
-        public static Action<object> OnGameStateChanged;        
+        public static Action<object> OnGameStateChanged;
 
         #region Debug
 
@@ -29,7 +29,7 @@ namespace dnSR_Coding
 
         protected override void Init( bool dontDestroyOnLoad = false )
         {
-            base.Init( true );
+            base.Init();
             Application.targetFrameRate = 60;
         }
 

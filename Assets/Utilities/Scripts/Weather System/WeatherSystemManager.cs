@@ -59,7 +59,7 @@ namespace dnSR_Coding
 
         protected override void Init( bool dontDestroyOnLoad )
         {
-            base.Init( true );
+            base.Init();
 
             GetLinkedComponents();
             PopulateWeatherSequences();
@@ -86,7 +86,7 @@ namespace dnSR_Coding
 #endif
 
         /// <summary>
-        /// Sets the weather based on the current weather type.
+        /// Sets the weather based on the current weather _type.
         /// </summary>
         private void SetWeather()
         {

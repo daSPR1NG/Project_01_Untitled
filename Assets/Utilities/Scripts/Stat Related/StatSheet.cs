@@ -5,20 +5,12 @@ using UnityEngine;
 
 namespace dnSR_Coding
 {
-    [CreateAssetMenu(fileName = "", menuName = "Scriptable Objects/Character/Stats/New Stat Sheet")]
+    [CreateAssetMenu(fileName = "", menuName = "Scriptable Objects/Character/_statSheet/New Stat Sheet")]
     public class StatSheet : ScriptableObject
     {
         [SerializeField] private List<Stat> _stats = new();
 
-        public void InitialiazeStatSheet()
-        {
-            //foreach ( Stat stat in _stats ) 
-            //{
-            //    stat.NotifyObservers( stat );
-            //}
-        }
-
-        public Stat GetStatByType( StatTypeEnum statType )
+        public Stat GetStatByType( Enums.StatType statType )
         {
             if ( _stats.IsEmpty() ) 
             {
@@ -33,7 +25,7 @@ namespace dnSR_Coding
                 return _stats [ i ];
             }
 
-            return _stats[0];
+            return _stats[ 0 ];
         }
 
         #region OnValidate
@@ -68,19 +60,19 @@ namespace dnSR_Coding
         [Button]
         private void AddExperienceToStrengthStatInEditor()
         {
-            GetStatByType( StatTypeEnum.Strength ).AddExperience( 5 );
+            GetStatByType( Enums.StatType.Strength_STR ).AddExperience( 5 );
         }
 
         [Button]
         private void AddExperienceToEnduranceStatInEditor()
         {
-            GetStatByType( StatTypeEnum.Endurance ).AddExperience( 5 );
+            GetStatByType( Enums.StatType.Endurance_END ).AddExperience( 5 );
         }
 
         [Button]
         private void AddExperienceToDexterityStatInEditor()
         {
-            GetStatByType( StatTypeEnum.Dexterity ).AddExperience( 5 );
+            GetStatByType( Enums.StatType.Dexterity_DEX ).AddExperience( 5 );
         }
 
         private void OnValidate()

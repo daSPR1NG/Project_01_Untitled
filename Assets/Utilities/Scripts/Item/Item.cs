@@ -53,7 +53,7 @@ namespace dnSR_Coding
         [Header( "StatBackUp Settings" )]
         [SerializeField, ReadOnly] private bool _hasStats = false;
         //[SerializeField, AllowNesting, ReadOnly] 
-        //private List<StatBackUp> _stats = new();
+        //private List<StatBackUp> _statSheet = new();
 
         //----------------------------------------------------------------------------------------------------
 
@@ -93,7 +93,7 @@ namespace dnSR_Coding
             public int MaxStackSize { get; }
 
             public bool HasStats { get; }
-            //public List<StatBackUp> Stats { get; }
+            //public List<StatBackUp> _statSheet { get; }
 
             public Sprite Icon { get; }
             public GameObject Prefab { get; }
@@ -116,7 +116,7 @@ namespace dnSR_Coding
                 MaxStackSize = _item._maxStackSize;
 
                 HasStats = _item._hasStats;
-                //Stats = _item._stats;
+                //_statSheet = _item._statSheet;
 
                 Icon = _item._icon;
                 Prefab = _item._prefab;
@@ -144,29 +144,29 @@ namespace dnSR_Coding
 
             //private string ReadStats()
             //{
-            //    string readStats = "Stats :" + '\n';
+            //    string readStats = "_statSheet :" + '\n';
 
-            //    for ( int i = 0; i < Stats.Count; i++ )
+            //    for ( int i = 0; i < _statSheet.Count; i++ )
             //    {
-            //        readStats += Stats [ i ].Name.ToString() + " - " + Stats [ i ].GetPoints().ToString() + '\n';
+            //        readStats += _statSheet [ i ].Name.ToString() + " - " + _statSheet [ i ].GetPoints().ToString() + '\n';
             //    }
 
             //    return readStats;
             //}
 
-            //public StatBackUp GetStatByType( StatType statType )
+            //public StatBackUp GetStatByType( StatDataReference statType )
             //{
-            //    if ( Stats.IsEmpty() )
+            //    if ( _statSheet.IsEmpty() )
             //    {
             //        Debug.LogError( "No stats assigned, it might be a bug, try to refresh the item asset", _item );
             //        return null;
             //    }
 
-            //    for ( int i = 0; i < Stats.Count; i++ )
+            //    for ( int i = 0; i < _statSheet.Count; i++ )
             //    {
-            //        if ( Stats [ i ].GetStatType() != statType ) { continue; }
+            //        if ( _statSheet [ i ].GetStatType() != statType ) { continue; }
 
-            //        return Stats [ i ];
+            //        return _statSheet [ i ];
             //    }
 
             //    Debug.LogError( "No stats assigned, it might be a bug, try to refresh the item asset", _item );
@@ -190,7 +190,7 @@ namespace dnSR_Coding
 
             _hasStats = false;
 
-            //_stats.Clear();
+            //_statSheet.Clear();
             //CreateStatEntriesInEditor();
 
             _icon = null;
@@ -214,16 +214,16 @@ namespace dnSR_Coding
 
 //        public void CreateStatEntriesInEditor()
 //        {
-//            int amountOfStat = Helper.GetEnumLength( typeof( StatType ) ) - 1;
+//            int amountOfStat = Helper.GetEnumLength( typeof( StatDataReference ) ) - 1;
 //            int statTypeIndex = 1;
 
-//            if ( _stats.Count >= amountOfStat ) { return; }
+//            if ( _statSheet.Count >= amountOfStat ) { return; }
 
-//            if ( _stats.Count < amountOfStat )
+//            if ( _statSheet.Count < amountOfStat )
 //            {
 //                for ( int i = 0; i < amountOfStat; i++ )
 //                {
-//                    _stats.AppendItem( new StatBackUp( ( StatType ) Helper.GetEnumToArray( typeof( StatType ) ).GetTotalValue ( statTypeIndex ), 0 ) );
+//                    _statSheet.AppendItem( new StatBackUp( ( StatDataReference ) Helper.GetEnumToArray( typeof( StatDataReference ) ).GetTotalValue ( statTypeIndex ), 0 ) );
 //                    statTypeIndex++;
 //                }                
 //            }

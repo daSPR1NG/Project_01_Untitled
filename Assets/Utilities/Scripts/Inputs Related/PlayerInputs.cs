@@ -31,7 +31,7 @@ namespace dnSR_Coding
             ""actions"": [
                 {
                     ""name"": ""Move"",
-                    ""type"": ""Value"",
+                    ""_type"": ""Value"",
                     ""id"": ""9d985c49-0bac-4b13-8135-80d940e59878"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
@@ -40,7 +40,7 @@ namespace dnSR_Coding
                 },
                 {
                     ""name"": ""Sprint"",
-                    ""type"": ""Button"",
+                    ""_type"": ""Button"",
                     ""id"": ""c709bca6-7d2d-472b-ac3e-302ad4fb94b7"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
@@ -123,7 +123,7 @@ namespace dnSR_Coding
             ""actions"": [
                 {
                     ""name"": ""Navigate"",
-                    ""type"": ""PassThrough"",
+                    ""_type"": ""PassThrough"",
                     ""id"": ""842e3046-93b9-4384-a628-440d9d7cbc3c"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
@@ -132,7 +132,7 @@ namespace dnSR_Coding
                 },
                 {
                     ""name"": ""Submit"",
-                    ""type"": ""Button"",
+                    ""_type"": ""Button"",
                     ""id"": ""80248c11-81f0-4419-9783-65e396b55cfe"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
@@ -141,7 +141,7 @@ namespace dnSR_Coding
                 },
                 {
                     ""name"": ""Cancel"",
-                    ""type"": ""Button"",
+                    ""_type"": ""Button"",
                     ""id"": ""66de2597-ba85-4c32-9596-5e7a6510904b"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
@@ -150,7 +150,7 @@ namespace dnSR_Coding
                 },
                 {
                     ""name"": ""Point"",
-                    ""type"": ""PassThrough"",
+                    ""_type"": ""PassThrough"",
                     ""id"": ""ee3ca73c-a0fb-4bd7-a3eb-a345cfd2a187"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
@@ -159,7 +159,7 @@ namespace dnSR_Coding
                 },
                 {
                     ""name"": ""Click"",
-                    ""type"": ""PassThrough"",
+                    ""_type"": ""PassThrough"",
                     ""id"": ""7beb7d7a-19be-4a5c-bae5-26e325519013"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
@@ -168,7 +168,7 @@ namespace dnSR_Coding
                 },
                 {
                     ""name"": ""ScrollWheel"",
-                    ""type"": ""PassThrough"",
+                    ""_type"": ""PassThrough"",
                     ""id"": ""011df376-8e83-431f-b532-015a102e6839"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
@@ -177,7 +177,7 @@ namespace dnSR_Coding
                 },
                 {
                     ""name"": ""RightClick"",
-                    ""type"": ""PassThrough"",
+                    ""_type"": ""PassThrough"",
                     ""id"": ""d5ab8f6f-c39e-47b6-876d-30429d06575b"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
@@ -186,7 +186,7 @@ namespace dnSR_Coding
                 },
                 {
                     ""name"": ""TogglePauseMenu"",
-                    ""type"": ""Button"",
+                    ""_type"": ""Button"",
                     ""id"": ""5208c7cc-3cf1-46bd-8dc2-4b63510d1ec8"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
@@ -195,7 +195,7 @@ namespace dnSR_Coding
                 },
                 {
                     ""name"": ""ToggleCharacterSheetMenu"",
-                    ""type"": ""Button"",
+                    ""_type"": ""Button"",
                     ""id"": ""b6d035c2-1a0e-4f6e-9ef2-06671256fc65"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",

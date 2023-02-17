@@ -6,7 +6,7 @@ using dnSR_Coding.Utilities;
 namespace dnSR_Coding
 {
     // TODO :
-    // - Add text size by type following HTML5 principles.
+    // - Add text size by _type following HTML5 principles.
 
     ///<summary> UIButtonTextSettings description <summary>
     [Component("UIButtonTextSettings", "")]

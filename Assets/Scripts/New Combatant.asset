@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5faf6b02a98e65a42b4034c463676d44, type: 3}
+  m_Name: New Combatant
+  m_EditorClassIdentifier: 
+  _name: '[TYPE HERE]'
+  _team: 0
+  _statSheet: {fileID: 0}
+  _items: []
+  _competences: []
+  _icon: {fileID: 0}
+  _prefab: {fileID: 1042931328060984, guid: 7161ed0803b6af44eba14325b62837de, type: 3}

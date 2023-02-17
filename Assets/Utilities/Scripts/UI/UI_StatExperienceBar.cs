@@ -11,7 +11,7 @@ namespace dnSR_Coding
     {
         [Header( "Experience Bar details" )]
 
-        [SerializeField] private StatTypeEnum _observedStatType;
+        [SerializeField] private Enums.StatType _observedStatType;
         [SerializeField] private TMP_Text _levelValueText;
 
         private PlayerCharacterProperties _playerCharacterProperties;

@@ -10,19 +10,23 @@ namespace dnSR_Coding
     {
         [Header( "Dependencies" )]
 
-        [SerializeField] private int _combatPositionLimit;
         [SerializeField] private GameObject _combatPositionPrefab;
 
-        [Header( "Spacing settings" )]
+        [Header( "Parent spacing settings" )]
+
+        [SerializeField] private bool _areTheParentsAligned = true;
+        [SerializeField] private Vector3 _spaceBetweenParentPositions = Vector3.zero;
+        [SerializeField] private Vector3 _positionOffset = Vector3.zero;
+
+        [Header( "Positions spacing settings" )]
 
         [SerializeField] private bool _isThePositioningAsymmetric = true;
-        [SerializeField] private Vector3 _spaceBetweenParentPositions = Vector3.zero;
         [SerializeField] private Vector3 _spaceBetweenPlayerPositions = Vector3.zero;
-        [SerializeField, ShowIf( "_isThePositioningAsymmetric" )] 
+        [SerializeField, ShowIf( "_isThePositioningAsymmetric" )]
         private Vector3 _spaceBetweenEnemyPositions = Vector3.zero;
 
         private Transform GetPlayerPositionsParent => transform.GetFirstChild();
-        private Transform GetEnemyPositionsParent => transform.GetChild(1);
+        private Transform GetEnemyPositionsParent => transform.GetChild( 1 );
 
         #region Debug
 
@@ -34,46 +38,38 @@ namespace dnSR_Coding
 
         #region Enable, Disable
 
-        void OnEnable() 
+        void OnEnable()
         {
             CombatManager.OnEnteringCombat += OnNotification;
         }
 
-        void OnDisable() 
+        void OnDisable()
         {
             CombatManager.OnEnteringCombat -= OnNotification;
         }
 
         #endregion
 
-        void Awake() => Init();
-        
-        // Set all datas that need it at the start of the game
-        void Init()
+        private void SetupPositionsOnEnteringCombat( /*CombatManager.CombatInfos combatInfos*/ )
         {
-            GetLinkedComponents();
-        }
-
-        // Put all the get component here, it'll be easier to follow what we need and what we collect.
-        // This method is called on Awake() + OnValidate() to set both in game mod and in editor what this script needs.
-        void GetLinkedComponents()
-        {
-            HidePositionParents();
-
-            HideEachCombatPosition( false );
             HideEachCombatPosition( true );
-        }
+            HideEachCombatPosition( false );
 
-        private void DisplayPositionParents()
-        {
-            GetPlayerPositionsParent.gameObject.TryToDisplay();
-            GetEnemyPositionsParent.gameObject.TryToDisplay();
-        }
+            //for ( int i = 0; i < combatInfos.PlayerCombatantCount; i++ )
+            //{
+            //    GetPlayerPositionsParent.GetChild( i ).gameObject.SetActive( true );
+            //}
 
-        private void HidePositionParents()
-        {
-            GetPlayerPositionsParent.gameObject.TryToHide();
-            GetEnemyPositionsParent.gameObject.TryToHide();
+            //for ( int i = 0; i < combatInfos.EnemyCombatantCount; i++ )
+            //{
+            //    GetEnemyPositionsParent.GetChild( i ).gameObject.SetActive( true );
+            //}
+
+            //SpaceOutPositionsFromCenter( true );
+            //SpaceOutPositionsFromCenter( false );
+
+            //Debug.Log( combatInfos.PlayerCombatantCount + " | " + combatInfos.EnemyCombatantCount );
+            //Debug.Log( "Setup Positions On Entering Combat" );
         }
 
         private void HideEachCombatPosition( bool applyForPlayer )
@@ -86,30 +82,9 @@ namespace dnSR_Coding
             }
         }
 
-        private void SetupPositionsOnEnteringCombat( CombatManager.CombatInfos combatInfos )
-        {
-            DisplayPositionParents();
-
-            for ( int i = 0; i < combatInfos.PlayerUnitCount; i++ )
-            {
-                GetPlayerPositionsParent.GetChild( i ).gameObject.SetActive( true );
-            }
-
-            for ( int i = 0; i < combatInfos.EnemyUnitCount; i++ )
-            {
-                GetEnemyPositionsParent.GetChild( i ).gameObject.SetActive( true );
-            }
-
-            SpaceOutPositionsFromCenter( true );
-            SpaceOutPositionsFromCenter( false );
-
-            Debug.Log( combatInfos.PlayerUnitCount + " | " + combatInfos.EnemyUnitCount );
-            Debug.Log( "Setup Positions On Entering Combat" );
-        }
-
         public void OnNotification( object value )
         {
-            SetupPositionsOnEnteringCombat( ( CombatManager.CombatInfos ) value );
+            //SetupPositionsOnEnteringCombat( ( CombatManager.CombatInfos ) value );
         }
 
         private void SpaceOutPositionsFromCenter( bool applyForPlayer )
@@ -131,53 +106,80 @@ namespace dnSR_Coding
                 children.AppendItem( parent.GetChild( i ) );
             }
 
+            Vector3 parentLocalPos = parent.localPosition + _positionOffset;
+
+            Vector3 sidePosition1 = new(
+                        parentLocalPos.x + spacing.x,
+                        parentLocalPos.y,
+                        parentLocalPos.z + spacing.z );
+
+            Vector3 sidePosition2 = new(
+                        parentLocalPos.x - spacing.x,
+                        parentLocalPos.y,
+                        parentLocalPos.z - spacing.z );
+
             switch ( parent.GetExactChildCount() )
             {
                 case 1:
-                    children [ 0 ].position = parent.localPosition;
+                    if ( children [ 0 ].position != parentLocalPos ) 
+                    {
+                        children [ 0 ].position = parentLocalPos;
+                    }
                     break;
 
                 case 2:
-                    children [ 0 ].position = new Vector3(
-                        parent.localPosition.x + spacing.x,
-                        parent.localPosition.y,
-                        parent.localPosition.z + spacing.z );
+                    if ( children [ 0 ].position != sidePosition1 )
+                    {
+                        children [ 0 ].position = sidePosition1;
+                    }
 
-                    children [ 1 ].position = new Vector3(
-                        parent.localPosition.x - spacing.x,
-                        parent.localPosition.y,
-                        parent.localPosition.z - spacing.z );
+                    if ( children [ 1 ].position != sidePosition2 )
+                    {
+                        children [ 1 ].position = sidePosition2;
+                    }
                     break;
 
                 case 3:
-                    children [ 0 ].position = new Vector3(
-                        parent.localPosition.x + spacing.x,
-                        parent.localPosition.y,
-                        parent.localPosition.z + spacing.z );
+                    if ( children [ 0 ].position != sidePosition1 )
+                    {
+                        children [ 0 ].position = sidePosition1;
+                    }
 
-                    children [ 1 ].position = parent.localPosition;
+                    if ( children [ 1 ].position != parentLocalPos )
+                    {
+                        children [ 1 ].position = parentLocalPos;
+                    }
 
-                    children [ 2 ].position = new Vector3(
-                        parent.localPosition.x - spacing.x,
-                        parent.localPosition.y,
-                        parent.localPosition.z - spacing.z );
+                    if ( children [ 2 ].position != sidePosition2 )
+                    {
+                        children [ 2 ].position = sidePosition2;
+                    }
                     break;
             }
         }
 
+
         #region OnValidate
 
 #if UNITY_EDITOR
+
+        [Button]
+        private void RefreshPositioning()
+        {
+            SpaceOutPositionsFromCenter( true );
+            SpaceOutPositionsFromCenter( false );
+        }
+
         private void CreateCombatPosition( bool applyForPlayer )
         {
             Transform parent = applyForPlayer ? GetPlayerPositionsParent : GetEnemyPositionsParent;
             Color positionRendererColor = applyForPlayer ? Color.blue : Color.red;
 
-            if ( parent.childCount >= _combatPositionLimit ) { return; }
+            if ( parent.childCount >= CombatManager.COMBAT_POSITION_LIMIT ) { return; }
 
-            GameObject combatPos = Instantiate( 
-                _combatPositionPrefab, 
-                Vector3.zero, 
+            GameObject combatPos = Instantiate(
+                _combatPositionPrefab,
+                Vector3.zero,
                 _combatPositionPrefab.transform.rotation );
 
             combatPos.transform.GetChild( 1 ).GetComponent<SpriteRenderer>().color = positionRendererColor;
@@ -187,8 +189,25 @@ namespace dnSR_Coding
         private void SpaceOutParentPositionFromCenter( bool applyForPlayer )
         {
             Transform parent = applyForPlayer ? GetPlayerPositionsParent : GetEnemyPositionsParent;
-            parent.localPosition = applyForPlayer ?
-                _spaceBetweenParentPositions : -_spaceBetweenParentPositions;
+
+            float xSpacingValue = applyForPlayer ? _spaceBetweenParentPositions.z : -_spaceBetweenParentPositions.z;
+            float zSpacingValue =
+                _areTheParentsAligned ? _spaceBetweenParentPositions.x :
+                applyForPlayer ? _spaceBetweenParentPositions.x : -_spaceBetweenParentPositions.x;
+
+            Vector3 spacing = new( xSpacingValue, 0, zSpacingValue );
+            Vector3 newPosition = _positionOffset + spacing;
+
+            if ( parent.localPosition == newPosition ) { return; }
+
+            parent.localPosition = _positionOffset + spacing;
+        }
+
+        private void ApplyPositionOffset()
+        {
+            if ( transform.localPosition == _positionOffset ) { return; }
+
+            transform.localPosition = _positionOffset;
         }
 
         [Button]
@@ -207,7 +226,7 @@ namespace dnSR_Coding
         [Button]
         private void RotatePlayerPositionParent()
         {
-            GetPlayerPositionsParent.localEulerAngles += new Vector3 ( 0, 45 % 360, 0 );
+            GetPlayerPositionsParent.localEulerAngles += new Vector3( 0, 45 % 360, 0 );
         }
         [Button]
         private void RotateEnemyPositionParent()
@@ -217,15 +236,14 @@ namespace dnSR_Coding
 
         private void OnValidate()
         {
-            GetLinkedComponents();
-
             SpaceOutParentPositionFromCenter( applyForPlayer: true );
             SpaceOutParentPositionFromCenter( applyForPlayer: false );
 
             SpaceOutPositionsFromCenter( applyForPlayer: true );
-            SpaceOutPositionsFromCenter( applyForPlayer: false ); 
+            SpaceOutPositionsFromCenter( applyForPlayer: false );
+            ApplyPositionOffset();
         }
-        
+
 #endif
 
         #endregion

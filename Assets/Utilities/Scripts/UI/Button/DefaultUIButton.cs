@@ -45,7 +45,7 @@ namespace dnSR_Coding
         [SerializeField] private Color _obstructorDisplayedColor;        
 
         [Header( "Clickable area settings" )]
-        [InfoBox( "The clickable area is defined by the component of type Image attached to this transform" )]
+        [InfoBox( "The clickable area is defined by the component of _type Image attached to this transform" )]
         [SerializeField, Range( -20, 0 )] private float _paddingOffset = 0;
 
         private Image _requiredImageComponent;
