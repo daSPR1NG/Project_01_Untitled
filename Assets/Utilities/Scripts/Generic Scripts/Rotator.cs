@@ -35,7 +35,7 @@ namespace dnSR_Coding
         {
             if ( !_applyRotation || axis == Vector3.zero ) { return; }
 
-            transform.Rotate( speed * Helper.RealDeltaTime( true ) * axis );
+            transform.Rotate( speed * Helper.GetRealDeltaTime( true ) * axis );
         }
     }
 }

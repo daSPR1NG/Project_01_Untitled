@@ -15,7 +15,12 @@ namespace dnSR_Coding
         [Header( "Game State details" )]
 
         [SerializeField] private GameState _gameState = GameState.Playing;
-        [SerializeField] private int _timeScale = 1;        
+        [SerializeField] private int _timeScale = 1;
+
+        [Header( "Debug section" )]
+
+        [SerializeField, ShowIf( "IsDebuggable" ), ReadOnly] 
+        private int _targetFrame = 60;
 
         public static Action<object> OnGameStateChanged;
 
@@ -30,7 +35,9 @@ namespace dnSR_Coding
         protected override void Init( bool dontDestroyOnLoad = false )
         {
             base.Init();
-            Application.targetFrameRate = 60;
+            //Application.targetFrameRate = _targetFrame;
+            Application.targetFrameRate = Screen.currentResolution.refreshRate;
+            _targetFrame = Application.targetFrameRate;
         }
 
         private void Update()
@@ -109,11 +116,9 @@ namespace dnSR_Coding
             Helper.Log( this, "GameState changed to: " + gameState.ToString().ToLogValue() );
         }
 
+        public bool IsGamePaused() { return _gameState == GameState.Paused || Time.timeScale == 0; }
 
-        public GameState GetCurrentGameState() { return _gameState; }
-        public bool IsGamePaused() { return GetCurrentGameState() == GameState.Paused || Time.timeScale == 0; }
-
-        #endregion        
+        #endregion
 
         #region On GUI
 
@@ -121,7 +126,7 @@ namespace dnSR_Coding
         {
             if ( !Application.isEditor ) { return; }
 
-            GUIContent content = new ( GetCurrentGameState().ToString() + " | Time Scale : " + Time.timeScale );
+            GUIContent content = new ( _gameState.ToString() + " | Time Scale : " + Time.timeScale );
 
             GUI.Label( new Rect( 5, 5, 150, 25 ), content );
         }

@@ -61,6 +61,15 @@ namespace dnSR_Coding
         #endregion
 
         void Awake() => Init();
+        void Start()
+        {
+            if ( _mainCameraVolume.IsNull() )
+            {
+                _mainCameraVolume = Helper.GetMainCamera().GetComponent<CustomPostProcessVolume>();
+                Debug.Log( Helper.GetMainCamera().name );
+            }
+        }
+
         void Init()
         {
             GetLinkedComponents();
@@ -69,12 +78,7 @@ namespace dnSR_Coding
         void GetLinkedComponents()
         {
             if ( _weatherSystemManager.IsNull() ) { _weatherSystemManager = GetComponent<WeatherSystemManager>(); }
-            if ( _timeController.IsNull() ) { _timeController = GetComponent<TimeController>(); }
-
-            if ( _mainCameraVolume.IsNull() ) 
-            {
-                _mainCameraVolume = Helper.GetMainCamera().GetComponent<CustomPostProcessVolume>(); 
-            }
+            if ( _timeController.IsNull() ) { _timeController = GetComponent<TimeController>(); }            
         }
 
         private void Update()

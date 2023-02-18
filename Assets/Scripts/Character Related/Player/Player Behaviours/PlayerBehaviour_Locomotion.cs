@@ -2,6 +2,7 @@ using UnityEngine;
 using dnSR_Coding.Utilities;
 using UnityEngine.InputSystem;
 using System;
+using NaughtyAttributes;
 
 namespace dnSR_Coding
 {
@@ -11,7 +12,9 @@ namespace dnSR_Coding
     [RequireComponent( typeof( CharacterController ) )]
     public class PlayerBehaviour_Locomotion : CharacterLocomotion
     {
-        [SerializeField] private bool _isSprintActionAToggle = true;
+        [Header( "Player Locomotion settings" )]
+
+        [SerializeField, ShowIf( "_canSprint" )] private bool _maintainInputToSprint = true;
 
         private InputAction _move;
         private InputAction _sprint;
@@ -24,8 +27,12 @@ namespace dnSR_Coding
         {
             if ( !PlayerInputsHelper.Instance.IsNull() ) { PlayerInputsHelper.Instance.Enable(); }
 
-            _sprint.performed += context => ToggleSprint( _sprintSpeed, false );
-            _sprint.canceled += context => ToggleSprint( _walkSpeed, true );
+            _sprint.performed += context => TryToSprint();
+
+            _sprint.canceled += context =>
+            {
+                if ( _maintainInputToSprint ) { CancelSprint(); }
+            };
         }
 
         void OnDisable()
@@ -47,10 +54,10 @@ namespace dnSR_Coding
             base.GetLinkedComponents();
         }
 
-        protected override void Update()
-        {
-            base.Update();
+        protected override void Update() => base.Update();
 
+        private void FixedUpdate()
+        {
             TryToMoveController( _controller, _move.ReadValue<Vector2>() );
         }
 
@@ -64,22 +71,32 @@ namespace dnSR_Coding
 
         #region Sprint handle
 
-        private bool CanToggleSprint( float speed ) => !GameManager.Instance.IsGamePaused() && _movementSpeed != speed;
-        //Does not work 
-        private void ToggleSprint( float speed, bool hasBeenCanceled )
+        private bool CanSprint() => !GameManager.Instance.IsGamePaused() && _canSprint;
+
+        private void TryToSprint()
         {
-            if ( !CanToggleSprint( speed ) ) { return; }
+            if ( !CanSprint() ) { return; }
 
-            hasBeenCanceled = false;
+            if ( !_maintainInputToSprint && IsSprinting() ) 
+            {
+                CancelSprint();
+                return;
+            }
 
-            Helper.Log( this, "Has been canceled : " + hasBeenCanceled );
-
-            if ( _isSprintActionAToggle && hasBeenCanceled ) { return; }
-
-            SetMovementSpeedValue( speed );
+            SetMovementSpeedValue( _sprintSpeed );
+            
             OnSprinting?.Invoke( IsSprinting() );
 
-            Helper.Log( this, "Toggling sprint" );
+            Helper.Log( this, "Is sprinting now." );
+        }
+
+        private void CancelSprint()
+        {
+            SetMovementSpeedValue( _walkSpeed );
+
+            OnSprinting?.Invoke( false );
+
+            Helper.Log( this, "Is walking now." );
         }
 
         #endregion

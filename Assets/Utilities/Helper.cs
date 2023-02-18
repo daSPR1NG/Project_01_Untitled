@@ -167,10 +167,20 @@ namespace dnSR_Coding.Utilities
         /// <summary>
         /// Returns the real value of delta time depending if it ignores timeScale, scaled by it.
         /// </summary>
-        public static float RealDeltaTime( bool ignoreTimeScale )
+        public static float GetRealDeltaTime( bool ignoreTimeScale = false )
         {
             deltaTime = ignoreTimeScale ? Time.deltaTime : Time.deltaTime * Time.timeScale;
             return deltaTime;
+        }
+
+        private static float fixedDeltaTime;
+        /// <summary>
+        /// Returns the real value of delta time depending if it ignores timeScale, scaled by it.
+        /// </summary>
+        public static float GetRealFixedDeltaTime( bool ignoreTimeScale = false )
+        {
+            fixedDeltaTime = ignoreTimeScale ? Time.fixedDeltaTime : Time.fixedDeltaTime * Time.timeScale;
+            return fixedDeltaTime;
         }
 
         #endregion
@@ -207,7 +217,7 @@ namespace dnSR_Coding.Utilities
                 OnClickingButton?.Invoke();
             }
 
-            // Reset background color to only affect this button
+            // ResetExp background color to only affect this button
             GUI.backgroundColor = Color.white;
         }
 
@@ -247,7 +257,7 @@ namespace dnSR_Coding.Utilities
                 OnClickingButton?.Invoke();
             }
 
-            // Reset background color to only affect this button
+            // ResetExp background color to only affect this button
             GUI.backgroundColor = Color.white;
         }
 
@@ -341,6 +351,13 @@ namespace dnSR_Coding.Utilities
             }
 #endif
             Application.Quit();
+        }
+
+        private static Transform _playerTransform;
+        public static Transform GetPlayerTransformReference()
+        {
+            if ( _playerTransform.IsNull() ) { _playerTransform = GameObject.FindGameObjectWithTag( "Player" ).transform; }
+            return _playerTransform;
         }
 
         #endregion

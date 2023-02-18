@@ -109,7 +109,7 @@ namespace dnSR_Coding
         {
             if ( GameManager.Instance.IsGamePaused() || !_canGenerate ) { return; }
 
-            _currentGenerationTimer += Helper.RealDeltaTime( true );
+            _currentGenerationTimer += Helper.GetRealDeltaTime( true );
 
             if ( _currentGenerationTimer >= CreationFrequency )
             {

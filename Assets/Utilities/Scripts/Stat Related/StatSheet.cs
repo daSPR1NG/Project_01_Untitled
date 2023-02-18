@@ -9,6 +9,7 @@ namespace dnSR_Coding
     public class StatSheet : ScriptableObject
     {
         [SerializeField] private List<Stat> _stats = new();
+        // Substats
 
         public Stat GetStatByType( Enums.StatType statType )
         {
@@ -53,26 +54,26 @@ namespace dnSR_Coding
         {
             foreach ( var stat in _stats )
             {
-                stat.ResetStatPropertiesInEditor();
+                stat.ResetStatProperties( true );
             }
         }
         
         [Button]
         private void AddExperienceToStrengthStatInEditor()
         {
-            GetStatByType( Enums.StatType.Strength_STR ).AddExperience( 5 );
+            GetStatByType( Enums.StatType.Strength_STR ).AddExp( 5 );
         }
 
         [Button]
         private void AddExperienceToEnduranceStatInEditor()
         {
-            GetStatByType( Enums.StatType.Endurance_END ).AddExperience( 5 );
+            GetStatByType( Enums.StatType.Endurance_END ).AddExp( 5 );
         }
 
         [Button]
         private void AddExperienceToDexterityStatInEditor()
         {
-            GetStatByType( Enums.StatType.Dexterity_DEX ).AddExperience( 5 );
+            GetStatByType( Enums.StatType.Dexterity_DEX ).AddExp( 5 );
         }
 
         private void OnValidate()

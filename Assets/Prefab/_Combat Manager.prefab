@@ -23658,8 +23658,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TurnCounter: 0
-  TurnInfluence: 0
-  _combatLocationsParent: {fileID: 740414485569445829}
+  _turnInfluence: 0
+  _currentCombat:
+    Combatants: []
+  _locationsParent: {fileID: 740414485569445829}
   _isDebuggable: 1
 --- !u!1 &740414485487289732
 GameObject:
@@ -23846,7 +23848,7 @@ GameObject:
   m_Component:
   - component: {fileID: 740414485569445829}
   m_Layer: 0
-  m_Name: Combat Locations Parent
+  m_Name: Combat Locations
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26228,7 +26230,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2640589548843344844
 Transform:
   m_ObjectHideFlags: 0

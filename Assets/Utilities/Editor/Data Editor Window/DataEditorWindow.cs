@@ -571,7 +571,7 @@
 //            new GUIContent()
 //            {
 //                image = _resetIcon,
-//                tooltip = "Reset name",
+//                tooltip = "ResetExp name",
 //            },
 //            new GUIStyle( GUI.skin.button )
 //            {
@@ -608,7 +608,7 @@
 //        GUILayout.Space( 2 );
 
 //        Helper.DrawButton( 
-//            new GUIContent() { text = "Reset description", },
+//            new GUIContent() { text = "ResetExp description", },
 //            new GUILayoutOption[] { GUILayout.Width( 125 ), },
 //            OnClickingButton: () => _editedItemDescriptionField = "[TYPE HERE]" );
 
@@ -800,14 +800,14 @@
 //        _editedItemHasStatsField = EditorGUILayout.ToggleLeft( " Does it have stats ?", _editedItemHasStatsField.Value );
 
 //        Helper.DrawButton( 
-//            new GUIContent() { text = "Reset All Stats" },
+//            new GUIContent() { text = "ResetExp All Stats" },
 //            new GUILayoutOption[] { GUILayout.Width( 105 ), },
 //            OnClickingButton: () =>
 //            {
 //                if ( EditorUtility.DisplayDialog(
-//                   "Reset all stats point ?",
+//                   "ResetExp all stats point ?",
 //                   "Are you sure you want to reset all stats point ?",
-//                   "Yes, Reset all",
+//                   "Yes, ResetExp all",
 //                   "Cancel" ) )
 //                {
 //                    ResetItemStatPoint( StatType.Strength );
@@ -914,7 +914,7 @@
 //            new GUIContent()
 //            {
 //                image = _resetIcon,
-//                tooltip = "Reset points of stat " + statType.ToString(),
+//                tooltip = "ResetExp points of stat " + statType.ToString(),
 //            },
 //            new GUIStyle( GUI.skin.button )
 //            {

@@ -7,7 +7,7 @@ using NaughtyAttributes;
 namespace dnSR_Coding
 {
     [Serializable]
-    public class Stat : ISubject, IMinValue<int>, IModifiableStat, ILevelable
+    public class Stat : LevelableObject, ISubject, IMinValue<int>, IModifiableStat
     {
         [HideInInspector] public string Name;
         [SerializeField] private Enums.StatType _type;
@@ -20,20 +20,6 @@ namespace dnSR_Coding
 
         [field: SerializeField, AllowNesting, ReadOnly] public int Value { get; private set; }
 
-        #region Experience variables
-
-        [field: SerializeField, AllowNesting, ReadOnly] public int Level { get; private set; }
-
-        [field: SerializeField] public int InitialRequiredExperience { get; set; }
-
-        [field: SerializeField, AllowNesting, ReadOnly] public int CurrentExperience { get; private set; }
-        [field: SerializeField, AllowNesting, ReadOnly] public int RequiredExperienceToNextLevel { get; private set; }
-
-        [field: SerializeField] public float RequiredExperienceScalingFactor { get; set; }
-        [field: SerializeField] public int ExperienceMultiplier { get; set; }
-
-        #endregion
-
         [field: SerializeField] public List<StatModifier> StatModifiers { get; set; }
 
         public static Action<object> OnStatModification;
@@ -44,7 +30,7 @@ namespace dnSR_Coding
         }
         public int GetTotalValue()
         {
-            Value = Level;
+            Value = GetLevel();
 
             foreach ( var modifiers in StatModifiers )
             {
@@ -54,39 +40,16 @@ namespace dnSR_Coding
             return Helper.GetClampedValueWithMinValueFrom( Value, MinValue, HasMinValue );
         }
 
-        public void AddExperience( int amount )
+        public override void AddExp( int amount )
         {
-            Debug.Log( "Add " + amount + " experience to : " + _type );
+            base.AddExp( amount );
+            OnModification( OnStatModification, new Tuple<int, int>( GetCurrentExp(), GetRequireExpToNextLevel() ) );
+        }
 
-            int properAmount = Helper.GetMultipliedValueFrom( amount, ExperienceMultiplier );
-            CurrentExperience += properAmount;
-
-            while ( CurrentExperience >= RequiredExperienceToNextLevel )
-            {
-                Debug.Log( CurrentExperience );
-                CurrentExperience -= RequiredExperienceToNextLevel;
-                AddLevel();
-                Debug.Log( Level );
-            }
-
-            Debug.Log( CurrentExperience );
+        public override void AddLevel( int amount )
+        {
+            base.AddLevel( amount );
             OnModification( OnStatModification, this );
-        }
-        public void IncreaseRequiredExperienceToNextLevel()
-        {
-            float raisedValue = Mathf.Pow( ( InitialRequiredExperience * Level ), RequiredExperienceScalingFactor );
-            RequiredExperienceToNextLevel =  ExtMathfs.FloorToInt( raisedValue );
-        }
-
-        public void AddLevel()
-        {
-            Level++;
-            IncreaseRequiredExperienceToNextLevel();
-            OnModification( OnStatModification, this );
-        }
-        public void SetLevel( int value )
-        {
-            Level = value;
         }
 
         public void OnModification( Action<object> actionToExecute, object dataToPush )
@@ -103,10 +66,25 @@ namespace dnSR_Coding
         {
             Name = type.ToString();
             _type = type;
-            Level = level;
+            SetLevel( level );
         }
 
         #endregion
+
+        public void ResetStatProperties( bool resetExp )
+        {
+            StatModifiers.Clear();
+
+            if ( resetExp ) { ResetExp(); }
+
+            SetLevel( MinValue );
+            Value = GetLevel();
+
+#if UNITY_EDITOR
+            SetNameInEditor();
+#endif
+            OnModification( OnStatModification, this );
+        }
 
         #region Editor
 
@@ -116,25 +94,7 @@ namespace dnSR_Coding
         {
             string name = _type.ToString() + " - " + GetTotalValue().ToString();
             if ( !Name.Equals( name ) ) { Name = name; }
-        }
-        
-        public void ResetStatPropertiesInEditor()
-        {
-            StatModifiers.Clear();
-
-            Level = MinValue;
-            Value = Level;
-
-            InitialRequiredExperience = 25;
-            RequiredExperienceScalingFactor = 1;
-            ExperienceMultiplier = 1;
-            
-            CurrentExperience = 0;
-            RequiredExperienceToNextLevel = InitialRequiredExperience;
-
-            SetNameInEditor();
-            OnModification( OnStatModification, this );
-        }
+        }        
 
         public void SetValueInEditor()
         {

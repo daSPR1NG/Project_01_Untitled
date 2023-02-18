@@ -1,4 +1,5 @@
 using dnSR_Coding.Utilities;
+using NaughtyAttributes;
 using UnityEngine;
 
 namespace dnSR_Coding
@@ -7,27 +8,24 @@ namespace dnSR_Coding
     [DisallowMultipleComponent]
     public abstract class CharacterLocomotion : StateManager
     {
-        [Space( 5 )]
-
         [Header( "LOCOMOTION SETTINGS" )]
 
         [SerializeField] protected bool _isMovementBasedOnCameraOrientation = false;
-        [SerializeField] protected float _walkSpeed; // Temporary, it will eventualy be replaced by a stat
-        [SerializeField] protected float _sprintSpeed; // Temporary, it will eventualy be replaced by a stat
+        [SerializeField] protected float _walkSpeed; // Can be replaced by a stat
+
+        [SerializeField] protected bool _canSprint = true;
+        [SerializeField, ShowIf( "_canSprint" )] protected float _sprintSpeed; // Can be replaced by a stat
+
+        [Header( "Rotation speed SETTINGS" )]
+
+        [SerializeField, Range( 0, 720 )] protected float _rotationSpeed = 360f;
+        private bool _isRotationIsFacingMovementInput = false;
 
         protected CharacterController _controller;
 
         protected float _movementSpeed;
         protected Vector3 _currentLocation = Vector3.zero;
         protected Vector3 _movementDirection = Vector3.zero;
-
-        #region Enable, Disable
-
-        void OnEnable() { }
-
-        void OnDisable() { }
-
-        #endregion
 
         protected virtual void Awake() => Init();
         protected virtual void Init()
@@ -38,19 +36,22 @@ namespace dnSR_Coding
         }
         protected virtual void GetLinkedComponents()
         {
-            _controller = GetComponent<CharacterController>();
+            if ( _controller.IsNull() ) { _controller = GetComponent<CharacterController>(); }
         }
 
-        protected override void Update()
-        {
-            base.Update();
-        }
+        protected override void Update() => base.Update();
 
         protected void TryToMoveController( CharacterController controller, Vector2 movement )
         {
             if ( !CanMove() ) { return; }
 
+            _currentLocation = Vector3.zero;
+
+#if !ENABLE_INPUT_SYSTEM
+            _movementDirection = new Vector3( Input.GetAxis( "Horizontal" ), 0, Input.GetAxis( "Vertical" ) );
+#else
             _movementDirection = new Vector3( movement.x, 0, movement.y );
+#endif
 
             if ( _movementDirection == Vector3.zero )
             {
@@ -60,12 +61,34 @@ namespace dnSR_Coding
 
             Vector3 newPosition = _currentLocation
                 + _movementSpeed
-                * Time.fixedDeltaTime
+                * Helper.GetRealFixedDeltaTime()
                 * GetInputMovementDirection();
 
-            controller.Move( newPosition );
+            TryToRotateControllerBeforeMowing( controller, newPosition );
 
+            if ( !_isRotationIsFacingMovementInput ) { return; }
+
+            controller.Move( newPosition );
             SwitchToAnotherState( GetSpecificState( StateType.Moving ) );
+        }
+
+        private void TryToRotateControllerBeforeMowing( CharacterController controller, Vector3 positionToMoveTo )
+        {
+            Transform controllerTrs = controller.transform;
+            Quaternion toRotation = Quaternion.LookRotation( positionToMoveTo, Vector3.up );
+
+            if ( controllerTrs.rotation == toRotation )
+            {
+                _isRotationIsFacingMovementInput = true;
+                return;
+            }
+
+            _isRotationIsFacingMovementInput = false;
+
+            controllerTrs.rotation = Quaternion.RotateTowards( 
+                controllerTrs.rotation, 
+                toRotation, 
+                _rotationSpeed * Helper.GetRealFixedDeltaTime() );
         }
 
         protected void SetMovementSpeedValue( float value )
@@ -83,8 +106,10 @@ namespace dnSR_Coding
         }
         private Vector3 GetInputMovementRelativeToCamera( Vector3 input )
         {
-            Vector3 forward = Helper.GetMainCamera().transform.forward;
-            Vector3 right = Helper.GetMainCamera().transform.right;
+            Camera mainCamera = Helper.GetMainCamera();
+
+            Vector3 forward = mainCamera.transform.forward;
+            Vector3 right = mainCamera.transform.right;
 
             forward.y = 0;
             right.y = 0;
@@ -104,7 +129,7 @@ namespace dnSR_Coding
         }
         protected bool IsSprinting() => _movementSpeed == _sprintSpeed;
 
-        #region OnValidate
+#region OnValidate
 
 #if UNITY_EDITOR
 
@@ -114,6 +139,6 @@ namespace dnSR_Coding
         }
 #endif
 
-        #endregion
+#endregion
     }
 }

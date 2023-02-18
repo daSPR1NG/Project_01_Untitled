@@ -36,10 +36,7 @@ namespace dnSR_Coding
         }
 
         void Start() => Init();
-        void Init()
-        {
-            SetDefaultState();
-        }
+        void Init() => SetDefaultState();
 
         protected virtual void Update() => ExecuteCurrentState();
 
@@ -54,7 +51,12 @@ namespace dnSR_Coding
         {
             _defaultState = GetSpecificState( StateType.Idle );
 
-            _currentState = _defaultState;
+            SetNewStateAndEnterIt( _defaultState );
+        }
+
+        private void SetNewStateAndEnterIt( CharacterState state )
+        {
+            _currentState = state;
             _currentState.Enter( this );
         }
 
@@ -64,23 +66,10 @@ namespace dnSR_Coding
 
             _currentState.Exit( this );
 
-            _currentState = state;
-            _currentState.Enter( this );
-        }
+            SetNewStateAndEnterIt( state );
+        }        
 
         protected CharacterState GetCurrentState() => _currentState;
         protected CharacterState GetSpecificState( StateType stateType ) => _states[ stateType ];
-
-        #region OnValidate
-
-#if UNITY_EDITOR
-
-        private void OnValidate()
-        {
-
-        }
-#endif
-
-        #endregion
     }
 }

@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5faf6b02a98e65a42b4034c463676d44, type: 3}
-  m_Name: New Combatant
+  m_Name: Player Combatant
   m_EditorClassIdentifier: 
-  _name: '[TYPE HERE]'
-  _team: 0
-  _statSheet: {fileID: 0}
+  _name: Name chosen by the user
+  _team: 1
+  _statSheet: {fileID: 11400000, guid: 43c5d92769ed14348ba93519d4901e3d, type: 2}
   _items: []
   _competences: []
   _icon: {fileID: 0}
-  _prefab: {fileID: 1042931328060984, guid: 7161ed0803b6af44eba14325b62837de, type: 3}
+  _prefab: {fileID: 1428387009061096, guid: a96b63f27d072234bbc3d7818166e4eb, type: 3}

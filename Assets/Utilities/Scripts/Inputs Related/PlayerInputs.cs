@@ -39,7 +39,7 @@ namespace dnSR_Coding
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Sprint"",
+                    ""name"": ""ToggleSprint"",
                     ""_type"": ""Button"",
                     ""id"": ""c709bca6-7d2d-472b-ac3e-302ad4fb94b7"",
                     ""expectedControlType"": ""Button"",
@@ -111,7 +111,7 @@ namespace dnSR_Coding
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Sprint"",
+                    ""action"": ""ToggleSprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -416,7 +416,7 @@ namespace dnSR_Coding
             // Player
             m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
             m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
-            m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
+            m_Player_Sprint = m_Player.FindAction("ToggleSprint", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);

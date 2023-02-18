@@ -101,7 +101,7 @@ namespace dnSR_Coding
         {
             if ( !_updateTimeOfDay || Application.isPlaying && GameManager.Instance.IsGamePaused() ) { return; }
 
-            _timeOfDay += Helper.RealDeltaTime( false );
+            _timeOfDay += Helper.GetRealDeltaTime( false );
             _timeOfDay %= _dayDuration; //Modulus to ensure always between 0-maxValue
 
             _currentTimeOfDay = _timeOfDay / _dayDuration;

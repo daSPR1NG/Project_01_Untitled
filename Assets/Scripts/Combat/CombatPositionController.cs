@@ -55,12 +55,12 @@ namespace dnSR_Coding
             HideEachCombatPosition( true );
             HideEachCombatPosition( false );
 
-            //for ( int i = 0; i < combatInfos.PlayerCombatantCount; i++ )
+            //for ( int i = 0; i < combatInfos._playerCombatantCount; i++ )
             //{
             //    GetPlayerPositionsParent.GetChild( i ).gameObject.SetActive( true );
             //}
 
-            //for ( int i = 0; i < combatInfos.EnemyCombatantCount; i++ )
+            //for ( int i = 0; i < combatInfos._enemyCombatantCount; i++ )
             //{
             //    GetEnemyPositionsParent.GetChild( i ).gameObject.SetActive( true );
             //}
@@ -68,7 +68,7 @@ namespace dnSR_Coding
             //SpaceOutPositionsFromCenter( true );
             //SpaceOutPositionsFromCenter( false );
 
-            //Debug.Log( combatInfos.PlayerCombatantCount + " | " + combatInfos.EnemyCombatantCount );
+            //Debug.Log( combatInfos._playerCombatantCount + " | " + combatInfos._enemyCombatantCount );
             //Debug.Log( "Setup Positions On Entering Combat" );
         }
 

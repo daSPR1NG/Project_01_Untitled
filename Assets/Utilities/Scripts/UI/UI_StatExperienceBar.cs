@@ -51,13 +51,13 @@ namespace dnSR_Coding
                 return; 
             }
 
-            _currentExperience = _observedStat.CurrentExperience;
-            _maxExperienceValue = _observedStat.RequiredExperienceToNextLevel;
+            //_currentExperience = _observedStat.CurrentExperience;
+            //_maxExperienceValue = _observedStat.RequiredExperienceToNextLevel;
 
-            SetImageFillAmount( _currentExperience, _maxExperienceValue );
+            //SetImageFillAmount( _currentExperience, _maxExperienceValue );
 
-            SetFillBarValueText( _currentExperience.ToString() + " / " + _maxExperienceValue.ToString() );
-            SetLevelValueText( "Level - " + _observedStat.Level.ToString() );
+            //SetFillBarValueText( _currentExperience.ToString() + " / " + _maxExperienceValue.ToString() );
+            //SetLevelValueText( "Level - " + _observedStat.Level.ToString() );
         }
 
         public override void SetImageFillAmount( float currentValue, float maxValue )

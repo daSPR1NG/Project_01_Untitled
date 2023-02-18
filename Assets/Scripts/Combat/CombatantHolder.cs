@@ -5,16 +5,10 @@ using NaughtyAttributes;
 
 namespace dnSR_Coding
 {
-    // Required components or public findable enum here.
-
-    // Uncomment this block right below if you need to use add component menu for this component.
-    // [AddComponentMenu( menuName:"Custom Scripts/CombatantHolder" )]
-
-    ///<summary> CombatantHolder description <summary>
     [DisallowMultipleComponent]
     public class CombatantHolder : MonoBehaviour, IDebuggable
     {
-        [SerializeField] private Combatant _combatant;
+        [SerializeField] private CombatantData _combatant;
 
         #region Debug
 
