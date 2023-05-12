@@ -1,10 +1,11 @@
 using UnityEngine;
 using System;
-using dnSR_Coding.Utilities;
 
 namespace dnSR_Coding
 {
-    ///<summary> HeaderAttribute description <summary>
+    ///<summary>
+    /// Overwrites the default Header attribute to redraw it as we want using the HeaderAttributeDrawer.
+    ///<summary>
     [AttributeUsage( AttributeTargets.Field, Inherited = true, AllowMultiple = true )]
     public class HeaderAttribute : PropertyAttribute
     {

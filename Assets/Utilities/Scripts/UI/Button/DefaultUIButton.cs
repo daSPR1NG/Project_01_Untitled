@@ -14,7 +14,6 @@ namespace dnSR_Coding
 
     ///<summary> DefaultUIButton description <summary>
     [DisallowMultipleComponent]
-    [Component( "UI BUTTON", "Handle all behaviours used by an UI button." )]
     public abstract class DefaultUIButton : 
         MonoBehaviour, 
         IDebuggable,
@@ -33,14 +32,12 @@ namespace dnSR_Coding
         [SerializeField] private bool _goesBackToDefaultOnClick = true;
 
         [Header( "Selection settings" )]
-        [Validation( "Need to reference the Selection child object transform." )]
         [SerializeField] private Transform _selectionTrs;
         [SerializeField] private Color _selectionColor = Color.white;
         private bool _isSelected = false;
 
         [Header( "Obstructor settings" )]
         [SerializeField] private bool _togglesOnInteraction = true;
-        [Validation( "Need to reference the Obstructor object transform." )]
         [SerializeField] private Transform _obstructor;
         [SerializeField] private Color _obstructorDisplayedColor;        
 
@@ -119,14 +116,14 @@ namespace dnSR_Coding
         {
             if ( !_isInteractive || _isSelected ) return;
 
-            Helper.Log( this, "Display selection." );            
+            this.Debugger( "Display selection." );            
 
             if ( !_selectionTrs.IsNull() ) { _selectionTrs.gameObject.TryToDisplay(); }
         }
 
         private void HideSelection()
         {
-            Helper.Log( this, "Hide selection." );
+            this.Debugger( "Hide selection." );
 
             if ( !_selectionTrs.IsNull() )
             {

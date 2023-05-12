@@ -4,13 +4,12 @@ using dnSR_Coding.Utilities;
 namespace dnSR_Coding
 {
     ///<summary> UIMenuButton description <summary>
-    [Component("UIMenuButton_QuitGame", "")]
     [DisallowMultipleComponent]
     public class UIMenuButton_QuitGame : DefaultUIButton
     {
         public override void OnClick()
         {
-            Helper.Log( this, "Quit the game" );
+            this.Debugger( "Quit the game" );
             Helper.QuitApplication();
         }
 

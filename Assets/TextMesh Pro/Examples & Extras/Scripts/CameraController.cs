@@ -223,7 +223,7 @@ namespace TMPro.Examples
                 {
                     if (dummyTarget == null)
                     {
-                        // We need a Dummy Target to anchor the Camera
+                        // We need a Dummy TargetToOutline to anchor the Camera
                         dummyTarget = new GameObject("Camera Target").transform;
                         dummyTarget.position = CameraTarget.position;
                         dummyTarget.rotation = CameraTarget.rotation;

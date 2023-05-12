@@ -88,8 +88,8 @@ public abstract class CompoundRenderer : IDisposable {
     /// Called every frame for each camera when the post process needs to be rendered.
     /// </summary>
     /// <param name="cmd">Command Buffer used to issue your commands</param>
-    /// <param name="source">Source Render Target, it contains the camera color buffer in it's current state</param>
-    /// <param name="destination">Destination Render Target</param>
+    /// <param name="source">Source Render TargetToOutline, it contains the camera color buffer in it's current state</param>
+    /// <param name="destination">Destination Render TargetToOutline</param>
     /// <param name="renderingData">Current Rendering Data</param>
     /// <param name="injectionPoint">The injection point from which the renderer is being called</param>
     public abstract void Render(CommandBuffer cmd, RenderTargetIdentifier source, RenderTargetIdentifier destination,
@@ -153,7 +153,7 @@ public abstract class CompoundRenderer : IDisposable {
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
 public sealed class CompoundRendererFeatureAttribute : Attribute {
-    // Name of the effect in the custom post-processing render feature editor
+    // _name of the effect in the custom post-processing render feature editor
     readonly string name;
 
     // In which render pass this effect should be injected
@@ -164,7 +164,7 @@ public sealed class CompoundRendererFeatureAttribute : Attribute {
     // Otherwise, a different instance will be  constructed for every injection point.
     readonly bool shareInstance;
 
-    /// <value> Name of the effect in the custom post-processing render feature editor </value>
+    /// <value> _name of the effect in the custom post-processing render feature editor </value>
     public string Name => name;
 
     /// <value> In which render pass this effect should be injected </value>
@@ -180,7 +180,7 @@ public sealed class CompoundRendererFeatureAttribute : Attribute {
     /// <summary>
     /// Marks this class as a custom post processing renderer
     /// </summary>
-    /// <param name="name"> Name of the effect in the custom post-processing render feature editor </param>
+    /// <param name="name"> _name of the effect in the custom post-processing render feature editor </param>
     /// <param name="injectionPoint"> In which render pass this effect should be injected </param>
     public CompoundRendererFeatureAttribute(string name, InjectionPoint injectionPoint, bool shareInstance = false) {
         this.name = name;

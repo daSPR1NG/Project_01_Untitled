@@ -9,7 +9,6 @@ namespace dnSR_Coding
     // - Add text size by _type following HTML5 principles.
 
     ///<summary> UIButtonTextSettings description <summary>
-    [Component("UIButtonTextSettings", "")]
     [DisallowMultipleComponent]
     public class UIButtonTextSettings : MonoBehaviour, IDebuggable
     {

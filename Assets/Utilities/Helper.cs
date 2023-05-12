@@ -4,7 +4,11 @@ using UnityEngine.EventSystems;
 
 namespace dnSR_Coding.Utilities
 {
-    ///<summary> Helper helps to create custom method to globalise method(s) that can be used throughout the project. <summary>
+    public enum DebugType { None, Warning, Error }
+
+    ///<summary> 
+    /// Helper helps to create custom method to globalise method(s) that can be used throughout the project. 
+    ///<summary>
     public static class Helper
     {
         #region MyRegion
@@ -76,6 +80,21 @@ namespace dnSR_Coding.Utilities
         #endregion
 
         #region Cursor
+        public static Vector3 GetCursorClickPosition()
+        {
+            Ray rayFromMainCameraToCursorPosition = Camera.main.ScreenPointToRay( Input.mousePosition );
+            Vector3 hitPointPos = Vector3.zero;
+
+            if ( Physics.Raycast( rayFromMainCameraToCursorPosition, out RaycastHit hit, Mathf.Infinity ) )
+            {
+                hitPointPos = hit.point;
+            }
+
+            UnityEngine.Debug.Log( "Cursor clicked position : " + hitPointPos );
+
+            return hitPointPos;
+        }
+
         public static Vector3 GetCursorClickPosition( LayerMask layerMask )
         {
             Ray rayFromMainCameraToCursorPosition = Camera.main.ScreenPointToRay( Input.mousePosition );
@@ -86,7 +105,7 @@ namespace dnSR_Coding.Utilities
                 hitPointPos = hit.point;
             }
 
-            Debug.Log( "Cursor clicked position : " + hitPointPos );
+            UnityEngine.Debug.Log( "Cursor clicked position : " + hitPointPos );
 
             return hitPointPos;
         }
@@ -116,39 +135,7 @@ namespace dnSR_Coding.Utilities
             return _results.Count > 0;
         }
         
-        #endregion
-
-        #region Debug
-
-        public enum LogType { None, Warning, Error }
-
-        public static void Log<T>( this T user, object message, LogType logType = LogType.None )
-        {
-#if UNITY_EDITOR
-            if ( user is not IDebuggable ) return;
-
-            IDebuggable debuggable = user as IDebuggable;
-            UnityEngine.Object context = ( UnityEngine.Object ) debuggable;
-
-            if ( debuggable.IsDebuggable )
-            {
-                switch ( logType )
-                {
-                    case LogType.None:
-                        Debug.Log( message, context );
-                        break;
-                    case LogType.Warning:
-                        Debug.LogWarning( message, context );
-                        break;
-                    case LogType.Error:
-                        Debug.LogError( message, context );
-                        break;
-                }                
-            }
-#endif
-        }
-
-        #endregion
+        #endregion        
 
         #region Time scale
 
@@ -160,14 +147,14 @@ namespace dnSR_Coding.Utilities
 
             Time.timeScale = value;
 
-            Debug.Log( "TimeScale".ToLogComponent( true ) + " value is: " + value.ToString().ToLogValue() );
+            UnityEngine.Debug.Log( "TimeScale".ToLogComponent() + " value is: " + value.ToString().ToLogValue() );
         }
 
         private static float deltaTime;
         /// <summary>
         /// Returns the real value of delta time depending if it ignores timeScale, scaled by it.
         /// </summary>
-        public static float GetRealDeltaTime( bool ignoreTimeScale = false )
+        public static float GetDeltaTime( bool ignoreTimeScale = false )
         {
             deltaTime = ignoreTimeScale ? Time.deltaTime : Time.deltaTime * Time.timeScale;
             return deltaTime;
@@ -177,7 +164,7 @@ namespace dnSR_Coding.Utilities
         /// <summary>
         /// Returns the real value of delta time depending if it ignores timeScale, scaled by it.
         /// </summary>
-        public static float GetRealFixedDeltaTime( bool ignoreTimeScale = false )
+        public static float GetFixedDeltaTime( bool ignoreTimeScale = false )
         {
             fixedDeltaTime = ignoreTimeScale ? Time.fixedDeltaTime : Time.fixedDeltaTime * Time.timeScale;
             return fixedDeltaTime;
@@ -354,9 +341,14 @@ namespace dnSR_Coding.Utilities
         }
 
         private static Transform _playerTransform;
+        private const string PLAYER_TAG = "Player";
+        /// <summary>
+        /// Finds the player transform performing a FindGOWithTag.
+        /// </summary>
+        /// <returns> The player transform. </returns>
         public static Transform GetPlayerTransformReference()
         {
-            if ( _playerTransform.IsNull() ) { _playerTransform = GameObject.FindGameObjectWithTag( "Player" ).transform; }
+            if ( _playerTransform.IsNull() ) { _playerTransform = GameObject.FindGameObjectWithTag( PLAYER_TAG ).transform; }
             return _playerTransform;
         }
 

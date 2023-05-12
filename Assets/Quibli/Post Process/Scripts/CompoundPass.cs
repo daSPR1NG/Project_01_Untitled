@@ -74,7 +74,7 @@ public class CompoundPass : ScriptableRenderPass {
         m_ProfilingSamplers = new List<ProfilingSampler>(renderers.Count);
         m_PostProcessRenderers = renderers;
         foreach (var renderer in renderers) {
-            // Get renderer name and add it to the names list
+            // Get renderer name and add it to the _enumValues list
             var attribute = CompoundRendererFeatureAttribute.GetAttribute(renderer.GetType());
             m_ProfilingSamplers.Add(new ProfilingSampler(attribute?.Name));
         }
@@ -116,7 +116,7 @@ public class CompoundPass : ScriptableRenderPass {
     /// Gets the corresponding intermediate RT and allocates it if not already allocated
     /// </summary>
     /// <param name="cmd">The command buffer to use for allocation</param>
-    /// <param name="index">The intermediate RT index</param>
+    /// <param name="index">The intermediate RT Index</param>
     /// <returns></returns>
     private RenderTargetIdentifier GetIntermediate(CommandBuffer cmd, int index) {
         if (!m_IntermediateAllocated[index]) {
@@ -242,7 +242,7 @@ public class CompoundPass : ScriptableRenderPass {
                     // If this is the last renderer, blit to the destination directly.
                     destination = m_Destination;
                 } else {
-                    // Otherwise, flip the intermediate RT index and set as destination.
+                    // Otherwise, flip the intermediate RT Index and set as destination.
                     // This will act as a ping pong process between the 2 RT where color data keeps moving back and forth while being processed on each pass.
                     intermediateIndex = 1 - intermediateIndex;
                     destination = GetIntermediate(cmd, intermediateIndex);

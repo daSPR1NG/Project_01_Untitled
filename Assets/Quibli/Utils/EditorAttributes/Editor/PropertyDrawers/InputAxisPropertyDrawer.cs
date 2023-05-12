@@ -41,8 +41,8 @@ namespace ExternalPropertyAttributes.Editor
 
 				string propertyString = property.stringValue;
 				int index = 0;
-				// check if there is an entry that matches the entry and get the index
-				// we skip index 0 as that is a special custom case
+				// check if there is an entry that matches the entry and get the Index
+				// we skip Index 0 as that is a special custom case
 				for (int i = 1; i < axes.Length; i++)
 				{
 					if (axes[i] == propertyString)
@@ -52,7 +52,7 @@ namespace ExternalPropertyAttributes.Editor
 					}
 				}
 
-				// Draw the popup box with the current selected index
+				// Draw the popup box with the current selected Index
 				var newIndex = EditorGUI.Popup(rect, label.text, index, axes);
 
 				// Adjust the actual string value of the property based on the selection

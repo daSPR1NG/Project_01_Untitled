@@ -1,47 +1,55 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
+using dnSR_Coding.Utilities;
 
-[CustomPropertyDrawer(typeof(ScriptableObject), true)]
-public class ScriptableObjectDrawer : PropertyDrawer
+namespace dnSR_Coding.Attributes.Drawer
 {
-    // Static foldout dictionary
-    private static Dictionary<System.Type, bool> foldoutByType = new Dictionary<System.Type, bool>();
-
-    // Cached scriptable object editor
-    private Editor editor = null;
-
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    [CustomPropertyDrawer( typeof( ScriptableObject ), true )]
+    public class ScriptableObjectDrawer : PropertyDrawer
     {
-        // Draw label
-        EditorGUI.PropertyField(position, property, label, true);
-        
-        // Draw foldout arrow
-        bool foldout = false;
-        if (property.objectReferenceValue != null)
-        {
-            // Store foldout values in a dictionary per object Type
-            bool foldoutExists = foldoutByType.TryGetValue(property.objectReferenceValue.GetType(), out foldout);
-            foldout = EditorGUI.Foldout(position, foldout, GUIContent.none);
-            if (foldoutExists)
-                foldoutByType[property.objectReferenceValue.GetType()] = foldout;
-            else
-                foldoutByType.Add(property.objectReferenceValue.GetType(), foldout);
-        }
+        // Static foldout dictionary
+        private static readonly Dictionary<System.Type, bool> foldoutByType = new();
 
-        // Draw foldout properties
-        if (foldout)
+        // Cached scriptable object _editor
+        private Editor _editor = null;
+
+        public override void OnGUI( Rect position, SerializedProperty property, GUIContent label )
         {
-            // Make child fields be indented
-            EditorGUI.indentLevel++;
-            
-            // Draw object properties
-            if (!editor)
-                Editor.CreateCachedEditor(property.objectReferenceValue, null, ref editor);
-            editor.OnInspectorGUI();
-            
-            // Set indent back to what it was
-            EditorGUI.indentLevel--;
+            // Draw label
+            EditorGUI.PropertyField( position, property, label, true );
+
+            // Draw foldout arrow
+            bool foldout = false;
+            if ( !property.objectReferenceValue.IsNull() )
+            {
+                // Store foldout values in a dictionary per object Type
+                bool foldoutExists = foldoutByType.TryGetValue( property.objectReferenceValue.GetType(), out foldout );
+                foldout = EditorGUI.Foldout( position, foldout, GUIContent.none );
+                if ( foldoutExists )
+                {
+                    foldoutByType [ property.objectReferenceValue.GetType() ] = foldout;
+                }
+                else
+                {
+                    foldoutByType.Add( property.objectReferenceValue.GetType(), foldout );
+                }
+            }
+
+            // Draw foldout properties
+            if ( foldout )
+            {
+                // Make child fields be indented
+                EditorGUI.indentLevel++;
+
+                // Draw object properties
+                if ( !_editor )
+                    Editor.CreateCachedEditor( property.objectReferenceValue, null, ref _editor );
+                _editor.OnInspectorGUI();
+
+                // Set indent back to what it was
+                EditorGUI.indentLevel--;
+            }
         }
     }
 }

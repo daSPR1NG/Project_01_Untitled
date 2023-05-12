@@ -4,15 +4,11 @@ using dnSR_Coding.Utilities;
 namespace dnSR_Coding
 {
     ///<summary> UICloseButton description <summary>
-    [Component("UICloseButton", "")]
     [DisallowMultipleComponent]
-    public class UICloseButton : DefaultUIButton, IValidatable
+    public class UICloseButton : DefaultUIButton
     {
         [Header( "Specific details" )]
-        [Validation( "Need to reference the Window to close component." )]
         [SerializeField] private DefaultUIWindow _windowToClose;
-
-        public bool IsValid => !_windowToClose.IsNull();
 
         public override void OnClick()
         {

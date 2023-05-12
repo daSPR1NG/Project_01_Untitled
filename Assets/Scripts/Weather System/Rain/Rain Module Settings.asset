@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0021f58ff57d68f4cb20a2e3250a7165, type: 3}
+  m_Name: Rain Module Settings
+  m_EditorClassIdentifier: 
+  Settings:
+  - _name: None
+    _associatedRainType: 0
+    <ParticleAmount>k__BackingField: 0
+    _hasAudio: 0
+    <AudioEvent>k__BackingField: {fileID: 0}
+  - _name: Low
+    _associatedRainType: 1
+    <ParticleAmount>k__BackingField: 75
+    _hasAudio: 1
+    <AudioEvent>k__BackingField: {fileID: 11400000, guid: 9981b25565505184191fd614a0ca85c9,
+      type: 2}
+  - _name: Medium
+    _associatedRainType: 2
+    <ParticleAmount>k__BackingField: 200
+    _hasAudio: 1
+    <AudioEvent>k__BackingField: {fileID: 0}
+  - _name: High
+    _associatedRainType: 3
+    <ParticleAmount>k__BackingField: 325
+    _hasAudio: 1
+    <AudioEvent>k__BackingField: {fileID: 0}
+  - _name: Heavy
+    _associatedRainType: 4
+    <ParticleAmount>k__BackingField: 500
+    _hasAudio: 1
+    <AudioEvent>k__BackingField: {fileID: 0}

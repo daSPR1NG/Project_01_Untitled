@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31e7223dacbc138438828c86548438dc, type: 3}
+  m_Name: Thunder Module Settings
+  m_EditorClassIdentifier: 
+  Settings:
+  - _name: None
+    _associatedThunderType: 0
+    _hasAudio: 0
+    <AudioEvent>k__BackingField: {fileID: 0}
+  - _name: Low
+    _associatedThunderType: 1
+    _hasAudio: 0
+    <AudioEvent>k__BackingField: {fileID: 0}
+  - _name: Medium
+    _associatedThunderType: 2
+    _hasAudio: 0
+    <AudioEvent>k__BackingField: {fileID: 0}
+  - _name: High
+    _associatedThunderType: 3
+    _hasAudio: 0
+    <AudioEvent>k__BackingField: {fileID: 0}

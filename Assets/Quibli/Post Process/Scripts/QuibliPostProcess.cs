@@ -139,7 +139,7 @@ public class QuibliPostProcess : ScriptableRendererFeature {
     /// Converts the class name (AssemblyQualifiedName) to an instance. Filters out types that
     /// don't exist or don't match the requirements.
     /// </summary>
-    /// <param name="names">The list of assembly-qualified class names</param>
+    /// <param name="names">The list of assembly-qualified class _enumValues</param>
     /// <param name="shared">Dictionary of shared instances keyed by class name</param>
     /// <returns>List of renderers</returns>
     private List<CompoundRenderer> InstantiateRenderers(List<String> names,

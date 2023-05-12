@@ -1,5 +1,20 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6630369257956540984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 770acbaed70db4ad696458511aa3f084, type: 3}
+  m_Name: FlatKitFog
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings: {fileID: 11400000, guid: d18dac82fe9b0473289115b2531228d9, type: 2}
+  _effectMaterial: {fileID: 0}
 --- !u!114 &-4390183533120126895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21,6 +36,21 @@ MonoBehaviour:
     - CompoundRendererFeature.PostProcess.StylizedDetailRenderer, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     renderersAfterPostProcess: []
+--- !u!114 &-4344216963635763421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cca7768aaaea4b0081f14e7f9d4b5ad, type: 3}
+  m_Name: FlatKitOutline
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings: {fileID: 11400000, guid: 6a9ce4523839c4a44a17d8d1334b16d2, type: 2}
+  _effectMaterial: {fileID: 0}
 --- !u!114 &-1878332245247344467
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44,6 +74,21 @@ MonoBehaviour:
     DirectLightingStrength: 0.25
     Radius: 0.25
     SampleCount: 12
+--- !u!114 &-1194252171462367815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cca7768aaaea4b0081f14e7f9d4b5ad, type: 3}
+  m_Name: FlatKitOutline
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings: {fileID: 11400000, guid: cc996c96443b6401080cd0f127ea39c9, type: 2}
+  _effectMaterial: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59,10 +104,14 @@ MonoBehaviour:
   debugShaders:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7,
       type: 3}
-  m_RendererFeatures: []
-  m_RendererFeatureMap: 
+  m_RendererFeatures:
+  - {fileID: 6501179709030711027}
+  - {fileID: -6630369257956540984}
+  - {fileID: -4344216963635763421}
+  m_RendererFeatureMap: f3bec02980d4385ac87dd4014a32fca323a7432fb03db6c3
   m_UseNativeRenderPass: 0
-  postProcessData: {fileID: 0}
+  postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
+  xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
   shaders:
     blitPS: {fileID: 4800000, guid: c17132b1f77d20942aa75f8429c0f8bc, type: 3}
     copyDepthPS: {fileID: 4800000, guid: d6dae50ee9e1bfa4db75f19f99355220, type: 3}
@@ -100,6 +149,20 @@ MonoBehaviour:
   m_ClusteredRendering: 0
   m_TileSize: 32
   m_IntermediateTextureMode: 1
+--- !u!114 &203012606596409034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9dd956d9a1644821b4952bf41df25ef, type: 3}
+  m_Name: FlatKitDepthNormals
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  _depthNormalsMaterial: {fileID: 0}
 --- !u!114 &233298763013983431
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,6 +195,27 @@ MonoBehaviour:
   _enableRendererFeature: 0
   _material: {fileID: 2100000, guid: 58f565febcfd5af499fae3debaff0241, type: 2}
   _pixelSize: 550
+--- !u!114 &6501179709030711027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce2e666a0193a442ab1551414ba5f7c3, type: 3}
+  m_Name: QuibliPostProcess
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    renderersAfterOpaqueAndSky: []
+    renderersBeforePostProcess:
+    - CompoundRendererFeature.PostProcess.ColorGradingRenderer, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    - CompoundRendererFeature.PostProcess.StylizedDetailRenderer, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    renderersAfterPostProcess: []
 --- !u!114 &8460015640335246963
 MonoBehaviour:
   m_ObjectHideFlags: 0

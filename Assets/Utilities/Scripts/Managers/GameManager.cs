@@ -9,8 +9,7 @@ namespace dnSR_Coding
     public enum GameState { Playing, Paused }    
 
     ///<summary> GameManager description <summary>
-    [Component( "GAME MANAGER", "Handles global things about the game." )]
-    public class GameManager : Singleton<GameManager>, ISubject, IDebuggable
+    public class GameManager : Singleton<GameManager>, IDebuggable
     {
         [Header( "Game State details" )]
 
@@ -42,7 +41,7 @@ namespace dnSR_Coding
 
         private void Update()
         {
-            CheckIfPauseInputHasBeenPressed();
+            //CheckIfPauseInputHasBeenPressed();
 
 #if UNITY_EDITOR
 
@@ -69,16 +68,10 @@ namespace dnSR_Coding
                     return;
                 }
 
-                Helper.Log( this, "Trying to pause the game" );
+                this.Debugger( "Trying to pause the game" );
 
                 ResumeOrPauseTheGame();
             }
-        }
-        
-        public void OnModification( Action<object> actionToExecute, object dataToPush )
-        {
-            ISubjectExtensions.TriggerAction( actionToExecute, dataToPush );
-            Debug.Log( "On modification", transform );
         }
 
         #region GameState Handle
@@ -90,13 +83,11 @@ namespace dnSR_Coding
         private void ResumeOrPauseTheGame()
         {
             if ( IsGamePaused() )
-            {
-                OnModification( OnGameStateChanged, GameState.Playing );
+            {                
                 //OnGameResumed?.Invoke();
                 return;
             }
 
-            OnModification( OnGameStateChanged, GameState.Paused );
             //OnGamePaused?.Invoke();
         }
 
@@ -108,12 +99,12 @@ namespace dnSR_Coding
         {
             if ( _gameState == gameState )
             {
-                Helper.Log( this, "GameState changed to: " + gameState.ToString().ToLogValue() );
+                this.Debugger( "GameState changed to: " + gameState.ToString().ToLogValue() );
                 return;
             }
 
             _gameState = gameState;
-            Helper.Log( this, "GameState changed to: " + gameState.ToString().ToLogValue() );
+            this.Debugger( "GameState changed to: " + gameState.ToString().ToLogValue() );
         }
 
         public bool IsGamePaused() { return _gameState == GameState.Paused || Time.timeScale == 0; }

@@ -12,8 +12,7 @@ namespace dnSR_Coding
 
     ///<summary> DefaultUIWindow description <summary>
     [DisallowMultipleComponent]
-    [Component( "UI MENU", "Handles behaviours for a menu." )]
-    public abstract class DefaultUIWindow : MonoBehaviour, IDebuggable, IValidatable
+    public abstract class DefaultUIWindow : MonoBehaviour, IDebuggable
     {
         [Header( "INPUT" )]
 
@@ -36,8 +35,6 @@ namespace dnSR_Coding
 
         public static Action<bool> OnWindowDisplayed;
         public static Action<bool> OnWindowHidden;
-
-        public bool IsValid => !_window.IsNull() && _relatedInputAction != null;
 
         #region Debug
 
@@ -107,7 +104,7 @@ namespace dnSR_Coding
         {
             if ( !_isDisplayDynamic ) { return; }
 
-            Helper.Log( this, "DynamicToggleDisplay is processing." );
+            this.Debugger( "DynamicToggleDisplay is processing." );
 
             if ( _toggleDisplayCoroutine.IsNull() )
             {

@@ -4,7 +4,6 @@ using dnSR_Coding.Utilities;
 namespace dnSR_Coding
 {
     ///<summary> UIManager description <summary>
-    [Component( "UI MANAGER", "" )]
     public class UIManager : Singleton<UIManager>
     {
         private int _displayedWindowAmount = 0;

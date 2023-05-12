@@ -123,7 +123,7 @@ namespace ExternalPropertyAttributes.Editor
 		/// <param name="target">The target object that contains the dropdown</param>
 		/// <param name="dropdownField">The field of the target object that holds the currently selected dropdown value</param>
 		/// <param name="label">The label of the dropdown</param>
-		/// <param name="selectedValueIndex">The index of the value from the values array</param>
+		/// <param name="selectedValueIndex">The Index of the value from the values array</param>
 		/// <param name="values">The values of the dropdown</param>
 		/// <param name="displayOptions">The display options for the values</param>
 		public static void Dropdown(

@@ -4,13 +4,14 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 namespace dnSR_Coding.Utilities
 {
-    ///<summary> Extensions helps to create custom method used by object(s) throughout the project. <summary>
+    ///<summary> 
+    /// Extensions helps to create custom method used by object(s) throughout the project. 
+    /// <summary>
     public static class Extensions
     {
         const MethodImplOptions INLINE = MethodImplOptions.AggressiveInlining;
@@ -22,7 +23,7 @@ namespace dnSR_Coding.Utilities
             if ( gameObject.IsActive() ) return;
 
             gameObject.SetActive( true );
-            Helper.Log( gameObject, gameObject.ToLogComponent() + " has been displayed." );
+            gameObject.Log( gameObject.name.ToLogComponent() + " has been displayed." );
 
         }
         [MethodImpl( INLINE )] public static void TryToHide( this GameObject gameObject ) 
@@ -30,12 +31,12 @@ namespace dnSR_Coding.Utilities
             if ( !gameObject.IsActive() ) return;
 
             gameObject.SetActive( false );
-            Helper.Log( gameObject, gameObject.ToLogComponent() + " has been hidden." );
+            gameObject.Log( gameObject.name.ToLogComponent() + " has been hidden." );
         }
         [MethodImpl( INLINE )] public static void Toggle( this GameObject gameObject ) 
         { 
             gameObject.SetActive( !gameObject.activeSelf );
-            Helper.Log( gameObject, gameObject.ToLogComponent() + " has been toggled." );
+            gameObject.Log( gameObject.name.ToLogComponent() + " has been toggled." );
         }
         [MethodImpl( INLINE )] public static bool IsActive ( this GameObject gameObject ) { return gameObject.activeInHierarchy; } 
         [MethodImpl( INLINE )] public static void DestroyInRuntimeOrEditor( this GameObject gameObject )
@@ -43,40 +44,18 @@ namespace dnSR_Coding.Utilities
             if ( Application.isPlaying ) Object.Destroy( gameObject );
             else Object.DestroyImmediate( gameObject );
         }
-        [MethodImpl( INLINE )] public static void Instantiate( this GameObject gameObject, Vector3 pos, Quaternion rot ) 
-        {
-            Object.Instantiate( gameObject, pos, rot ); 
-        }
-        [MethodImpl( INLINE )] public static void DontDestroyOnLoad( this GameObject gameObject ) { Object.DontDestroyOnLoad( gameObject ); }
 
         #endregion
 
         #region Transform
 
-        [MethodImpl( INLINE )] public static void Reset( this Transform transform, bool isLocal ) 
-        {
-            transform.localScale = new Vector3( 1, 1, 1 );
-
-            if ( isLocal )
-            {
-                transform.SetLocalPositionAndRotation( Vector3.zero, Quaternion.identity );
-                return;
-            }
-
-            transform.SetPositionAndRotation( Vector3.zero, Quaternion.identity );
-        }
+        [MethodImpl( INLINE )] public static bool HasChild( this Transform transform ) { return transform.childCount > 0; }
         [MethodImpl( INLINE )] public static bool HasNoChild( this Transform transform ) { return transform.childCount == 0; }
         [MethodImpl( INLINE )] public static Transform GetFirstChild( this Transform transform )
         {
             if ( transform.HasNoChild() ) { return null; }
 
             return transform.GetChild( 0 );
-        }
-        [MethodImpl( INLINE )] public static Transform GetLastChild( this Transform transform) 
-        {
-            if ( transform.HasNoChild() ) { return null; }
-
-            return transform.GetChild( transform.childCount - 1 ); 
         }
         [MethodImpl( INLINE )] public static int GetExactChildCount( this Transform transform, bool countInactive = false )
         {
@@ -98,12 +77,24 @@ namespace dnSR_Coding.Utilities
             return childCount;
         }
 
+        [MethodImpl( INLINE )]
+        public static void FaceCamera( this Transform trs, Camera cameraToFace )
+        {
+            cameraToFace = Helper.GetMainCamera();
+
+            if ( trs.IsNull() || cameraToFace.IsNull() ) { return; }
+            
+            trs.LookAt(
+                trs.position + cameraToFace.transform.rotation * Vector3.forward,
+                cameraToFace.transform.rotation * Vector3.up );
+        }
+
         #endregion
 
         #region Image
 
         /// <summary>
-        /// Set Image component sprite, you can choose to set the sprite or the overrideSprite.
+        /// Set Image go sprite, you can choose to set the sprite or the overrideSprite.
         /// </summary>
         /// <param name="image"> the image you want to modify</param>
         /// <param name="sprite"> the sprite you want to assign</param>
@@ -123,7 +114,7 @@ namespace dnSR_Coding.Utilities
         }
 
         /// <summary>
-        /// Set Image component a new color.
+        /// Set Image go a new color.
         /// </summary>
         /// <param name="image">the image you want to modify</param>
         /// <param name="color">the color you want to set</param>
@@ -134,7 +125,7 @@ namespace dnSR_Coding.Utilities
         }
 
         /// <summary>
-        /// Set Image component maskable property.
+        /// Set Image go maskable property.
         /// </summary>
         /// <param name="image">the image you want to modify</param>
         /// <param name="state">defines if maskable or not</param>
@@ -145,7 +136,7 @@ namespace dnSR_Coding.Utilities
         }
 
         /// <summary>
-        /// Set Image component raycast target property.
+        /// Set Image go raycast target property.
         /// </summary>
         /// <param name="image">the image you want to modify</param>
         /// <param name="state">defines if is a raycast target or not</param>
@@ -156,7 +147,7 @@ namespace dnSR_Coding.Utilities
         }
 
         /// <summary>
-        /// Set Image component raycast padding.
+        /// Set Image go raycast padding.
         /// </summary>
         /// <param name="image">the image you want to modify</param>
         /// <param name="value">the padding value</param>
@@ -167,7 +158,7 @@ namespace dnSR_Coding.Utilities
         }
 
         /// <summary>
-        /// Set Image component raycast padding inputing a Vector2 as a value.
+        /// Set Image go raycast padding inputing a Vector2 as a value.
         /// X value applies for right and left, Y for up and down.
         /// </summary>
         /// <param name="image">the image you want to modify</param>
@@ -180,7 +171,7 @@ namespace dnSR_Coding.Utilities
         }
 
         /// <summary>
-        /// Set Image component raycast padding inputing a float as a value.
+        /// Set Image go raycast padding inputing a float as a value.
         /// </summary>
         /// <param name="image">the image you want to modify</param>
         /// <param name="offset">the padding value</param>
@@ -192,7 +183,7 @@ namespace dnSR_Coding.Utilities
         }
 
         /// <summary>
-        /// Set Image component _type, and wether if it preserves aspect or not.
+        /// Set Image go _type, and wether if it preserves aspect or not.
         /// </summary>
         /// <param name="type">the image _type you want the image to be</param>
         /// <param name="isSpriteOverriden">defines if you use the default sprite or the overridesprite</param>
@@ -215,7 +206,7 @@ namespace dnSR_Coding.Utilities
         }
 
         /// <summary>
-        /// SetToDefault Image component properties.
+        /// SetToDefault Image go properties.
         /// </summary>
         /// <param name="image">the image you want to modify</param>
         /// <param name="isSpriteOverriden">defines if you're using the overriden sprite or not</param>
@@ -282,7 +273,7 @@ namespace dnSR_Coding.Utilities
         [MethodImpl( INLINE )] 
         public static float Clamped( this float value, float min, float max ) => value < min ? min : value > max ? max : value;
 
-        /// <summary>Clamps each component between <c>min</c> and <c>max</c></summary>
+        /// <summary>Clamps each go between <c>min</c> and <c>max</c></summary>
         [MethodImpl( INLINE )]
         public static Vector2 Clamped( this Vector2 v, Vector2 min, Vector2 max ) =>
             new Vector2(
@@ -317,7 +308,7 @@ namespace dnSR_Coding.Utilities
         [MethodImpl( INLINE )] 
         public static float Clamped01( this float value ) => value < 0f ? 0f : value > 1f ? 1f : value;
 
-        /// <summary>Clamps each component between 0 and 1</summary>
+        /// <summary>Clamps each go between 0 and 1</summary>
         [MethodImpl( INLINE )]
         public static Vector2 Clamped01( this Vector2 v ) =>
             new Vector2(
@@ -347,7 +338,7 @@ namespace dnSR_Coding.Utilities
         /// <summary>Clamps the value between -1 and 1</summary>
         [MethodImpl( INLINE )] public static float ClampedNeg1to1( this float value ) => value < -1f ? -1f : value > 1f ? 1f : value;
 
-        /// <summary>Clamps each component between -1 and 1</summary>
+        /// <summary>Clamps each go between -1 and 1</summary>
         [MethodImpl( INLINE )]
         public static Vector2 ClampedNeg1to1( this Vector2 v ) =>
             new Vector2(
@@ -355,7 +346,7 @@ namespace dnSR_Coding.Utilities
                 v.y < -1f ? -1f : v.y > 1f ? 1f : v.y
             );
 
-        /// <summary>Clamps each component between -1 and 1</summary>
+        /// <summary>Clamps each go between -1 and 1</summary>
         [MethodImpl( INLINE )]
         public static Vector3 ClampedNeg1to1( this Vector3 v ) =>
             new Vector3(
@@ -364,7 +355,7 @@ namespace dnSR_Coding.Utilities
                 v.z < -1f ? -1f : v.z > 1f ? 1f : v.z
             );
 
-        /// <summary>Clamps each component between -1 and 1</summary>
+        /// <summary>Clamps each go between -1 and 1</summary>
         [MethodImpl( INLINE )]
         public static Vector4 ClampedNeg1to1( this Vector4 v ) =>
             new Vector4(
@@ -416,24 +407,36 @@ namespace dnSR_Coding.Utilities
         #region String        
 
         [MethodImpl( INLINE )] 
-        public static string ToLogValue( this object obj )
+        public static string ToLogValue( this string obj )
         {
-            return $"<b><color=#ff7f00>{"[" + obj + "]"}</color></b>";
+            return obj.ToUpper().Bolded().InColor( Color.cyan );
         }
+
         [MethodImpl( INLINE )] 
-        public static string ToLogComponent( this object obj, bool toUpper = false )
+        public static string ToLogComponent( this string input )
         {
-            string name = $"<b><color=#289900>{obj}</color></b>";
-            if ( toUpper ) name = name.ToString().ToUpper();
+            return input.ToUpper().Bolded().InColor( Color.green );
+        }
+
+        [MethodImpl( INLINE )]
+        public static string ToUpper( this string input )
+        {
+            return input.ToUpper();
+        }
+
+        [MethodImpl( INLINE )]
+        public static string Bolded( this string input )
+        {
+            string name = $"<b>{ input }</b>";
 
             return name;
         }
 
         [MethodImpl( INLINE )]
-        public static string Bolded( this object obj, bool toUpper = false )
+        public static string InColor( this string input, Color color )
         {
-            string name = $"<b>{ obj }</b>";
-            if ( toUpper ) name = name.ToString().ToUpper();
+            ColorUtility.ToHtmlStringRGBA( color );
+            string name = string.Format( "<color=#{0}>{1}</color>", ColorUtility.ToHtmlStringRGBA( color ), input );
 
             return name;
         }
@@ -480,22 +483,6 @@ namespace dnSR_Coding.Utilities
         {
             RectTransformUtility.ScreenPointToLocalPointInRectangle( rectTransform, rectTransform.position, Helper.GetMainCamera(), out var result );
             return result;
-        }
-
-        #endregion
-
-        #region Pointer event data
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pointer"></param>
-        /// <param name="button"></param>
-        /// <returns></returns>
-        [MethodImpl( INLINE )]
-        public static bool IsThisButtonCorrect ( this PointerEventData pointer, PointerEventData.InputButton button )
-        {
-            return pointer.button == button;
         }
 
         #endregion
@@ -555,37 +542,37 @@ namespace dnSR_Coding.Utilities
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        /// <param name="t"></param>
+        /// <param name="type"></param>
         /// <param name="debugMessage"></param>
         [MethodImpl( INLINE )]
-        public static void AppendItem<T>( this List<T> list, T t, bool debugMessage = true )
+        public static void AppendItem<T>( this List<T> list, T type, bool debugMessage = true )
         {
-            if ( t.IsNull() )
+            if ( type.IsNull() )
             {
                 if ( debugMessage )
                 {
                     Debug.Log( "This item does not exists: " 
-                        + t.ToLogComponent() );
+                        + type.ToString().ToLogComponent() );
                 }
 
                 return;
             }
 
-            if ( list.Contains( t ) )
+            if ( list.Contains( type ) )
             {
                 if ( debugMessage )
                 {
                     Debug.Log( "This list already contains this item." +
                     " | List name: " +
-                    list.ToLogComponent() +
+                    list.ToString().ToLogComponent() +
                     " | Item name: " +
-                    t.ToLogComponent() );
+                    type.ToString().ToLogComponent() );
                 }
                 
                 return;
             }
 
-            list.Add( t );
+            list.Add( type );
         }
 
         /// <summary>
@@ -593,37 +580,37 @@ namespace dnSR_Coding.Utilities
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
-        /// <param name="t"></param>
+        /// <param name="type"></param>
         /// <param name="debugMessage"></param>
         [MethodImpl( INLINE )]
-        public static void RemoveItem<T>( this List<T> list, T t, bool debugMessage = true )
+        public static void RemoveItem<T>( this List<T> list, T type, bool debugMessage = true )
         {
-            if ( t.IsNull() )
+            if ( type.IsNull() )
             {
                 if ( debugMessage )
                 {
                     Debug.Log( "This item does not exists: "
-                        + t.ToLogComponent() );
+                        + type.ToString().ToLogComponent() );
                 }
 
                 return;
             }
 
-            if ( list.IsEmpty() || !list.Contains( t ) )
+            if ( list.IsEmpty() || !list.Contains( type ) )
             {
                 if ( debugMessage )
                 {
                     Debug.Log( "This list is empty or the item you want to remove is not in the list." +
                     " | List name: " +
-                    list.ToLogComponent() +
+                    list.ToString().ToLogComponent() +
                     " | Item name: " +
-                    t.ToLogComponent() );
+                    type.ToString().ToLogComponent() );
                 }
                 
                 return;
             }
 
-            list.Remove( t );
+            list.Remove( type );
         }
 
         /// <summary>
@@ -635,9 +622,42 @@ namespace dnSR_Coding.Utilities
         [MethodImpl( INLINE )]
         public static bool IsEmpty<T>( this List<T> list ) { return list.Count == 0; }
 
+        [MethodImpl( INLINE )]
+        public static void LogIsEmpty<T>( this List<T> list ) 
+        {
+            if( list.IsEmpty() )
+            {
+                Debug.Log( $"{ list.ToString().Bolded() } is empty." );
+            }
+        }
+
         #endregion
 
         #region Generic
+
+        /// <summary>
+        /// Test
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="user"></param>
+        /// <param name="message"></param>
+        [MethodImpl( INLINE )]
+        public static void Log<T>( this T user, object message, bool isAnError = false )
+        {
+            if ( user.IsNull() ) 
+            {
+                user.Log( "User is null, it's impossible to debug it." );
+                return; 
+            }
+
+            if ( isAnError )
+            {
+                Debug.LogError( message, user as Object );
+                return;
+            }
+
+            Debug.Log( message, user as Object );
+        }
 
         /// <summary>
         /// 
@@ -681,18 +701,52 @@ namespace dnSR_Coding.Utilities
             return null;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="component"></param>
-        /// <returns></returns>
         [MethodImpl( INLINE )]
-        public static T SafeDestroyGameObject<T>( T component ) where T : Component
+        public static void LogNullException<T>( this T type )
         {
-            if ( component != null )
-                SafeDestroy( component.gameObject );
-            return null;
+            if ( type.IsNull() )
+            {
+                Debug.Log( $"Wanted object is null." );
+            }
+        }
+
+        #endregion
+
+        #region Log
+
+        /// <summary>
+        /// Throws a message if the user is debuggable and not null.
+        /// </summary>
+        /// <param name="user"> The object using this debug. 
+        ///     When clicking on it in the log window, it'll be selected </param>
+        /// <param name="message"> The message you want to display. </param>
+        /// <param name="debugType"> The type defining how the message is displayed
+        ///     (ex: DebuhType.Error => the message is red). </param>
+        public static void Debugger( this IDebuggable user, object message, DebugType debugType = DebugType.None )
+        {
+#if UNITY_EDITOR
+            if ( user.IsNull() )
+            {
+                user.LogNullException();
+                return;
+            }
+
+            if ( user.IsDebuggable )
+            {
+                switch ( debugType )
+                {
+                    case DebugType.None:
+                        UnityEngine.Debug.Log( message, user as Object );
+                        break;
+                    case DebugType.Warning:
+                        UnityEngine.Debug.LogWarning( message, user as Object );
+                        break;
+                    case DebugType.Error:
+                        UnityEngine.Debug.LogError( message, user as Object );
+                        break;
+                }
+            }
+#endif
         }
 
         #endregion
@@ -712,7 +766,7 @@ namespace dnSR_Coding.Utilities
         [MethodImpl( INLINE )]
         public static int Abs( int value ) => Math.Abs( value );
 
-        /// <summary>Returns the absolute value, per component. Basically makes negative numbers positive</summary>
+        /// <summary>Returns the absolute value, per go. Basically makes negative numbers positive</summary>
         [MethodImpl( INLINE )]
         public static Vector2 Abs( Vector2 v ) => new Vector2( Abs( v.x ), Abs( v.y ) );
 

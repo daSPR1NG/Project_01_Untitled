@@ -253,7 +253,7 @@ namespace dnSR_Coding
 
             for ( int i = simpleAudioEvent.Clips.Count - 1; i >= 0; i-- )
             {
-				//Debug.Log( simpleAudioEvent.Clips [ i ].name);
+				//Debug.Debug( simpleAudioEvent.Clips [ i ].name);
 				if ( simpleAudioEvent.Clips [ i ].Clip.IsNull() ) return true;
             }
 

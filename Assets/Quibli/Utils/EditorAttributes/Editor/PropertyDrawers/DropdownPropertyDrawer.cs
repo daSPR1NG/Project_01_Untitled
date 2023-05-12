@@ -52,7 +52,7 @@ namespace ExternalPropertyAttributes.Editor
 						displayOptions[i] = value == null ? "<null>" : value.ToString();
 					}
 
-					// Selected value index
+					// Selected value Index
 					int selectedValueIndex = Array.IndexOf(values, selectedValue);
 					if (selectedValueIndex < 0)
 					{
@@ -67,7 +67,7 @@ namespace ExternalPropertyAttributes.Editor
 					// Current value
 					object selectedValue = dropdownField.GetValue(target);
 
-					// Current value index, values and display options
+					// Current value Index, values and display options
 					int index = -1;
 					int selectedValueIndex = -1;
 					List<object> values = new List<object>();

@@ -6,7 +6,6 @@ using NaughtyAttributes;
 namespace dnSR_Coding
 {
     ///<summary> PlayerInputsHelper description <summary>
-    [Component( "PlayerInputsHelper", "Helps to get all inputs from one place." )]
     public class PlayerInputsHelper : Singleton<PlayerInputsHelper>, IDebuggable
     {
         [Header( "STATE SETTINGS" )]
@@ -56,7 +55,7 @@ namespace dnSR_Coding
 
             _inputs = new();
 
-            Helper.Log( this, _inputs.ToString() );
+            this.Debugger( _inputs.ToString() );
         }
 
         public PlayerInputs GetInputs() => _inputs;

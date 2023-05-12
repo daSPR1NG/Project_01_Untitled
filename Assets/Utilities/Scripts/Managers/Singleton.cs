@@ -20,7 +20,7 @@ namespace dnSR_Coding
             Instance = this as T;
             if ( dontDestroyOnLoad ) { DontDestroyOnLoad( Instance ); }
 
-            //Debug.Log( "The instance of " + name +  " has been set on initialization.");
+            //Debug.Debug( "The instance of " + name +  " has been set on initialization.");
         }
     }
 }

@@ -3,7 +3,6 @@ using UnityEngine;
 namespace dnSR_Coding
 {
     ///<summary> AudioManager description <summary>
-    [Component( "AUDIO MANAGER", "Manages how sound is used in-game." )]
     public class AudioManager : Singleton<AudioManager>
     {
         #region Enable, Disable
