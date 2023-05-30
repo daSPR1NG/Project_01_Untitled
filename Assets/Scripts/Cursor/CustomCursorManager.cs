@@ -11,9 +11,11 @@ namespace dnSR_Coding
     {
         [SerializeField] private CursorLockMode _lockMode;
         [SerializeField] private List<CustomCursorSetting> _customCursorSettings = new();
-
         private CustomCursorSetting _currentSetting = null;
+
         private Enums.Cursor_RelatedAction _currentRelatedAction;
+        private bool _isLeftClickPressed = false;
+
         private float _currentFrameTimer;
         private int _currentFrame;
 
@@ -25,55 +27,79 @@ namespace dnSR_Coding
 
         #endregion
 
-        // Ajouter event
         #region Enable, Disable
 
-        void OnEnable() { }
+        void OnEnable() 
+        {
+            EventManager.OnCursorHover += SetCursorFirstAppearance_ByAction;
+        }
 
-        void OnDisable() { }
+        void OnDisable() 
+        {
+            EventManager.OnCursorHover -= SetCursorFirstAppearance_ByAction;
+        }
 
         #endregion
+
+        #region Setup
 
         void Awake() => Init();
 
         // Set all datas that need it at the start of the game
         void Init()
         {
-            SetCursorLockMode( _lockMode );
-            SetCursorVisibility( true );
-            SetCursorAppearance_ByAction( Enums.Cursor_RelatedAction.Default );
+            Helper.SetCursorLockMode( _lockMode );
+            Helper.SetCursorVisibility( true );
+
+            SetCursorSettings( Enums.Cursor_RelatedAction.Default );
+            SetCursorFirstAppearance_ByAction( Enums.Cursor_RelatedAction.Default );
         }
+
+        #endregion
 
         void Update()
         {
-            if ( KeyCode.I.IsPressed() )
-            {
-                _currentRelatedAction = Enums.Cursor_RelatedAction.Interaction;
-                SetCursorAppearance_ByAction( Enums.Cursor_RelatedAction.Interaction );
-            }
-
-            if ( KeyCode.D.IsPressed() )
-            {
-                _currentRelatedAction = Enums.Cursor_RelatedAction.Default;
-                SetCursorAppearance_ByAction( Enums.Cursor_RelatedAction.Default );
-            }
+            SetCursorAppearance_OnLeftClickState();
             ExecuteCursorSpriteSequence();
+        }
+
+        private void SetCursor( Texture2D texture, Vector2 offset, CursorMode mode )
+        {
+            if ( texture.IsNull() )
+            {
+                texture.LogNullException();
+                return;
+            }
+            Cursor.SetCursor( texture, offset, mode );
+        }
+        private void SetCursorSettings( Enums.Cursor_RelatedAction relatedAction )
+        {
+            _currentSetting = GetCustomCursorSetting_ByType( relatedAction );
         }
 
         /// <summary>
         /// Used to set the cursor appearance once + set the current related action if different.
         /// </summary>
         /// <param name="relatedAction"></param>
-        private void SetCursorAppearance_ByAction( Enums.Cursor_RelatedAction relatedAction )
+        private void SetCursorFirstAppearance_ByAction( Enums.Cursor_RelatedAction relatedAction )
         {
+            if ( _currentSetting.SequenceSprites.IsEmpty() )
+            {
+                _currentSetting.SequenceSprites.LogIsEmpty();
+                return;
+            }
+
             // Reaffecting the cursor related action if different...
             if ( _currentRelatedAction != relatedAction ) { _currentRelatedAction = relatedAction; }
 
             // Fetch the setting you're looking for...
-            _currentSetting = GetCustomCursorSetting_ByType( relatedAction );
+            SetCursorSettings( relatedAction );
+
+            // We check if the left click is pressed to avoid to set a wrong texture...
+            Texture2D overridenTexture = _isLeftClickPressed ? _currentSetting.PressedSprite.texture : _currentSetting.SequenceSprites [ 0 ].texture;
 
             // Set cursor appearence.
-            Cursor.SetCursor( _currentSetting.SequenceSprites [ 0 ].texture, _currentSetting.HotspotOffset, CursorMode.Auto );
+            SetCursor( overridenTexture, _currentSetting.HotspotOffset, CursorMode.Auto );
         }
 
         /// <summary>
@@ -82,11 +108,18 @@ namespace dnSR_Coding
         /// <param name="relatedAction"></param>
         private void ExecuteCursorSpriteSequence()
         {
-            if ( _currentSetting.IsNull() || _currentSetting.SequenceSprites.Count <= 1 ) 
+            if ( _currentSetting.SequenceSprites.IsEmpty() )
+            {
+                _currentSetting.SequenceSprites.LogIsEmpty();
+                return;
+            }
+            if ( _currentSetting.IsNull() || _currentSetting.SequenceSprites.Count <= 1 )
             {
                 this.Debugger( "No setting set or the current setting contains only one frame sprite" );
                 return; 
             }
+
+            if ( _isLeftClickPressed ) { return; }
 
             // Timer decremente
             _currentFrameTimer -= Helper.GetDeltaTime();
@@ -96,17 +129,22 @@ namespace dnSR_Coding
             {
                 _currentFrameTimer += _currentSetting.FrameRate;
                 _currentFrame = ( _currentFrame + 1 ) % _currentSetting.SequenceSprites.Count;
-                Cursor.SetCursor( _currentSetting.SequenceSprites [ _currentFrame ].texture, _currentSetting.HotspotOffset, CursorMode.Auto );
+                SetCursor( _currentSetting.SequenceSprites [ _currentFrame ].texture, _currentSetting.HotspotOffset, CursorMode.Auto );
             }
         }
 
-        public void SetCursorLockMode( CursorLockMode lockMode )
+        private void SetCursorAppearance_OnLeftClickState()
         {
-            Cursor.lockState = lockMode;
-        }
-        public void SetCursorVisibility( bool isVisible )
-        {
-            Cursor.visible = isVisible;
+            if ( Helper.IsLeftClickPressed() ) 
+            {
+                _isLeftClickPressed = true;
+                SetCursor( _currentSetting.PressedSprite.texture, _currentSetting.HotspotOffset, CursorMode.Auto );
+            }
+            else if ( Helper.IsLeftClickUnpressed() ) 
+            {
+                _isLeftClickPressed = false;
+                SetCursor( _currentSetting.SequenceSprites [ 0 ].texture, _currentSetting.HotspotOffset, CursorMode.Auto );
+            }
         }
 
         private CustomCursorSetting GetCustomCursorSetting_ByType( Enums.Cursor_RelatedAction relatedAction )

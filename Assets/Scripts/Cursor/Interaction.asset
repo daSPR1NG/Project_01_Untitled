@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03dacb18e9abee54e9290128f1911806, type: 3}
   m_Name: Interaction
   m_EditorClassIdentifier: 
-  RelatedAction: 1
-  FrameRate: 0.05
+  RelatedAction: 2
+  FrameRate: 0.065
   HotspotOffset: {x: 13, y: 13}
+  _hasAPressedSprite: 1
+  PressedSprite: {fileID: 21300000, guid: aef4a902a6993c240b1343003a2af7e1, type: 3}
   SequenceSprites:
-  - {fileID: 21300000, guid: d3c7f5d1a658f5e4d816d352cb82213e, type: 3}
-  - {fileID: 21300000, guid: aef4a902a6993c240b1343003a2af7e1, type: 3}
-  - {fileID: 21300000, guid: d3c7f5d1a658f5e4d816d352cb82213e, type: 3}
+  - {fileID: 21300000, guid: e15834f5b296c7c42ab5388fdef407f2, type: 3}
+  - {fileID: 21300000, guid: 323e8189c9ddb994680bf440f2886fcc, type: 3}
+  - {fileID: 21300000, guid: f5d3eae375e16aa4aae2ba9113483e8e, type: 3}

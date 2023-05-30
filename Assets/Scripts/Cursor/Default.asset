@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: Default
   m_EditorClassIdentifier: 
   RelatedAction: 0
+  FrameRate: 0
   HotspotOffset: {x: 13, y: 13}
+  _hasAPressedSprite: 1
+  PressedSprite: {fileID: 21300000, guid: e622b92b8cdb4c147ae2cfe7a9f5336b, type: 3}
   SequenceSprites:
   - {fileID: 21300000, guid: bcd4eeb78374808438c72b1494997067, type: 3}

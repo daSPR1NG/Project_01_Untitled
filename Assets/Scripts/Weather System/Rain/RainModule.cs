@@ -1,7 +1,7 @@
 using DG.Tweening;
 using dnSR_Coding.Attributes;
 using dnSR_Coding.Utilities;
-using ExternalPropertyAttributes;
+using NaughtyAttributes;
 using System;
 using UnityEngine;
 

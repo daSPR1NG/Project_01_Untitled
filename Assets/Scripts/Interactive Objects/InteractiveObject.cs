@@ -21,12 +21,12 @@ namespace dnSR_Coding
         [field: Header( "Interaction Settings" )]
 
         [field: SerializeField] public bool IsInteractive { get; set; }
+        [field: SerializeField] public Enums.Cursor_RelatedAction CursorRelatedAction { get; set; }
         public object Interactor { get; set; }
 
         public bool IsOutlined { get => !_outlineComponent.IsNull() && _outlineComponent.enabled; }
         [field: SerializeField, Range( 0, 10 )] public float OutlineWidth { get; set; }
 
-        [field: SerializeField] public Sprite SelectionIcon { get; set; }
 
         private Outline _outlineComponent;
         public Outline OutlineComponent
@@ -58,6 +58,8 @@ namespace dnSR_Coding
             Interactor = null;
         }
 
+        #region Outline group
+
         public void DisplayOutline( float width = 1 )
         {
             if ( !IsInteractive || IsOutlined ) { return; }
@@ -75,12 +77,17 @@ namespace dnSR_Coding
             this.Log( "Remove Outline !" );
         }
 
+        #endregion
+
+        #region Mouse events group
+
         public void OnMouseEnter()
         {
             this.Log( "On Mouse Enter" );
             DisplayOutline( OutlineWidth );
 
             // Ajouter le changement de curseur => spécifique
+            EventManager.OnCursorHover( CursorRelatedAction );
         }
 
         public void OnMouseOver()
@@ -96,6 +103,10 @@ namespace dnSR_Coding
             HideOutline();
 
             // Ajouter le changement de curseur => default
+            EventManager.OnCursorHover( Enums.Cursor_RelatedAction.Default );
         }
+
+        #endregion
+
     }
 }

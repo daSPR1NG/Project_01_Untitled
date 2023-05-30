@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using NaughtyAttributes;
 
 namespace dnSR_Coding
 {
@@ -8,10 +9,16 @@ namespace dnSR_Coding
     {
         [Header( "Main settings" )]
         public Enums.Cursor_RelatedAction RelatedAction = Enums.Cursor_RelatedAction.Default;
-        public float FrameRate;
+        [Range( 0.01f, 1f )] public float FrameRate;
         public Vector2 HotspotOffset = Vector2.zero;
 
-        [Header( "Sprites" )]
+        [Header( "Click Pressed settings" )]
+        [SerializeField] private bool _hasAPressedSprite = true;
+        [ShowIf( "_hasAPressedSprite" )] public Sprite PressedSprite;
+
+        [Header( "Sequence settings" )]
         public List<Sprite> SequenceSprites = new();
+
+        public bool HasAPressedSprite => _hasAPressedSprite;
     }
 }

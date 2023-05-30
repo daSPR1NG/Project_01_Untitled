@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using System.Xml.Serialization;
 
 namespace dnSR_Coding.Utilities
 {
@@ -11,52 +12,18 @@ namespace dnSR_Coding.Utilities
     ///<summary>
     public static class Helper
     {
-        #region MyRegion
+        #region Inputs
 
-        /// <summary>
-        /// Calculates a value, affected by a multiplier.
-        /// </summary>
-        public static int GetMultipliedValueFrom( int amount, float multiplier )
+        public static bool IsLeftClickPressed()
         {
-            amount = ExtMathfs.Abs( ExtMathfs.FloorToInt( amount * multiplier ) );
-            return ExtMathfs.Abs( amount );
+            if ( Input.GetMouseButtonDown( 0 ) ) { return true; }
+            return false;
         }
 
-        /// <summary>
-        /// Calculates the remaining value from current value.
-        /// </summary>
-        public static int GetRemainingValueFrom( int current, int amountAdded, int maxValue )
+        public static bool IsLeftClickUnpressed()
         {
-            int value = ( current + amountAdded ) - maxValue;
-            return value;
-        }
-
-        public static int GetPositiveValueFrom( int amount )
-        {
-            return ExtMathfs.Abs( amount );
-        }
-
-        public static int GetClampedValueFrom( int valueToClamp, int minValue, int maxValue, bool hasMinValue, bool hasMaxValue )
-        {
-            valueToClamp = valueToClamp.Clamped(
-                hasMinValue ? minValue : valueToClamp,
-                hasMaxValue ? maxValue : valueToClamp );
-
-            return valueToClamp;
-        }
-
-        public static int GetClampedValueWithMinValueFrom( int valueToClamp, int minValue, bool hasMinValue )
-        {
-            valueToClamp = valueToClamp.Clamped( hasMinValue ? minValue : valueToClamp, valueToClamp );
-
-            return valueToClamp;
-        }
-
-        public static int GetClampedValueWithMaxValueFrom( int valueToClamp, int maxValue, bool hasMaxValue )
-        {
-            valueToClamp = valueToClamp.Clamped( 0, hasMaxValue ? maxValue : valueToClamp );
-
-            return valueToClamp;
+            if ( Input.GetMouseButtonUp( 0 ) ) { return true; }
+            return false;
         }
 
         #endregion
@@ -94,7 +61,6 @@ namespace dnSR_Coding.Utilities
 
             return hitPointPos;
         }
-
         public static Vector3 GetCursorClickPosition( LayerMask layerMask )
         {
             Ray rayFromMainCameraToCursorPosition = Camera.main.ScreenPointToRay( Input.mousePosition );
@@ -113,15 +79,11 @@ namespace dnSR_Coding.Utilities
         public static void SetCursorLockMode( CursorLockMode lockMode )
         {
             if ( Cursor.lockState == lockMode ) { return; }
-
             Cursor.lockState = lockMode;
         }
-
         public static void SetCursorVisibility( bool state )
         {
-
             if ( Cursor.visible == state ) { return; }
-
             Cursor.visible = state;
         }
 

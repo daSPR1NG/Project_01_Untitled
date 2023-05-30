@@ -15,13 +15,14 @@ public static class Enums
         None, Low, Medium, High
     }
 
-    public enum EnvironmentLightIntensity
+    public enum EnvironmentLightIntensityType
     {
         Low, Medium, High, Max
     }
 
     public enum Cursor_RelatedAction
     {
-        Default, Interaction,
+        Default, Default_Pressed, 
+        Interaction,
     }
 }

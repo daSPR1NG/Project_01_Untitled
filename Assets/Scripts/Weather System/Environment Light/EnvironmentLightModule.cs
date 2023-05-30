@@ -20,10 +20,10 @@ namespace dnSR_Coding
                 }
             }
 
-            [SerializeField, NamedArrayElement( typeof( Enums.EnvironmentLightIntensity ) )] private string _name;
+            [SerializeField, NamedArrayElement( typeof( Enums.EnvironmentLightIntensityType ) )] private string _name;
 
             [field: Header( "Main" )]
-            [SerializeField] private Enums.EnvironmentLightIntensity _lightIntensity;
+            [SerializeField] private Enums.EnvironmentLightIntensityType _lightIntensity;
             [field: SerializeField, Range( 0, 1 )]
             public float Intensity { get; private set; }
         }
@@ -34,7 +34,7 @@ namespace dnSR_Coding
 
         private Tween _lightIntensityTween;
 
-        public void ApplySettings( Enums.EnvironmentLightIntensity lightIntensity, Light mainLightRef )
+        public void ApplySettings( Enums.EnvironmentLightIntensityType lightIntensity, Light mainLightRef )
         {
             EnvironmentLightSettings settings = GetSettingsByID( ( int ) lightIntensity );
             if ( mainLightRef.intensity == settings.Intensity || _lightIntensityTween.IsActive() ) { return; }
@@ -47,20 +47,6 @@ namespace dnSR_Coding
             } );
 
             this.Log( $"Environment light setting has been applied with an intensity of : {settings.Intensity}." );
-        }
-        public void Stop( Light mainLightRef )
-        {
-            EnvironmentLightSettings lastSettings = GetSettingsByID( Helper.GetEnumLength( typeof( Enums.EnvironmentLightIntensity ) ) - 1 );
-            if ( mainLightRef.intensity == lastSettings.Intensity || _lightIntensityTween.IsActive() ) { return; }
-
-            _lightIntensityTween = DOTween.To( () => mainLightRef.intensity, _ => mainLightRef.intensity = _, 0, 1.25f );
-            _lightIntensityTween.OnComplete( () =>
-            {
-                mainLightRef.intensity = 0;
-                _lightIntensityTween.Kill();
-            } );
-
-            this.Log( "Environment light setting has been stopped." );
         }
     }
 }
