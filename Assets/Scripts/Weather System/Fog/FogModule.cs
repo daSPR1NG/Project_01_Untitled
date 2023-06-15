@@ -45,7 +45,7 @@ namespace dnSR_Coding
             FogSettings settings = GetSettingsByID( ( int ) fogType );
             if ( RenderSettings.fogDensity == settings.FogDensity || _fogDensityTween.IsActive() ) { return; }
 
-            this.Log( $"Fog setting has been applied with a density of : {settings.FogDensity}." );
+            Debug.Log( $"Fog setting has been applied with a density of : {settings.FogDensity}." );
 
             if ( !RenderSettings.fog ) { RenderSettings.fog = true; }
             _fogDensityTween = DOTween.To( () => RenderSettings.fogDensity, _ => RenderSettings.fogDensity = _, settings.FogDensity, 5f );
@@ -63,7 +63,7 @@ namespace dnSR_Coding
             RenderSettings.fog = false;
             RenderSettings.fogDensity = 0;
 
-            this.Log( "Fog setting has been stopped." );
+            Debug.Log( "Fog setting has been stopped." );
         }
     }
 }

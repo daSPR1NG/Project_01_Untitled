@@ -1,7 +1,7 @@
 using UnityEngine;
 using dnSR_Coding.Utilities;
 using dnSR_Coding.Interfaces.Gameplay;
-
+using NaughtyAttributes;
 
 namespace dnSR_Coding
 {
@@ -16,7 +16,7 @@ namespace dnSR_Coding
 
     ///<summary> InteractiveObject is an abstract class used by objects representing item that the player can interact with. <summary>
     [DisallowMultipleComponent]
-    public abstract class InteractiveObject : MonoBehaviour, IInteractable, ISelectable, IOutlineable
+    public abstract class InteractiveObject : MonoBehaviour, IInteractable, ISelectable, IOutlineable, IDebuggable
     {
         [field: Header( "Interaction Settings" )]
 
@@ -26,7 +26,6 @@ namespace dnSR_Coding
 
         public bool IsOutlined { get => !_outlineComponent.IsNull() && _outlineComponent.enabled; }
         [field: SerializeField, Range( 0, 10 )] public float OutlineWidth { get; set; }
-
 
         private Outline _outlineComponent;
         public Outline OutlineComponent
@@ -43,6 +42,14 @@ namespace dnSR_Coding
                 return _outlineComponent;
             }
         }
+
+        #region DEBUG
+
+        [Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
+        [SerializeField] private bool _isDebuggable = true;
+        public bool IsDebuggable => _isDebuggable;
+
+        #endregion
 
         public virtual void BeginInteraction( object interactor )
         {
@@ -67,14 +74,14 @@ namespace dnSR_Coding
             OutlineComponent.OutlineWidth = width;
             OutlineComponent.enabled = true;
 
-            this.Log( "Outline !" );
+            this.Debugger( "Outline !" );
         }
         public void HideOutline()
         {
             if ( !IsOutlined ) { return; }
 
             OutlineComponent.enabled = false;
-            this.Log( "Remove Outline !" );
+            this.Debugger( "Remove Outline !" );
         }
 
         #endregion
@@ -83,7 +90,7 @@ namespace dnSR_Coding
 
         public void OnMouseEnter()
         {
-            this.Log( "On Mouse Enter" );
+            this.Debugger( "On Mouse Enter" );
             DisplayOutline( OutlineWidth );
 
             // Ajouter le changement de curseur => spécifique
@@ -92,14 +99,14 @@ namespace dnSR_Coding
 
         public void OnMouseOver()
         {
-            this.Log( "On Mouse Over" );
+            this.Debugger( "On Mouse Over" );
             if ( !IsInteractive ) { HideOutline(); }
         }
 
 
         public void OnMouseExit()
         {
-            this.Log( "On Mouse Exit" );
+            this.Debugger( "On Mouse Exit" );
             HideOutline();
 
             // Ajouter le changement de curseur => default

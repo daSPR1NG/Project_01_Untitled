@@ -25,4 +25,9 @@ public static class Enums
         Default, Default_Pressed, 
         Interaction,
     }
+
+    public enum LightType
+    {
+        None, Main, Additional, Thunder, Other,
+    }
 }

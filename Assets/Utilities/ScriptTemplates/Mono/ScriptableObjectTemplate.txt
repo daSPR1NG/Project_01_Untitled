@@ -5,6 +5,10 @@ namespace dnSR_Coding
     [CreateAssetMenu(fileName = "", menuName = "Scriptable Objects/#SCRIPTNAME#")]
     public class #SCRIPTNAME# : ScriptableObject
     {
-        
+        // Override of the basic ToString() to display wanted elements.
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 }

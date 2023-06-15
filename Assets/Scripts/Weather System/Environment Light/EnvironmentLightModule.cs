@@ -46,7 +46,7 @@ namespace dnSR_Coding
                 _lightIntensityTween.Kill();
             } );
 
-            this.Log( $"Environment light setting has been applied with an intensity of : {settings.Intensity}." );
+            Debug.Log( $"Environment light setting has been applied with an intensity of : {settings.Intensity}." );
         }
     }
 }

@@ -18,7 +18,7 @@ namespace dnSR_Coding
 
         // Variables
 
-        #region Debug
+        #region DEBUG
 
         [Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
         [SerializeField] private bool _isDebuggable = true;
@@ -26,13 +26,15 @@ namespace dnSR_Coding
 
         #endregion
 
-        #region Enable, Disable
+        #region ENABLE, DISABLE
 
         void OnEnable() { }
 
         void OnDisable() { }
 
         #endregion
+
+        #region SETUP
 
         void Awake() => Init();
         
@@ -48,6 +50,8 @@ namespace dnSR_Coding
         {
 
         }
+
+        #endregion
 
         #region OnValidate
 

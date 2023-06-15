@@ -23,7 +23,7 @@ namespace dnSR_Coding.Utilities
             if ( gameObject.IsActive() ) return;
 
             gameObject.SetActive( true );
-            gameObject.Log( gameObject.name.ToLogComponent() + " has been displayed." );
+            Debug.Log( gameObject.name.ToLogComponent() + " has been displayed." );
 
         }
         [MethodImpl( INLINE )] public static void TryToHide( this GameObject gameObject ) 
@@ -31,12 +31,12 @@ namespace dnSR_Coding.Utilities
             if ( !gameObject.IsActive() ) return;
 
             gameObject.SetActive( false );
-            gameObject.Log( gameObject.name.ToLogComponent() + " has been hidden." );
+            Debug.Log( gameObject.name.ToLogComponent() + " has been hidden." );
         }
         [MethodImpl( INLINE )] public static void Toggle( this GameObject gameObject ) 
         { 
             gameObject.SetActive( !gameObject.activeSelf );
-            gameObject.Log( gameObject.name.ToLogComponent() + " has been toggled." );
+            Debug.Log( gameObject.name.ToLogComponent() + " has been toggled." );
         }
         [MethodImpl( INLINE )] public static bool IsActive ( this GameObject gameObject ) { return gameObject.activeInHierarchy; } 
         [MethodImpl( INLINE )] public static void DestroyInRuntimeOrEditor( this GameObject gameObject )
@@ -636,30 +636,6 @@ namespace dnSR_Coding.Utilities
         #region Generic
 
         /// <summary>
-        /// Test
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="user"></param>
-        /// <param name="message"></param>
-        [MethodImpl( INLINE )]
-        public static void Log<T>( this T user, object message, bool isAnError = false )
-        {
-            if ( user.IsNull() ) 
-            {
-                user.Log( "User is null, it's impossible to debug it." );
-                return; 
-            }
-
-            if ( isAnError )
-            {
-                Debug.LogError( message, user as Object );
-                return;
-            }
-
-            Debug.Log( message, user as Object );
-        }
-
-        /// <summary>
         /// 
         /// </summary>
         /// <param name="obj"></param>
@@ -667,7 +643,10 @@ namespace dnSR_Coding.Utilities
         [MethodImpl( INLINE )] 
         public static bool IsNull( this object obj )
         {
-            return obj is null || obj.Equals( null ) || obj == null;
+            bool isNull = obj is null || obj.Equals( null ) || obj == null;
+            if ( isNull ) { Debug.Log( $"Wanted object is null.", ( Object ) obj ); }
+            
+            return isNull;
         }
 
         /// <summary>
@@ -736,13 +715,13 @@ namespace dnSR_Coding.Utilities
                 switch ( debugType )
                 {
                     case DebugType.None:
-                        UnityEngine.Debug.Log( message, user as Object );
+                        Debug.Log( message, user as Object );
                         break;
                     case DebugType.Warning:
-                        UnityEngine.Debug.LogWarning( message, user as Object );
+                        Debug.LogWarning( message, user as Object );
                         break;
                     case DebugType.Error:
-                        UnityEngine.Debug.LogError( message, user as Object );
+                        Debug.LogError( message, user as Object );
                         break;
                 }
             }

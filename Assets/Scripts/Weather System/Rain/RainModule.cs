@@ -55,7 +55,7 @@ namespace dnSR_Coding
                 RainSettings settings = GetSettingsByID( ( int ) rainType );
                 if ( emissionModule.rateOverTime.Equals( settings.ParticleAmount ) || _rainRateTween.IsActive() ) { return; }
 
-                this.Log( $"Rain setting has been applied with a rate of : {settings.ParticleAmount}." );
+                Debug.Log( $"Rain setting has been applied with a rate of : {settings.ParticleAmount}." );
 
                 _rainRateTween = DOTween.To( () => emissionModule.rateOverTime.Evaluate(.5f), _ => emissionModule.rateOverTime = _, settings.ParticleAmount, 5f );
                 _rainRateTween.OnStepComplete( () =>
@@ -74,7 +74,7 @@ namespace dnSR_Coding
                 if ( emissionModule.rateOverTime.Equals( 0f ) ) { return; }
 
                 emissionModule.rateOverTime = GetSettingsByID( 0 ).ParticleAmount;
-                this.Log( "Rain setting has been stopped." );
+                Debug.Log( "Rain setting has been stopped." );
             }            
         }
     }
