@@ -37,6 +37,18 @@ namespace dnSR_Coding
         public void ApplySettings( Enums.EnvironmentLightIntensityType lightIntensity, Light mainLightRef )
         {
             EnvironmentLightSettings settings = GetSettingsByID( ( int ) lightIntensity );
+            if ( settings.IsNull() )
+            {
+                Debug.LogError( "Environment Light Module - ApplySettings - Environment Light settings reference is null" );
+                return;
+            }
+
+            if ( mainLightRef.IsNull() )
+            {
+                Debug.LogError( "Environment Light Module - ApplySettings - Environment Light main light reference is null" );
+                return;
+            }
+
             if ( mainLightRef.intensity == settings.Intensity || _lightIntensityTween.IsActive() ) { return; }
 
             _lightIntensityTween = DOTween.To( () => mainLightRef.intensity, _ => mainLightRef.intensity = _, settings.Intensity, 1.25f );

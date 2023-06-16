@@ -41,9 +41,9 @@ namespace dnSR_Coding
             [field: SerializeField, AllowNesting, ShowIf( "_hasAudio" )]
             public SimpleAudioEvent AudioEvent { get; private set; }
 
-            public Vector2 GetFlickeringRate() => _flickeringRate;
-            public Vector2 GetTimerBetweenConsecutiveApplications() => _timerBetweenConsecutiveApplications;
-            public List<AnimationCurve> GetFlickeringCurves() => _flickeringCurves;
+            public readonly Vector2 GetFlickeringRate() => _flickeringRate;
+            public readonly Vector2 GetTimerBetweenConsecutiveApplications() => _timerBetweenConsecutiveApplications;
+            public readonly List<AnimationCurve> GetFlickeringCurves() => _flickeringCurves;
         }
         public ThunderSettings GetSettingsByID( int id )
         {
@@ -63,20 +63,27 @@ namespace dnSR_Coding
 
         public void ApplySettings( MonoBehaviour monoBehaviour, Enums.ThunderType thunderType, Light thunderLight )
         {
-            if ( Settings.IsEmpty() )
-            {
-                Settings.LogIsEmpty();
-                return;
-            }
-
             if ( !thunderCoroutine.IsNull() ) { return; }
 
             ThunderSettings settings = GetSettingsByID( ( int ) thunderType );
+            if ( settings.IsNull() )
+            {
+                Debug.LogError( "Thunder Module - ApplySettings - Thunder settings reference is null" );
+                return;
+            }
             this.Debugger( $"Thunder setting has been applied with ID : {settings.ID}." );
+
+            if ( thunderLight.IsNull() ) {
+                Debug.LogError( "Thunder Module - ApplySettings - Thunder light reference is null" );
+                return;
+            }
+
             thunderCoroutine = monoBehaviour.StartCoroutine( StartLightFlickering( settings, thunderLight ) );
         }
         public void Stop( MonoBehaviour monoBehaviour )
         {
+            if ( thunderCoroutine.IsNull() ) { return; }
+
             this.Debugger( "Thunder setting has been stopped." );
 
             monoBehaviour.StopCoroutine( thunderCoroutine );

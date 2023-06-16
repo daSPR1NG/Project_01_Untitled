@@ -31,8 +31,7 @@ namespace dnSR_Coding
         private bool HasActiveThunderModule => _thunderType != Enums.ThunderType.None;
         private bool HasActiveFogModule => _fogType != Enums.FogType.None;
 
-        public void Init()
-        {
+        public void Init() {
             IsActive = false;
         }
 
@@ -44,6 +43,8 @@ namespace dnSR_Coding
             else { StopRain( ref rainGO ); }
 
             if ( HasActiveThunderModule ) { ApplyThunder( monoBehaviour, thunderLight ); }
+            else { StopThunder( monoBehaviour );  }
+
             if ( HasActiveFogModule ) { ApplyFog(); }
 
             IsActive = true;
@@ -78,14 +79,12 @@ namespace dnSR_Coding
         #region Thunder
 
         // Remettre en privé après test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        public void ApplyThunder( MonoBehaviour monoBehaviour, Light thunderLight )
-        {
+        public void ApplyThunder( MonoBehaviour monoBehaviour, Light thunderLight ) {
             _thunderModule.ApplySettings( monoBehaviour, _thunderType, thunderLight );
         }
 
         // Remettre en privé après test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        public void StopThunder( MonoBehaviour monoBehaviour )
-        {
+        public void StopThunder( MonoBehaviour monoBehaviour ) {
             _thunderModule.Stop( monoBehaviour );
         }
 
@@ -93,13 +92,11 @@ namespace dnSR_Coding
 
         #region Fog
 
-        private void ApplyFog()
-        {
+        private void ApplyFog() {
             _fogModule.ApplySettings( _fogType );
         }
 
-        private void RemoveFog()
-        {
+        private void RemoveFog() {
             _fogModule.Stop();
         }
 

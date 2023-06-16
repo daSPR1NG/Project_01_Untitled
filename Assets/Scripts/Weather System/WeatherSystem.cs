@@ -73,7 +73,8 @@ namespace dnSR_Coding
             // If the index is higher than the chosen index we throw an error and kill the method...
             if ( index > _weatherPresets.Count )
             {
-                this.Debugger( "The index you choose is higher than the preset amount, it's impossible to activate it", DebugType.Error );
+                Debug.LogError( 
+                    "The index you choose is higher than the preset amount, it's impossible to activate it", this );
                 return;
             }
 
@@ -104,7 +105,12 @@ namespace dnSR_Coding
                 _activePreset.Init();
             }            
 
-            _activePreset.Apply( monoBehaviour: this, ref _rainGO, MainLightController.GetControllerLight(), _thunderLightController.GetControllerLight() );
+            _activePreset.Apply( 
+                monoBehaviour: this, 
+                ref _rainGO, 
+                MainLightController.GetControllerLight(), 
+                _thunderLightController.GetControllerLight() );
+
             EventManager.OnApplyingWeatherPreset?.Invoke( _activePreset );
 
             ToggleSunDisplay_OnApplyingPreset( _activePreset.IsSunHidden );

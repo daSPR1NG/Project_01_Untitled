@@ -30,4 +30,9 @@ public static class Enums
     {
         None, Main, Additional, Thunder, Other,
     }
+
+    public enum Plant_GrowingState
+    {
+        Seed, Sprout, Plant
+    }
 }

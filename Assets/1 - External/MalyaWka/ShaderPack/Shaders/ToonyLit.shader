@@ -134,7 +134,7 @@ Shader "MalyaWka/ShaderPack/ToonyLit"
 
             	half3 albedo = __albedo.rgb;
 				half alpha = __alpha;
-				half3 emission = half3(0,0,0);
+				half3 emission = half3(1,1,1);
 				
 				albedo *= __mainColor.rgb;
             	#ifdef _ALPHAPREMULTIPLY_ON
@@ -155,12 +155,12 @@ Shader "MalyaWka/ShaderPack/ToonyLit"
 					        albedo.rgb = cavity * 2.0;
 						#else
 							bakedGI *= cavity * 4.0;
-            				lightColor *= cavity * 4.0;
+            				lightColor *= cavity * 2.0;
 						#endif
             		}
 			    #endif
             	
-				half3 indirectDiffuse = bakedGI * albedo;
+				half3 indirectDiffuse = bakedGI/* * albedo*/;
 
 				half atten = mainLight.shadowAttenuation * mainLight.distanceAttenuation;
 				half ndl = dot(normalWS, lightDir);
@@ -168,9 +168,9 @@ Shader "MalyaWka/ShaderPack/ToonyLit"
 				ndl = saturate(ndl) * atten;
 				half3 ramp = lerp(__shadowColor, __highlightColor, ndl);
 
-            	half3 rampColor = albedo * lightColor.rgb * ramp;
+            	half3 rampColor = albedo.rgb * lightColor.rgb;
             	rampColor += indirectDiffuse;
-				rampColor += emission;
+				rampColor += emission / ramp - atten / 2;
 
 				half4 color = half4(rampColor, alpha);
             	color.a = OutputAlpha(color.a, _Surface);

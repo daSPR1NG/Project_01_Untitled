@@ -198,5 +198,16 @@ namespace dnSR_Coding
         }
 
         #endregion
+
+
+        #region EDITOR
+
+#if UNITY_EDITOR
+        private void OnValidate() {
+            SetControllerLight( GetComponent<Light>() );
+        }
+#endif
+
+        #endregion
     }
 }

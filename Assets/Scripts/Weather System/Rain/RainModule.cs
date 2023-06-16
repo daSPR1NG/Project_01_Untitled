@@ -42,17 +42,17 @@ namespace dnSR_Coding
 
         public void ApplySettings( Enums.RainType rainType, ref GameObject rainEffectGO )
         {
-            if ( Settings.IsEmpty() )
-            {
-                Settings.LogIsEmpty();
-                return;
-            }
-
             if ( rainEffectGO.TryGetComponent( out ParticleSystem rainParticleSystem ) )
             {
                 ParticleSystem.EmissionModule emissionModule = rainParticleSystem.emission;
 
                 RainSettings settings = GetSettingsByID( ( int ) rainType );
+                if ( settings.IsNull() )
+                {
+                    Debug.LogError( "Rain Module - ApplySettings - Rain settings reference is null" );
+                    return;
+                }
+
                 if ( emissionModule.rateOverTime.Equals( settings.ParticleAmount ) || _rainRateTween.IsActive() ) { return; }
 
                 Debug.Log( $"Rain setting has been applied with a rate of : {settings.ParticleAmount}." );
@@ -63,6 +63,9 @@ namespace dnSR_Coding
                     emissionModule.rateOverTime = settings.ParticleAmount;
                     _rainRateTween.Kill();
                 } );
+            }
+            else {
+                Debug.LogError( "Rain Module - ApplySettings - Rain particle system reference is null" );
             }
         }
         public void Stop( ref GameObject rainEffectGO )
@@ -75,7 +78,10 @@ namespace dnSR_Coding
 
                 emissionModule.rateOverTime = GetSettingsByID( 0 ).ParticleAmount;
                 Debug.Log( "Rain setting has been stopped." );
-            }            
+            }
+            else {
+                Debug.LogError( "Rain Module - ApplySettings - Rain particle system reference is null" );
+            }
         }
     }
 }

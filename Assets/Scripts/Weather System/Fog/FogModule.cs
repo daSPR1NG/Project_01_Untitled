@@ -36,13 +36,13 @@ namespace dnSR_Coding
 
         public void ApplySettings( Enums.FogType fogType )
         {
-            if ( Settings.IsEmpty() )
+            FogSettings settings = GetSettingsByID( ( int ) fogType );
+            if ( settings.IsNull() )
             {
-                Settings.LogIsEmpty();
+                Debug.LogError( "Fog Module - ApplySettings - Fog settings reference is null" );
                 return;
             }
 
-            FogSettings settings = GetSettingsByID( ( int ) fogType );
             if ( RenderSettings.fogDensity == settings.FogDensity || _fogDensityTween.IsActive() ) { return; }
 
             Debug.Log( $"Fog setting has been applied with a density of : {settings.FogDensity}." );

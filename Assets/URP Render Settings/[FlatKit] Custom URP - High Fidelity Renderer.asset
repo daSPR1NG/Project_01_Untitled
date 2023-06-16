@@ -128,10 +128,10 @@ MonoBehaviour:
   m_AssetVersion: 2
   m_OpaqueLayerMask:
     serializedVersion: 2
-    m_Bits: 71
+    m_Bits: 2147483647
   m_TransparentLayerMask:
     serializedVersion: 2
-    m_Bits: 71
+    m_Bits: 2147483647
   m_DefaultStencilState:
     overrideStencilState: 0
     stencilReference: 0
@@ -141,7 +141,7 @@ MonoBehaviour:
     zFailOperation: 0
   m_ShadowTransparentReceive: 1
   m_RenderingMode: 0
-  m_DepthPrimingMode: 1
+  m_DepthPrimingMode: 0
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 1
   m_ClusteredRendering: 0
@@ -164,9 +164,9 @@ MonoBehaviour:
   m_Settings:
     cavityType: 1
     debug: 0
-    curvatureScale: 1
-    curvatureRidge: 0.45
-    curvatureValley: 0.35
+    curvatureScale: 1.5
+    curvatureRidge: 2
+    curvatureValley: 2
     cavityDistance: 0.532
     cavityAttenuation: 0.303
     cavityRidge: 1.25
