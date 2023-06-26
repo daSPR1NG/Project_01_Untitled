@@ -153,8 +153,8 @@ namespace dnSR_Coding
             if ( isMainLightIntensitySetOrBeingSet ) { return; }
 
             TweenMainLightIntensity( 
-                _mainLightIntensityTween, 
-                MainLightController.GetControllerLight(),
+                _mainLightIntensityTween,
+                MainLightController,
                 _mainLightIntensityAtDay, 
                 1.25f, 
                 () => MainLightController.SetLightIntensity( _mainLightIntensityAtDay ) );
@@ -170,15 +170,15 @@ namespace dnSR_Coding
 
             TweenMainLightIntensity(
                 _mainLightIntensityTween,
-                MainLightController.GetControllerLight(),
+                MainLightController,
                 NIGHT_MAIN_LIGHT_INTENSITY,
                 1.25f,
                 () => MainLightController.SetLightIntensity( NIGHT_MAIN_LIGHT_INTENSITY ) );
         }
 
-        private void TweenMainLightIntensity( Tween tween, Light mainLight, float valueToReach, float duration, Action onComplete )
+        private void TweenMainLightIntensity( Tween tween, LightController mainLightController, float valueToReach, float duration, Action onComplete )
         {
-            tween = DOTween.To( () => mainLight.intensity, _ => mainLight.intensity = _, valueToReach, duration );
+            tween = DOTween.To( () => mainLightController.GetControllerLight().intensity, _ => mainLightController.GetControllerLight().intensity = _, valueToReach, duration );
 
             tween.OnComplete( () =>
             {

@@ -35,27 +35,27 @@ namespace dnSR_Coding
             IsActive = false;
         }
 
-        public void Apply( MonoBehaviour monoBehaviour, ref GameObject rainGO, Light mainLightRef, Light thunderLight )
+        public void Apply( MonoBehaviour monoBehaviour, ref GameObject rainGO, LightController mainLightController, LightController thunderLightController )
         {
-            SetLightIntensity( _environmentLightIntensityType, mainLightRef );
+            SetLightIntensity( _environmentLightIntensityType, mainLightController );
 
             if ( HasActiveRainModule ) { ApplyRain( ref rainGO ); }
             else { StopRain( ref rainGO ); }
 
-            if ( HasActiveThunderModule ) { ApplyThunder( monoBehaviour, thunderLight ); }
+            if ( HasActiveThunderModule ) { ApplyThunder( monoBehaviour, thunderLightController, mainLightController.GetControllerLight().color ); }
             else { StopThunder( monoBehaviour );  }
 
             if ( HasActiveFogModule ) { ApplyFog(); }
 
             IsActive = true;
         }
-        public void Stop( MonoBehaviour monoBehaviour, ref GameObject rainGO, Light mainLightRef )
+        public void Stop( MonoBehaviour monoBehaviour, ref GameObject rainGO, LightController mainLightController )
         {
             if ( HasActiveRainModule )      { StopRain( ref rainGO ); }
             if ( HasActiveThunderModule )   { StopThunder( monoBehaviour ); }
             if ( HasActiveFogModule )       { RemoveFog(); }
 
-            SetLightIntensity( Enums.EnvironmentLightIntensityType.Max, mainLightRef );
+            SetLightIntensity( Enums.EnvironmentLightIntensityType.Max, mainLightController );
 
             IsActive = false;
         }
@@ -79,8 +79,8 @@ namespace dnSR_Coding
         #region Thunder
 
         // Remettre en privé après test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        public void ApplyThunder( MonoBehaviour monoBehaviour, Light thunderLight ) {
-            _thunderModule.ApplySettings( monoBehaviour, _thunderType, thunderLight );
+        public void ApplyThunder( MonoBehaviour monoBehaviour, LightController thunderLightController, Color mainLightColor ) {
+            _thunderModule.ApplySettings( monoBehaviour, _thunderType, thunderLightController, mainLightColor );
         }
 
         // Remettre en privé après test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -104,9 +104,9 @@ namespace dnSR_Coding
 
         #region Main Light Intensity
 
-        private void SetLightIntensity( Enums.EnvironmentLightIntensityType lightIntensity, Light mainLightRef )
+        private void SetLightIntensity( Enums.EnvironmentLightIntensityType lightIntensity, LightController mainLightController )
         {
-            _environmentLightModule.ApplySettings( lightIntensity, mainLightRef );
+            _environmentLightModule.ApplySettings( lightIntensity, mainLightController );
         }
 
         #endregion

@@ -1,71 +1,72 @@
 using UnityEngine;
-using System.Collections;
 using dnSR_Coding.Utilities;
 using NaughtyAttributes;
+using System;
 
-namespace dnSR_Coding
+namespace dnSR_Coding.Project
 {
-    // Required components or public findable enum here.
-
-    // Uncomment this block right below if you need to use add component menu for this component.
-    // [AddComponentMenu( menuName:"Custom Scripts/Plant" )]
-
     ///<summary> Plant description <summary>
     [DisallowMultipleComponent]
-    public class Plant : MonoBehaviour, IDebuggable
+    public class Plant : MonoBehaviour, ILoadableData<Plant.PlantData>, IDebuggable
     {
         [Header( "SETTINGS" )]
         [SerializeField] private float _lifeCycleDuration = 5f;
         private Enums.Plant_GrowingState _growingState = Enums.Plant_GrowingState.Seed;
         private float _currentLifeCycleValue;
+        private PlantData _plantData;
 
-        // Variables
+        private int ID => GetInstanceID();
 
         #region DEBUG
 
-        [Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
+        [ Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
         [SerializeField] private bool _isDebuggable = true;
         public bool IsDebuggable => _isDebuggable;
 
         #endregion
 
-        #region ENABLE, DISABLE
+        [Serializable]
+        public struct PlantData : ISavableData<PlantData>
+        {
+            public Enums.Plant_GrowingState GrowingState;
+            public float CurrentLifeCycleValue;
 
-        void OnEnable() { }
+            [field: SerializeField] public int ID { get; set; }
+            public readonly PlantData Get() => this;
 
-        void OnDisable() { }
-
-        #endregion
+            public void Set( int iD, Enums.Plant_GrowingState growingState, float currentLifeCycleValue )
+            {
+                ID = iD;
+                GrowingState = growingState;
+                CurrentLifeCycleValue = currentLifeCycleValue;
+            }
+        }
 
         #region SETUP
 
-        void Awake() => Init();
+        void Start() => Init();
         
         // Set all datas that need it at the start of the game
-        void Init()
+        [ContextMenu( "Init Plant datas" )]
+        public void Init()
         {
-            GetLinkedComponents();
             _growingState = Enums.Plant_GrowingState.Seed;
             _currentLifeCycleValue = 0;
-        }
 
-        // Put all the get component here, it'll be easier to follow what we need and what we collect.
-        // This method is called on Awake() + OnValidate() to set both in game mod and in editor what this script needs.
-        void GetLinkedComponents()
-        {
-
+            ISavableData<PlantData> savedData = DataSaveManager.Instance.LoadedData<PlantData>( DataSaveManager.PLANT_DATAS_FILE_NAME, ID );
+            Load( savedData.Get() );
         }
 
         #endregion
 
-        private void Update() => ProcessLifeCycle();
+        //private void Update() => ProcessLifeCycle();
 
         private void ProcessLifeCycle()
         {
             if ( _growingState == Enums.Plant_GrowingState.Plant ) { return; }
 
             _currentLifeCycleValue += Helper.GetDeltaTime();
-            this.Debugger( $"Life Cycle value : {_currentLifeCycleValue}");
+            //this.Debugger( $"Life Cycle value : {_currentLifeCycleValue}");
 
             if ( _currentLifeCycleValue >= ( _lifeCycleDuration / 2 ) ) {
                 _growingState = Enums.Plant_GrowingState.Sprout;
@@ -78,16 +79,22 @@ namespace dnSR_Coding
             }
         }
 
-        #region OnValidate
-
-#if UNITY_EDITOR
-
-        private void OnValidate()
+        public PlantData GetData()
         {
-            GetLinkedComponents();
+            _plantData.Set( ID, _growingState, _currentLifeCycleValue );
+            return _plantData;
         }
-#endif
 
-        #endregion
+        [ContextMenu( "Save" )]
+        public void Save()
+        {
+            DataSaveManager.Instance.SaveData( DataSaveManager.PLANT_DATAS_FILE_NAME, JsonUtility.ToJson( GetData(), true ) );
+        }
+
+        public void Load( PlantData data )
+        {
+            _growingState = data.GrowingState;
+            _currentLifeCycleValue = data.CurrentLifeCycleValue;
+        }
     }
 }

@@ -34,7 +34,7 @@ namespace dnSR_Coding
 
         private Tween _lightIntensityTween;
 
-        public void ApplySettings( Enums.EnvironmentLightIntensityType lightIntensity, Light mainLightRef )
+        public void ApplySettings( Enums.EnvironmentLightIntensityType lightIntensity, LightController mainLightController )
         {
             EnvironmentLightSettings settings = GetSettingsByID( ( int ) lightIntensity );
             if ( settings.IsNull() )
@@ -43,18 +43,23 @@ namespace dnSR_Coding
                 return;
             }
 
-            if ( mainLightRef.IsNull() )
+            if ( mainLightController.IsNull() )
             {
                 Debug.LogError( "Environment Light Module - ApplySettings - Environment Light main light reference is null" );
                 return;
             }
 
-            if ( mainLightRef.intensity == settings.Intensity || _lightIntensityTween.IsActive() ) { return; }
+            if ( mainLightController.DoesLightIntensityEquals( settings.Intensity ) || _lightIntensityTween.IsActive() ) { return; }
 
-            _lightIntensityTween = DOTween.To( () => mainLightRef.intensity, _ => mainLightRef.intensity = _, settings.Intensity, 1.25f );
+            _lightIntensityTween = DOTween.To(
+                () => mainLightController.GetControllerLight().intensity,
+                _ => mainLightController.GetControllerLight().intensity = _,
+                settings.Intensity,
+                1.25f );
+
             _lightIntensityTween.OnComplete( () =>
             {
-                mainLightRef.intensity = settings.Intensity;
+                mainLightController.SetLightIntensity( settings.Intensity );
                 _lightIntensityTween.Kill();
             } );
 

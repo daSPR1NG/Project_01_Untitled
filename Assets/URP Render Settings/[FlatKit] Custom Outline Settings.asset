@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: '[FlatKit] Custom Outline Settings'
   m_EditorClassIdentifier: 
   edgeColor: {r: 0, g: 0, b: 0, a: 1}
-  thickness: 2
+  thickness: 3
   resolutionInvariant: 0
   useDepth: 1
   useNormals: 1
@@ -24,6 +24,6 @@ MonoBehaviour:
   maxNormalsThreshold: 4.35
   minColorThreshold: 2.86
   maxColorThreshold: 4.6
-  renderEvent: 550
+  renderEvent: 500
   outlineOnly: 0
   applyInSceneView: 1

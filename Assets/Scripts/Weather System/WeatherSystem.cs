@@ -60,7 +60,7 @@ namespace dnSR_Coding
             if ( KeyCode.T.IsPressed() )
             {
                 _activePreset.StopThunder( this );
-                _activePreset.ApplyThunder( this, _thunderLightController.GetControllerLight() );
+                _activePreset.ApplyThunder( this, _thunderLightController, MainLightController.GetControllerLight().color );
             }
         }
 
@@ -99,17 +99,17 @@ namespace dnSR_Coding
             // If a preset is active but a new one is applied (different from the current one), we stop the current preset to properly activate the new one...
             if ( aPresetIsActive && _activePreset != _weatherPresets [ index ] )
             {
-                _activePreset.Stop( monoBehaviour: this, ref _rainGO, MainLightController.GetControllerLight() );
+                _activePreset.Stop( monoBehaviour: this, ref _rainGO, MainLightController );
                 // Active preset is reassigned and we apply the preset we want.
                 _activePreset = _weatherPresets [ index ];
                 _activePreset.Init();
-            }            
+            }
 
-            _activePreset.Apply( 
-                monoBehaviour: this, 
-                ref _rainGO, 
-                MainLightController.GetControllerLight(), 
-                _thunderLightController.GetControllerLight() );
+            _activePreset.Apply(
+                monoBehaviour: this,
+                ref _rainGO,
+                MainLightController,
+                _thunderLightController );
 
             EventManager.OnApplyingWeatherPreset?.Invoke( _activePreset );
 
@@ -120,7 +120,7 @@ namespace dnSR_Coding
         {
             if ( _activePreset.IsNull() || !_activePreset.IsActive ) { return; }
 
-            _activePreset.Stop( monoBehaviour: this, ref _rainGO, MainLightController.GetControllerLight() );
+            _activePreset.Stop( monoBehaviour: this, ref _rainGO, MainLightController );
             _activePreset = null;
         }
 

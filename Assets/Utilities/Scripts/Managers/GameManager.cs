@@ -1,10 +1,9 @@
 using UnityEngine;
-using dnSR_Coding.Utilities;
 using System;
 using NaughtyAttributes;
 using UnityEngine.InputSystem;
 
-namespace dnSR_Coding
+namespace dnSR_Coding.Utilities
 {
     public enum GameState { Playing, Paused }    
 
@@ -34,7 +33,6 @@ namespace dnSR_Coding
         protected override void Init( bool dontDestroyOnLoad = false )
         {
             base.Init();
-            //Application.targetFrameRate = _targetFrame;
             Application.targetFrameRate = Screen.currentResolution.refreshRate;
             _targetFrame = Application.targetFrameRate;
         }

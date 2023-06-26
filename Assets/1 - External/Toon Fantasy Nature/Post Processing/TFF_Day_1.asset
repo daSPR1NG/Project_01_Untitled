@@ -59,7 +59,7 @@ MonoBehaviour:
     m_Value: 1
   gaussianStart:
     m_OverrideState: 1
-    m_Value: 22
+    m_Value: 18
   gaussianEnd:
     m_OverrideState: 1
     m_Value: 35
@@ -87,6 +87,40 @@ MonoBehaviour:
   bladeRotation:
     m_OverrideState: 0
     m_Value: 0
+--- !u!114 &-1011471246708287369
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f8f6e43869a48f991285995d4df1e93, type: 3}
+  m_Name: ColorGrading
+  m_EditorClassIdentifier: 
+  active: 1
+  intensity:
+    m_OverrideState: 1
+    m_Value: 1
+  blueShadows:
+    m_OverrideState: 1
+    m_Value: 0.1
+  greenShadows:
+    m_OverrideState: 1
+    m_Value: 0
+  redHighlights:
+    m_OverrideState: 1
+    m_Value: 1
+  contrast:
+    m_OverrideState: 1
+    m_Value: 0.015
+  vibrance:
+    m_OverrideState: 1
+    m_Value: 1
+  saturation:
+    m_OverrideState: 1
+    m_Value: 0.105
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -104,10 +138,37 @@ MonoBehaviour:
   - {fileID: 6738271326647136253}
   - {fileID: 4737165417429899096}
   - {fileID: 6118115892689085527}
-  - {fileID: 7357297413804323955}
-  - {fileID: 6066227131550474165}
   - {fileID: -2951216289246100831}
-  - {fileID: 6045942224923987929}
+  - {fileID: -1011471246708287369}
+  - {fileID: 141578059758037769}
+--- !u!114 &141578059758037769
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f8317041eee140a38873daddb4b3a5f, type: 3}
+  m_Name: StylizedDetail
+  m_EditorClassIdentifier: 
+  active: 1
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0.35
+  blur:
+    m_OverrideState: 1
+    m_Value: 2
+  edgePreserve:
+    m_OverrideState: 1
+    m_Value: 0.05
+  rangeStart:
+    m_OverrideState: 0
+    m_Value: 10
+  rangeEnd:
+    m_OverrideState: 0
+    m_Value: 30
 --- !u!114 &4737165417429899096
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -128,56 +189,6 @@ MonoBehaviour:
   contribution:
     m_OverrideState: 1
     m_Value: 1
---- !u!114 &6045942224923987929
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5485954d14dfb9a4c8ead8edb0ded5b1, type: 3}
-  m_Name: LiftGammaGain
-  m_EditorClassIdentifier: 
-  active: 0
-  lift:
-    m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: 0}
-  gamma:
-    m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: 0.09852217}
-  gain:
-    m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: 0.0844476}
---- !u!114 &6066227131550474165
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f8317041eee140a38873daddb4b3a5f, type: 3}
-  m_Name: StylizedDetail
-  m_EditorClassIdentifier: 
-  active: 1
-  intensity:
-    m_OverrideState: 1
-    m_Value: 1.25
-  blur:
-    m_OverrideState: 1
-    m_Value: 0.2
-  edgePreserve:
-    m_OverrideState: 1
-    m_Value: 0.1
-  rangeStart:
-    m_OverrideState: 0
-    m_Value: 10
-  rangeEnd:
-    m_OverrideState: 0
-    m_Value: 30
 --- !u!114 &6118115892689085527
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -222,37 +233,3 @@ MonoBehaviour:
   intensity:
     m_OverrideState: 1
     m_Value: 0.15
---- !u!114 &7357297413804323955
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f8f6e43869a48f991285995d4df1e93, type: 3}
-  m_Name: ColorGrading
-  m_EditorClassIdentifier: 
-  active: 1
-  intensity:
-    m_OverrideState: 1
-    m_Value: 1
-  blueShadows:
-    m_OverrideState: 1
-    m_Value: 0.075
-  greenShadows:
-    m_OverrideState: 1
-    m_Value: 0.105
-  redHighlights:
-    m_OverrideState: 1
-    m_Value: 0.25
-  contrast:
-    m_OverrideState: 1
-    m_Value: 0.5
-  vibrance:
-    m_OverrideState: 1
-    m_Value: 0.5
-  saturation:
-    m_OverrideState: 1
-    m_Value: 0.7

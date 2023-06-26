@@ -28,9 +28,9 @@ namespace dnSR_Coding
         {
             GetLinkedComponents();
 
-            if ( _environmentLightsReferencer.MainLightController.IsNull() ) { TryToSetMainLightReference( transform ); }
-            if ( _environmentLightsReferencer.AdditionalLightController.IsNull() ) { TryToSetAdditionalLightReference( transform ); }
-            if ( _environmentLightsReferencer.ThunderLightController.IsNull() ) { TryToSetThunderLightReference( transform ); }
+            if ( _environmentLightsReferencer.MainLightController.IsNull() ) { TryToSetMainLightReference(); }
+            if ( _environmentLightsReferencer.AdditionalLightController.IsNull() ) { TryToSetAdditionalLightReference(); }
+            if ( _environmentLightsReferencer.ThunderLightController.IsNull() ) { TryToSetThunderLightReference(); }
         }
 
         // Put all the get component here, it'll be easier to follow what we need and what we collect.
@@ -47,7 +47,7 @@ namespace dnSR_Coding
 
         #region MAIN LIGHT REFERENCE
 
-        private void TryToSetMainLightReference( Transform container )
+        private void TryToSetMainLightReference()
         {
             LightController mainLightController = GetLightControllerByType( Enums.LightType.Main );
 
@@ -82,7 +82,7 @@ namespace dnSR_Coding
 
         #region ADDITIONAL LIGHT REFERENCE
 
-        private void TryToSetAdditionalLightReference( Transform container )
+        private void TryToSetAdditionalLightReference()
         {
             LightController additionalLightController = GetLightControllerByType( Enums.LightType.Additional );
 
@@ -119,7 +119,7 @@ namespace dnSR_Coding
 
         #endregion
 
-        private void TryToSetThunderLightReference( Transform container )
+        private void TryToSetThunderLightReference()
         {
             LightController thunderLightController = GetLightControllerByType( Enums.LightType.Thunder );
 

@@ -10,7 +10,7 @@ namespace dnSR_Coding
         public LightController AdditionalLightController { get; set; }
 
         /// <summary>
-        /// Wrapper method to set all dependencies
+        /// DataWrapper method to set all dependencies
         /// </summary>
         public abstract void SetLightsReference();
     }

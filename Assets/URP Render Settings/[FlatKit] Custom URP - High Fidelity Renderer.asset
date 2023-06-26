@@ -15,6 +15,27 @@ MonoBehaviour:
   m_Active: 0
   overrideRenderEvent: 0
   renderEvent: 0
+--- !u!114 &-3908492732612131653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce2e666a0193a442ab1551414ba5f7c3, type: 3}
+  m_Name: QuibliPostProcess
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    renderersAfterOpaqueAndSky: []
+    renderersBeforePostProcess:
+    - CompoundRendererFeature.PostProcess.StylizedDetailRenderer, External, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    - CompoundRendererFeature.PostProcess.ColorGradingRenderer, External, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    renderersAfterPostProcess: []
 --- !u!114 &-1144942288474377317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41,27 +62,6 @@ MonoBehaviour:
       type: 3}
   OutlineShaders:
     OutlineDetection: {fileID: 4800000, guid: c59878161c7e0ad40b0661b47620d0e5, type: 3}
---- !u!114 &-1140933877895137257
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce2e666a0193a442ab1551414ba5f7c3, type: 3}
-  m_Name: QuibliPostProcess
-  m_EditorClassIdentifier: 
-  m_Active: 1
-  settings:
-    renderersAfterOpaqueAndSky: []
-    renderersBeforePostProcess:
-    - CompoundRendererFeature.PostProcess.ColorGradingRenderer, Assembly-CSharp,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    - CompoundRendererFeature.PostProcess.StylizedDetailRenderer, Assembly-CSharp,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    renderersAfterPostProcess: []
 --- !u!114 &-1119496104671899161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103,10 +103,10 @@ MonoBehaviour:
     debugReplacementPS: {fileID: 4800000, guid: cf852408f2e174538bcd9b7fda1c5ae7,
       type: 3}
   m_RendererFeatures:
-  - {fileID: -1140933877895137257}
   - {fileID: 8433351942323815196}
   - {fileID: 1546792903173315900}
-  m_RendererFeatureMap: 17f8d9d7ae962af01cc30fe4e84809753c9dbd3ef34f7715
+  - {fileID: -3908492732612131653}
+  m_RendererFeatureMap: 1cc30fe4e84809753c9dbd3ef34f7715bb447559913ec2c9
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   shaders:
@@ -146,7 +146,7 @@ MonoBehaviour:
   m_AccurateGbufferNormals: 1
   m_ClusteredRendering: 0
   m_TileSize: 32
-  m_IntermediateTextureMode: 0
+  m_IntermediateTextureMode: 1
 --- !u!114 &1546792903173315900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,14 +164,14 @@ MonoBehaviour:
   m_Settings:
     cavityType: 1
     debug: 0
-    curvatureScale: 1.5
+    curvatureScale: 1
     curvatureRidge: 2
-    curvatureValley: 2
-    cavityDistance: 0.532
-    cavityAttenuation: 0.303
-    cavityRidge: 1.25
-    cavityValley: 1.25
-    cavitySamples: 4
+    curvatureValley: 1.25
+    cavityDistance: 1
+    cavityAttenuation: 1
+    cavityRidge: 2.5
+    cavityValley: 2.5
+    cavitySamples: 12
 --- !u!114 &8433351942323815196
 MonoBehaviour:
   m_ObjectHideFlags: 0

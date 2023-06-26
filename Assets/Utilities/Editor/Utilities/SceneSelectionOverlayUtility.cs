@@ -40,11 +40,15 @@ namespace dnSR_Coding.Utilities
 
                 Scene currentScene = EditorSceneManager.GetActiveScene();
 
-                string[] sceneGuids = AssetDatabase.FindAssets( "t:scene", null );
+                string [] sceneGuids = AssetDatabase.FindAssets( "t: scene", null );
+                //string [] sceneGuids = AssetDatabase.GetAssetPathsFromAssetBundle( "gamescene" );
+
+                Debug.Log( sceneGuids.Length );
 
                 for ( int i = 0; i < sceneGuids.Length; i++ )
                 {
-                    string path = AssetDatabase.GUIDToAssetPath( sceneGuids[ i ] );
+                    string path = AssetDatabase.GUIDToAssetPath( sceneGuids [ i ] );
+                    //string path = AssetDatabase.GetAssetPathsFromAssetBundle( "gamescene" ).GetValue( i ).ToString();
                     string name = Path.GetFileNameWithoutExtension( path );
 
                     if ( string.Compare( currentScene.name, name ) == 0 )
@@ -59,6 +63,18 @@ namespace dnSR_Coding.Utilities
                 }
 
                 menu.ShowAsContext();
+            }
+
+            private bool ContainsLabel( string [] labels, string targetLabel )
+            {
+                foreach ( string label in labels )
+                {
+                    if ( label == targetLabel )
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }
 
             private void OpenScene( Scene currentScene, string path, OpenSceneMode openSceneMode )

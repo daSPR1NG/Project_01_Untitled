@@ -61,7 +61,7 @@ namespace dnSR_Coding
 
         #endregion
 
-        public void ApplySettings( MonoBehaviour monoBehaviour, Enums.ThunderType thunderType, Light thunderLight )
+        public void ApplySettings( MonoBehaviour monoBehaviour, Enums.ThunderType thunderType, LightController thunderLightController, Color mainLightColor )
         {
             if ( !thunderCoroutine.IsNull() ) { return; }
 
@@ -73,12 +73,12 @@ namespace dnSR_Coding
             }
             this.Debugger( $"Thunder setting has been applied with ID : {settings.ID}." );
 
-            if ( thunderLight.IsNull() ) {
+            if ( thunderLightController.IsNull() ) {
                 Debug.LogError( "Thunder Module - ApplySettings - Thunder light reference is null" );
                 return;
             }
 
-            thunderCoroutine = monoBehaviour.StartCoroutine( StartLightFlickering( settings, thunderLight ) );
+            thunderCoroutine = monoBehaviour.StartCoroutine( StartLightFlickering( settings, thunderLightController, mainLightColor ) );
         }
         public void Stop( MonoBehaviour monoBehaviour )
         {
@@ -90,11 +90,13 @@ namespace dnSR_Coding
             thunderCoroutine = null;
         }
 
-        private IEnumerator StartLightFlickering( ThunderSettings settings, Light thunderLight )
+        private IEnumerator StartLightFlickering( ThunderSettings settings, LightController thunderLightController, Color mainLightColor )
         {
             AnimationCurve currentCurve = null;
             float randomFlickerRate = 0;
             float randomTimerBetweenConsecutiveApplications = 0;
+
+            thunderLightController.SetLightColor( mainLightColor );
 
             do
             {
@@ -106,7 +108,7 @@ namespace dnSR_Coding
                 {
                     this.Debugger( "Curve has been picked, a thunder will be shot" );
 
-                    thunderLight.intensity = 0;
+                    thunderLightController.SetLightIntensity( 0 );
 
                     // Get a random curve...
                     int randomCurveIndex = UnityEngine.Random.Range( 0, settings.GetFlickeringCurves().Count );
@@ -134,8 +136,8 @@ namespace dnSR_Coding
                 float rate = hasLastKeyReached ? randomTimerBetweenConsecutiveApplications : randomFlickerRate;
                 this.Debugger( "Rate value : " + rate + " ON | Length : " + currentCurve.length );
 
-                thunderLight.intensity = hasLastKeyReached ? 0f : currentCurve.keys [ _currentKey ].value;
-                this.Debugger( "Current thunder intensity : " + thunderLight.intensity );
+                thunderLightController.SetLightIntensity( hasLastKeyReached ? 0f : currentCurve.keys [ _currentKey ].value );
+                this.Debugger( "Current thunder intensity : " + thunderLightController.GetControllerLight().intensity );
                 // BLOC THAT NEEDS TO ITERATE CONTINUOUSLY --
 
                 yield return new WaitForSeconds( rate );
