@@ -7,15 +7,16 @@ namespace dnSR_Coding.Project
 {
     ///<summary> Plant description <summary>
     [DisallowMultipleComponent]
-    public class Plant : MonoBehaviour, ILoadableData<Plant.PlantData>, IDebuggable
+    public class Plant : MonoBehaviour, ISaveable, IDebuggable
     {
+        [ReadOnly]
+        [SerializeField] private string _id;
+        public string ID { get => _id; set => _id = value; }
+
         [Header( "SETTINGS" )]
         [SerializeField] private float _lifeCycleDuration = 5f;
         private Enums.Plant_GrowingState _growingState = Enums.Plant_GrowingState.Seed;
         private float _currentLifeCycleValue;
-        private PlantData _plantData;
-
-        private int ID => GetInstanceID();
 
         #region DEBUG
 
@@ -26,15 +27,13 @@ namespace dnSR_Coding.Project
         #endregion
 
         [Serializable]
-        public struct PlantData : ISavableData<PlantData>
+        public struct PlantData
         {
+            public string ID;
             public Enums.Plant_GrowingState GrowingState;
             public float CurrentLifeCycleValue;
 
-            [field: SerializeField] public int ID { get; set; }
-            public readonly PlantData Get() => this;
-
-            public void Set( int iD, Enums.Plant_GrowingState growingState, float currentLifeCycleValue )
+            public PlantData( string iD, Enums.Plant_GrowingState growingState, float currentLifeCycleValue )
             {
                 ID = iD;
                 GrowingState = growingState;
@@ -52,21 +51,20 @@ namespace dnSR_Coding.Project
         {
             _growingState = Enums.Plant_GrowingState.Seed;
             _currentLifeCycleValue = 0;
-
-            ISavableData<PlantData> savedData = DataSaveManager.Instance.LoadedData<PlantData>( DataSaveManager.PLANT_DATAS_FILE_NAME, ID );
-            Load( savedData.Get() );
+            
+            Load( DataSaveManager.Instance.LoadData<PlantData>( ID ) );
         }
 
         #endregion
 
-        //private void Update() => ProcessLifeCycle();
+        private void Update() => ProcessLifeCycle();
 
         private void ProcessLifeCycle()
         {
             if ( _growingState == Enums.Plant_GrowingState.Plant ) { return; }
 
             _currentLifeCycleValue += Helper.GetDeltaTime();
-            //this.Debugger( $"Life Cycle value : {_currentLifeCycleValue}");
+            this.Debugger( $"Life Cycle value : {_currentLifeCycleValue}");
 
             if ( _currentLifeCycleValue >= ( _lifeCycleDuration / 2 ) ) {
                 _growingState = Enums.Plant_GrowingState.Sprout;
@@ -79,22 +77,18 @@ namespace dnSR_Coding.Project
             }
         }
 
-        public PlantData GetData()
+        public object GetData()
         {
-            _plantData.Set( ID, _growingState, _currentLifeCycleValue );
-            return _plantData;
+            _id = ISaveable.ISaveableExtensions.GetID( _id );
+            return new PlantData( _id, _growingState, _currentLifeCycleValue );
         }
 
-        [ContextMenu( "Save" )]
-        public void Save()
+        public void Load( object data )
         {
-            DataSaveManager.Instance.SaveData( DataSaveManager.PLANT_DATAS_FILE_NAME, JsonUtility.ToJson( GetData(), true ) );
-        }
+            PlantData plantData = ( PlantData ) data;
 
-        public void Load( PlantData data )
-        {
-            _growingState = data.GrowingState;
-            _currentLifeCycleValue = data.CurrentLifeCycleValue;
+            _growingState = plantData.GrowingState;
+            _currentLifeCycleValue = plantData.CurrentLifeCycleValue;
         }
     }
 }

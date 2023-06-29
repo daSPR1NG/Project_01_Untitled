@@ -11360,6 +11360,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f4eea0a5fa85c04188e2a52a5ee70b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _id: ff83185b-3e21-4e9e-88e2-b0de32d984ce
   _lifeCycleDuration: 5
   _isDebuggable: 1
 --- !u!1 &771250963
@@ -12240,7 +12241,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1085670131}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 937111d5323331443b249d672f8bd9f2, type: 3}
+  m_Script: {fileID: 11500000, guid: e6e7e9fe1103fe24dbf8740b90be1cc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _isDebuggable: 1
@@ -13096,6 +13097,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f4eea0a5fa85c04188e2a52a5ee70b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _id: 87d77818-d069-4631-ae5c-5dc21e71e26a
   _lifeCycleDuration: 5
   _isDebuggable: 1
 --- !u!23 &1571603555

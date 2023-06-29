@@ -1,13 +1,15 @@
 using UnityEngine;
 using NaughtyAttributes;
-using dnSR_Coding.Project;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using System.Text;
 using UnityEditor;
 using System;
 using dnSR_Coding.Utilities;
+using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using UnityEditor.Search;
 
 namespace dnSR_Coding
 {
@@ -16,8 +18,7 @@ namespace dnSR_Coding
     public class DataSaveManager : Singleton<DataSaveManager>, IDebuggable
     {
         private const string SAVE_DIRECTORY = "/Saves" + "/Save";
-        public const string SAVE_FILE_NAME = "/SavedDatas.json";
-        public const string PLANT_DATAS_FILE_NAME = "/PlantDatas.json";
+        public const string SAVE_FILE_NAME = "/Save.json";
 
         #region DEBUG
 
@@ -36,30 +37,6 @@ namespace dnSR_Coding
 
         #endregion
 
-        #region Json Wrapper
-
-        [Serializable]
-        private class DataWrapper<T>
-        {
-            public T [] Datas;
-        }
-
-        public T [] FromJson<T>( string json )
-        {
-            DataWrapper<T> wrapper = JsonUtility.FromJson<DataWrapper<T>>( json );
-            return wrapper.Datas;
-        }
-
-        public string ToJson<T>( T [] array, bool prettyPrint )
-        {
-            DataWrapper<T> wrapper = new() {
-                Datas = array
-            };
-            return JsonUtility.ToJson( wrapper, prettyPrint );
-        }
-
-        #endregion
-
         private void TryToCreateSaveDirectory()
         {
             string path = Application.persistentDataPath + SAVE_DIRECTORY;
@@ -71,27 +48,48 @@ namespace dnSR_Coding
             Debug.Log( "A save directory has been created at : " + path );
         }
 
-        public void SaveData( string relativePath, object data )
+        [Button( "Save datas " )]
+        public void SaveDatas()
         {
             TryToCreateSaveDirectory();
 
-            string path = Application.persistentDataPath + SAVE_DIRECTORY + relativePath;
-            Debug.Log( path + " does exist : " + Directory.Exists( path ) );
+            string path = Application.persistentDataPath + SAVE_DIRECTORY + SAVE_FILE_NAME;
+
+            // Fetch all ISaveable to manipulate them
+            IEnumerable<ISaveable> datas = FindObjectsOfType( typeof( MonoBehaviour ) ).OfType<ISaveable>();
+            this.Debugger( "Data amount to save : " + datas.Count() );
+            this.Debugger( "Data : " + datas.ElementAt( 0 ) );
+
+            List<object> datasContent = new();
+
+            foreach ( ISaveable data in datas ) {
+                datasContent.AppendItem( data.GetData() );
+            }
 
             try
             {
+                string jsonContent = JsonConvert.SerializeObject( datasContent, Formatting.Indented, new JsonSerializerSettings()
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                } );
+
                 File.Delete( path );
-                Debug.Log( "Deleting previous save...", this );
+                this.Debugger( "Deleting previous save..." );
 
-                using FileStream fileStream = File.Create( path );
-                fileStream.Close();
-                Debug.Log( "Creating new save json...", this );
+                this.Debugger( "Creating new save json..." );
+                using FileStream stream = File.Create( path );
+                stream.Close();
 
-                File.WriteAllText( path, data.ToString(), Encoding.UTF8 );
-                Debug.Log( $"{data} is saved.", this );
+                File.WriteAllText( path, jsonContent, Encoding.UTF8 );
+
+                Debug.Log(
+                    $"{jsonContent} has been saved "
+                    + '\n'
+                    + $"at path {path}", this );
 
 #if UNITY_EDITOR
                 AssetDatabase.Refresh();
+                OpenSaveFile();
 #endif
             }
             catch ( Exception e )
@@ -101,44 +99,48 @@ namespace dnSR_Coding
             }
         }
 
-        [ContextMenu( "Save All Plants" )]
-        public void SaveAllPlants()
+        public object LoadData<T>( string ID )
         {
-            IEnumerable<Plant> plants = FindObjectsOfType<Plant>();
-            Debug.Log( "Plants found : " + plants.Count() );
+            string path = Application.persistentDataPath + SAVE_DIRECTORY + SAVE_FILE_NAME;
 
-            List<Plant.PlantData> datas = new();
-            foreach ( Plant p in plants ) {
-                datas.AppendItem( p.GetData() );
-                Debug.Log( "datas found : " + datas.Count() );
-            }
-
-            SaveData( PLANT_DATAS_FILE_NAME, ToJson( datas.ToArray(), true ) );
-
-            datas.Clear();
-            GC.Collect();
-        }
-
-        public ISavableData<T> LoadedData<T>( string relativePath, int ID )
-        {
-            // Retrieve savableData file from specific path...
-            string path = Application.persistentDataPath + SAVE_DIRECTORY + relativePath;
-            // Read savableData file...
-            IEnumerable<T> datas = FromJson<T>( File.ReadAllText( path ) );
-            Debug.Log( datas.Count() );
-            Debug.Log( datas is ISavableData<T> );
-            ISavableData<T> dataToLoad = null;
-
-            Debug.Log( "Looked for ID : " + ID );
-
-            foreach ( ISavableData<T> data in datas.Select( data => ( ISavableData<T> ) data ) )
+            if ( !File.Exists( path ) )
             {
-                Debug.Log( data.ID + " / " + ID );
-                if ( data.ID != ID ) { continue; }
-                dataToLoad = data;
+                Debug.LogError( $"Cannot load file at path {path}." );
+                throw new FileNotFoundException( $"{path} does not exists!" );
             }
 
-            return dataToLoad;
+            try
+            {
+                string jsonContent = File.ReadAllText( path );
+                object data = null;
+                this.Debugger( jsonContent );
+
+                JArray array = JArray.Parse( File.ReadAllText( path ) );
+                this.Debugger( array.Count() );
+                foreach ( JToken item in array )
+                {
+                    if ( item.ElementAt( 0 ).First().ToString().Equals( ID ) )
+                    {
+                        this.Debugger( item.ElementAt( 0 ).First() );
+                        data = JsonConvert.DeserializeObject( item.ToString(), typeof( T ) );
+                    }
+                }
+
+                return data;
+            }
+            catch ( Exception e )
+            {
+                Debug.LogError( $"Unable to load data from {path} | {e.Message} {e.StackTrace}" );
+                throw;
+            }
         }
+
+#if UNITY_EDITOR
+        [Button( "Open Save file " )]
+        public void OpenSaveFile()
+        {
+            EditorUtility.OpenWithDefaultApp( Application.persistentDataPath + SAVE_DIRECTORY + SAVE_FILE_NAME );
+        }
+#endif
     }
 }
