@@ -154,8 +154,9 @@ Shader "MalyaWka/ShaderPack/ToonyLit"
 					    #ifdef _CAVITY_DEBUG
 					        albedo.rgb = cavity * 2.0;
 						#else
-							bakedGI *= cavity * 4.0;
-            				lightColor *= cavity * 2.0;
+                            albedo.rgb = cavity * 2.0;
+							//bakedGI *= cavity * 4.0;
+                            //lightColor *= cavity * 2.0;
 						#endif
             		}
 			    #endif
@@ -174,7 +175,7 @@ Shader "MalyaWka/ShaderPack/ToonyLit"
 				//rampColor += emission / ramp - atten / 2;
 				//rampColor += emission * indirectDiffuse * atten;
 
-				rampColor -= indirectDiffuse * ramp * saturate(ndl);
+				//rampColor -= indirectDiffuse * ramp * saturate(ndl);
 				half4 color = half4(rampColor, alpha);
             	color.a = OutputAlpha(color.a, _Surface);
             	return color; 	

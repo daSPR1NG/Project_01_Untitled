@@ -316,5 +316,14 @@ namespace dnSR_Coding.Utilities
         }
 
         #endregion
+
+        #region Type
+
+        public static string GetTypeName( Type type )
+        {
+            return type.Name.ToString();
+        }
+
+        #endregion
     }
 }

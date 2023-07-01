@@ -9,7 +9,6 @@ using dnSR_Coding.Utilities;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using UnityEditor.Search;
 
 namespace dnSR_Coding
 {
@@ -58,7 +57,7 @@ namespace dnSR_Coding
             // Fetch all ISaveable to manipulate them
             IEnumerable<ISaveable> datas = FindObjectsOfType( typeof( MonoBehaviour ) ).OfType<ISaveable>();
             this.Debugger( "Data amount to save : " + datas.Count() );
-            this.Debugger( "Data : " + datas.ElementAt( 0 ) );
+            this.Debugger( datas.Count() >= 1 ? "Data : " + datas.ElementAt( 0 ) : "No data to save." );
 
             List<object> datasContent = new();
 
@@ -119,10 +118,13 @@ namespace dnSR_Coding
                 this.Debugger( array.Count() );
                 foreach ( JToken item in array )
                 {
-                    if ( item.ElementAt( 0 ).First().ToString().Equals( ID ) )
+                    for ( int i = 0; i < item.Count(); i++ )
                     {
-                        this.Debugger( item.ElementAt( 0 ).First() );
-                        data = JsonConvert.DeserializeObject( item.ToString(), typeof( T ) );
+                        if ( item.ElementAt( i ).First().ToString().Equals( ID ) )
+                        {
+                            this.Debugger( item.ElementAt( i ).First() );
+                            data = JsonConvert.DeserializeObject( item.ToString(), typeof( T ) );
+                        }
                     }
                 }
 

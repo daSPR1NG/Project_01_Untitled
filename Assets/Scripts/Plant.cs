@@ -1,13 +1,13 @@
 using UnityEngine;
 using dnSR_Coding.Utilities;
 using NaughtyAttributes;
-using System;
+using dnSR_Coding.Interfaces.Gameplay;
 
 namespace dnSR_Coding.Project
 {
     ///<summary> Plant description <summary>
     [DisallowMultipleComponent]
-    public class Plant : MonoBehaviour, ISaveable, IDebuggable
+    public class Plant : InteractiveObject, ISaveable, IDebuggable
     {
         [ReadOnly]
         [SerializeField] private string _id;
@@ -18,24 +18,20 @@ namespace dnSR_Coding.Project
         private Enums.Plant_GrowingState _growingState = Enums.Plant_GrowingState.Seed;
         private float _currentLifeCycleValue;
 
-        #region DEBUG
-
-        [ Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
-        [SerializeField] private bool _isDebuggable = true;
-        public bool IsDebuggable => _isDebuggable;
-
-        #endregion
-
-        [Serializable]
-        public struct PlantData
+        [System.Serializable]
+        public struct PlantData : IDataIdentifiers
         {
-            public string ID;
-            public Enums.Plant_GrowingState GrowingState;
-            public float CurrentLifeCycleValue;
+            public string ID { get; set; }
+            public string TypeName { get; set; }
+
+            public Enums.Plant_GrowingState GrowingState { get; private set; }
+            public float CurrentLifeCycleValue { get; private set; }
 
             public PlantData( string iD, Enums.Plant_GrowingState growingState, float currentLifeCycleValue )
             {
                 ID = iD;
+                TypeName = Helper.GetTypeName( typeof( PlantData ) );
+
                 GrowingState = growingState;
                 CurrentLifeCycleValue = currentLifeCycleValue;
             }
@@ -49,6 +45,9 @@ namespace dnSR_Coding.Project
         [ContextMenu( "Init Plant datas" )]
         public void Init()
         {
+            IsInteractive = false;
+            Interactor = null;
+
             _growingState = Enums.Plant_GrowingState.Seed;
             _currentLifeCycleValue = 0;
             
@@ -57,6 +56,7 @@ namespace dnSR_Coding.Project
 
         #endregion
 
+        #region Life cycle
         private void Update() => ProcessLifeCycle();
 
         private void ProcessLifeCycle()
@@ -64,18 +64,60 @@ namespace dnSR_Coding.Project
             if ( _growingState == Enums.Plant_GrowingState.Plant ) { return; }
 
             _currentLifeCycleValue += Helper.GetDeltaTime();
-            this.Debugger( $"Life Cycle value : {_currentLifeCycleValue}");
+            //this.Debugger( $"Life Cycle value : {_currentLifeCycleValue}");
 
-            if ( _currentLifeCycleValue >= ( _lifeCycleDuration / 2 ) ) {
+            if ( _currentLifeCycleValue >= ( _lifeCycleDuration / 2 )
+                && _growingState == Enums.Plant_GrowingState.Seed ) 
+            {
                 _growingState = Enums.Plant_GrowingState.Sprout;
+                OnReachingSproutState();
             }
 
-            if ( _currentLifeCycleValue >= _lifeCycleDuration ) 
+            if ( _currentLifeCycleValue >= _lifeCycleDuration 
+                && _growingState == Enums.Plant_GrowingState.Sprout )
             {
                 _currentLifeCycleValue = _lifeCycleDuration;
                 _growingState = Enums.Plant_GrowingState.Plant;
+
+                OnReachingPlantState();
             }
         }
+
+        private void OnReachingSproutState()
+        {
+            this.Debugger( "Sprout state reached" );
+
+            // Changer l'apparence > Animation - Tween
+            // SFX
+            // VFX
+        }
+
+        private void OnReachingPlantState()
+        {
+            this.Debugger( "Plant state reached" );
+            IsInteractive = true;
+
+            // Changer l'apparence > Animation - Tween
+            // SFX
+            // VFX
+        }
+        #endregion
+
+        #region Interaction
+
+        public override void BeginInteraction( object interactor )
+        {
+            base.BeginInteraction( interactor );
+        }
+
+        public override void EndInteraction()
+        {
+            base.EndInteraction();
+        }
+
+        #endregion
+
+        #region Save / Load
 
         public object GetData()
         {
@@ -90,5 +132,7 @@ namespace dnSR_Coding.Project
             _growingState = plantData.GrowingState;
             _currentLifeCycleValue = plantData.CurrentLifeCycleValue;
         }
+
+        #endregion
     }
 }

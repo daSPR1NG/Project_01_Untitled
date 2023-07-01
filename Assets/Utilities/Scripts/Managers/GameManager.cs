@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using NaughtyAttributes;
 using UnityEngine.InputSystem;
+using UnityEngine.Playables;
 
 namespace dnSR_Coding.Utilities
 {
@@ -17,8 +18,8 @@ namespace dnSR_Coding.Utilities
 
         [Header( "Debug section" )]
 
-        [SerializeField, ShowIf( "IsDebuggable" ), ReadOnly] 
-        private int _targetFrame = 60;
+        [SerializeField, ShowIf( "IsDebuggable" )]
+        private int _refreshRate = 60;
 
         public static Action<object> OnGameStateChanged;
 
@@ -33,21 +34,12 @@ namespace dnSR_Coding.Utilities
         protected override void Init( bool dontDestroyOnLoad = false )
         {
             base.Init();
-            Application.targetFrameRate = Screen.currentResolution.refreshRate;
-            _targetFrame = Application.targetFrameRate;
+            Application.targetFrameRate = _refreshRate;
         }
 
         private void Update()
         {
             //CheckIfPauseInputHasBeenPressed();
-
-#if UNITY_EDITOR
-
-            if ( KeyCode.Alpha0.IsPressed() )
-            {
-                Helper.SetTimeScale( _timeScale );
-            }
-#endif
         }
 
         /// <summary>
@@ -70,6 +62,15 @@ namespace dnSR_Coding.Utilities
 
                 ResumeOrPauseTheGame();
             }
+        }
+
+#if UNITY_EDITOR
+        [Button]
+#endif
+        public void SetTimeScale()
+        {
+            Helper.SetTimeScale( _timeScale );
+            Debug.Log( $"Time scale set to {Time.timeScale.ToString().ToLogValue()}." );
         }
 
         #region GameState Handle
@@ -111,13 +112,30 @@ namespace dnSR_Coding.Utilities
 
         #region On GUI
 
+        private int frameCount;
+        private float elapsedTime;
+        private double frameRate;
+
         private void OnGUI()
         {
             if ( !Application.isEditor ) { return; }
 
-            GUIContent content = new ( _gameState.ToString() + " | Time Scale : " + Time.timeScale );
+            GUIContent timeScale = new ( _gameState.ToString() + " | Time Scale : " + Time.timeScale );
 
-            GUI.Label( new Rect( 5, 5, 150, 25 ), content );
+            GUI.Label( new Rect( 15, 5, 150, 25 ), timeScale );
+
+            // FPS calculation
+            frameCount++;
+            elapsedTime += Helper.GetDeltaTime();
+            if ( elapsedTime > 0.33f )
+            {
+                frameRate = System.Math.Round( frameCount / elapsedTime, 1, System.MidpointRounding.AwayFromZero );
+                frameCount = 0;
+                elapsedTime = 0;
+            }
+
+            GUIContent fps = new( ( frameRate ).ToString( "0" ).ToUpper().Bolded() );
+            GUI.Label( new Rect( 15, 25, 150, 25 ), fps );
         }
 
         #endregion

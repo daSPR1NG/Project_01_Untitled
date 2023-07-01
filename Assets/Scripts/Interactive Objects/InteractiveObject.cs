@@ -20,12 +20,16 @@ namespace dnSR_Coding
     {
         [field: Header( "Interaction Settings" )]
 
-        [field: SerializeField] public bool IsInteractive { get; set; }
-        [field: SerializeField] public Enums.Cursor_RelatedAction CursorRelatedAction { get; set; }
-        public object Interactor { get; set; }
+        [field: SerializeField, ReadOnly] public bool IsInteractive { get; set; } = false;
+        [field: SerializeField] public Enums.Cursor_RelatedAction CursorRelatedAction { get; set; } = Enums.Cursor_RelatedAction.Default;
+        [field: SerializeField, InfoBox(
+            "By default, the selection is only possible when the object is interactive. This overrides the default behaviour.",
+            EInfoBoxType.Normal )]
+        public bool IsItAlwaysSelectable { get; set; } = false;
+        public object Interactor { get; set; } = null;
 
         public bool IsOutlined { get => !_outlineComponent.IsNull() && _outlineComponent.enabled; }
-        [field: SerializeField, Range( 0, 10 )] public float OutlineWidth { get; set; }
+        [field: SerializeField, Range( 0, 10 )] public float OutlineWidth { get; set; } = .5f;
 
         private Outline _outlineComponent;
         public Outline OutlineComponent
@@ -37,6 +41,7 @@ namespace dnSR_Coding
                 }
                 else if ( _outlineComponent.IsNull() && gameObject.GetComponent<Outline>().IsNull() ) {
                     _outlineComponent = gameObject.AddComponent<Outline>();
+                    _outlineComponent.OutlineMode = Outline.Mode.OutlineVisible;
                 }
 
                 return _outlineComponent;
@@ -69,7 +74,7 @@ namespace dnSR_Coding
 
         public void DisplayOutline( float width = 1 )
         {
-            if ( !IsInteractive || IsOutlined ) { return; }
+            if ( !IsInteractive && !IsItAlwaysSelectable || IsOutlined ) { return; }
 
             OutlineComponent.OutlineWidth = width;
             OutlineComponent.enabled = true;
@@ -100,7 +105,7 @@ namespace dnSR_Coding
         public void OnMouseOver()
         {
             this.Debugger( "On Mouse Over" );
-            if ( !IsInteractive ) { HideOutline(); }
+            if ( !IsInteractive && !IsItAlwaysSelectable ) { HideOutline(); }
         }
 
 
@@ -112,6 +117,8 @@ namespace dnSR_Coding
             // Ajouter le changement de curseur => default
             EventManager.OnCursorHover( Enums.Cursor_RelatedAction.Default );
         }
+
+        
 
         #endregion
 
