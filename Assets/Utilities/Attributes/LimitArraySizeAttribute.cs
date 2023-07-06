@@ -1,7 +1,4 @@
 using UnityEngine;
-using System.Collections;
-using dnSR_Coding.Utilities;
-using NaughtyAttributes;
 using System;
 
 namespace dnSR_Coding

@@ -35,72 +35,30 @@ namespace dnSR_Coding
             IsActive = false;
         }
 
-        public void Apply( MonoBehaviour monoBehaviour, ref GameObject rainGO, LightController mainLightController, LightController thunderLightController )
+        public void Apply( MonoBehaviour monoBehaviour, GameObject rainGO, LightController mainLightController, LightController thunderLightController )
         {
             SetLightIntensity( _environmentLightIntensityType, mainLightController );
 
-            if ( HasActiveRainModule ) { ApplyRain( ref rainGO ); }
-            else { StopRain( ref rainGO ); }
+            if ( HasActiveRainModule ) { _rainModule.ApplySettings( _rainType, rainGO ); }
+            else { _rainModule.Stop( rainGO ); }
 
-            if ( HasActiveThunderModule ) { ApplyThunder( monoBehaviour, thunderLightController, mainLightController.GetControllerLight().color ); }
-            else { StopThunder( monoBehaviour );  }
+            if ( HasActiveThunderModule ) { _thunderModule.ApplySettings( monoBehaviour, _thunderType, thunderLightController, mainLightController.GetControllerLight().color ); }
+            else { _thunderModule.Stop( monoBehaviour ); }
 
-            if ( HasActiveFogModule ) { ApplyFog(); }
+            if ( HasActiveFogModule ) { _fogModule.ApplySettings( _fogType ); }
 
             IsActive = true;
         }
-        public void Stop( MonoBehaviour monoBehaviour, ref GameObject rainGO, LightController mainLightController )
+        public void Stop( MonoBehaviour monoBehaviour, GameObject rainGO, LightController mainLightController )
         {
-            if ( HasActiveRainModule )      { StopRain( ref rainGO ); }
-            if ( HasActiveThunderModule )   { StopThunder( monoBehaviour ); }
-            if ( HasActiveFogModule )       { RemoveFog(); }
+            if ( HasActiveRainModule )      { _rainModule.Stop( rainGO ); }
+            if ( HasActiveThunderModule )   { _thunderModule.Stop( monoBehaviour ); }
+            if ( HasActiveFogModule )       { _fogModule.Stop(); }
 
             SetLightIntensity( Enums.EnvironmentLightIntensityType.Max, mainLightController );
 
             IsActive = false;
         }
-
-        #region Rain
-
-        private void ApplyRain( ref GameObject rainGO )
-        {
-            rainGO.TryToDisplay();
-            _rainModule.ApplySettings( _rainType, ref rainGO );
-        }
-
-        private void StopRain( ref GameObject rainGO)
-        {
-            _rainModule.Stop( ref rainGO );
-            rainGO.TryToHide();
-        }
-
-        #endregion
-
-        #region Thunder
-
-        // Remettre en privé après test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        public void ApplyThunder( MonoBehaviour monoBehaviour, LightController thunderLightController, Color mainLightColor ) {
-            _thunderModule.ApplySettings( monoBehaviour, _thunderType, thunderLightController, mainLightColor );
-        }
-
-        // Remettre en privé après test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        public void StopThunder( MonoBehaviour monoBehaviour ) {
-            _thunderModule.Stop( monoBehaviour );
-        }
-
-        #endregion
-
-        #region Fog
-
-        private void ApplyFog() {
-            _fogModule.ApplySettings( _fogType );
-        }
-
-        private void RemoveFog() {
-            _fogModule.Stop();
-        }
-
-        #endregion
 
         #region Main Light Intensity
 
@@ -111,20 +69,16 @@ namespace dnSR_Coding
 
         #endregion
 
-        public (RainModule module, Enums.RainType type) GetRainInfo()
-        {
+        public (RainModule module, Enums.RainType type) GetRainInfo() {
             return (_rainModule, _rainType);
         }
-        public (ThunderModule module, Enums.ThunderType type) GetThunderInfo()
-        {
+        public (ThunderModule module, Enums.ThunderType type) GetThunderInfo() {
             return (_thunderModule, _thunderType);
         }
-        public (FogModule module, Enums.FogType type) GetFogInfo()
-        {
+        public (FogModule module, Enums.FogType type) GetFogInfo() {
             return (_fogModule, _fogType);
         }
-        public (EnvironmentLightModule module, Enums.EnvironmentLightIntensityType type) GetEnvironmentLightInfo()
-        {
+        public (EnvironmentLightModule module, Enums.EnvironmentLightIntensityType type) GetEnvironmentLightInfo() {
             return (_environmentLightModule, _environmentLightIntensityType);
         }
     }

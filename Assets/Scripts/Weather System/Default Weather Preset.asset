@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Default Weather Preset
   m_EditorClassIdentifier: 
   _rainModule: {fileID: 11400000, guid: 8e08756371bc0a342bd9049b96d85c94, type: 2}
-  _rainType: 2
+  _rainType: 4
   _thunderModule: {fileID: 11400000, guid: 47359f5911d13664fa55ac2179f30a6e, type: 2}
   _thunderType: 1
   _fogModule: {fileID: 11400000, guid: a3b4cbec0b6a9064ba1629adb11cf5e9, type: 2}
-  _fogType: 0
+  _fogType: 1
   _environmentLightModule: {fileID: 11400000, guid: 8eb91632475d0684fa903b49a525ced9,
     type: 2}
   _environmentLightIntensityType: 3

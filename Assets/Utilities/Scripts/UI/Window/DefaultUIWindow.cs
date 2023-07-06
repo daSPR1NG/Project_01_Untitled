@@ -2,7 +2,7 @@ using UnityEngine;
 using dnSR_Coding.Utilities;
 using System;
 using System.Collections;
-using NaughtyAttributes;
+//using NaughtyAttributes;
 using UnityEngine.InputSystem;
 
 namespace dnSR_Coding
@@ -38,7 +38,7 @@ namespace dnSR_Coding
 
         #region Debug
 
-        [Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
+        [Space( 10 ), /*HorizontalLine( .5f, EColor.Gray )*/]
         [SerializeField] private bool _isDebuggable = false;
         public bool IsDebuggable => _isDebuggable;
 
@@ -106,7 +106,7 @@ namespace dnSR_Coding
 
             this.Debugger( "DynamicToggleDisplay is processing." );
 
-            if ( _toggleDisplayCoroutine.IsNull() )
+            if ( _toggleDisplayCoroutine.IsNull<Coroutine>() )
             {
                 _toggleDisplayCoroutine = StartCoroutine( DynamicToggleDisplayCoroutine( IsDisplayed() ) );
                 return;
@@ -147,7 +147,7 @@ namespace dnSR_Coding
                         }
                         break;
                     case false:
-                        _window.gameObject.TryToDisplay();
+                        _window.gameObject.Display();
                         _canvasGroup.alpha += ( Time.unscaledDeltaTime * _displayingSpeed );
 
                         if ( _canvasGroup.alpha >= aimedAlphaValue )
@@ -170,7 +170,7 @@ namespace dnSR_Coding
         /// </summary>
         protected virtual void DisplayWindow()
         {
-            _window.gameObject.TryToDisplay();
+            _window.gameObject.Display();
             SetCanvasGroupSettings();
 
             _isDisplayed = true;
@@ -185,7 +185,7 @@ namespace dnSR_Coding
         /// </summary>
         protected virtual void HideWindow()
         {
-            _window.gameObject.TryToHide();
+            _window.gameObject.Hide();
             SetCanvasGroupSettings( true );
 
             _isDisplayed = false;
@@ -204,7 +204,7 @@ namespace dnSR_Coding
                 return;
             }
 
-            if ( _window.IsNull()
+            if ( _window.IsNull<Transform>()
                 && transform.GetChild( 0 ).TryGetComponent( out CanvasGroup cG ) )
             {
                 _window = transform.GetChild( 0 );
@@ -232,7 +232,7 @@ namespace dnSR_Coding
 
         private void CreateOrFindWindowInEditor()
         {
-            if ( _window.IsNull() && transform.HasNoChild() )
+            if ( _window.IsNull<Transform>() && transform.HasNoChild() )
             {
                 GameObject windowGo = new();
 
@@ -247,8 +247,8 @@ namespace dnSR_Coding
                 return;
             }
 
-            if ( _window.IsNull()
-                || !_window.IsNull() && _window != transform.GetChild( 0 ) )
+            if ( _window.IsNull<Transform>()
+                || !_window.IsNull<Transform>() && _window != transform.GetChild( 0 ) )
             {
                 //Debug.LogError( "Window object was not correct." 
                 //    + '\n'

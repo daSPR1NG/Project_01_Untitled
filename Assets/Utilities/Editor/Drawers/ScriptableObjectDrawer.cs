@@ -21,7 +21,7 @@ namespace dnSR_Coding.Attributes.Drawer
 
             // Draw foldout arrow
             bool foldout = false;
-            if ( !property.objectReferenceValue.IsNull() )
+            if ( !property.objectReferenceValue.IsNull<SerializedProperty>() )
             {
                 // Store foldout values in a dictionary per object Type
                 bool foldoutExists = foldoutByType.TryGetValue( property.objectReferenceValue.GetType(), out foldout );

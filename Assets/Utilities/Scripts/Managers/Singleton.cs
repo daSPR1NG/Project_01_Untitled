@@ -12,7 +12,7 @@ namespace dnSR_Coding
 
         protected virtual void Init( bool dontDestroyOnLoad = false )
         {
-            if ( !Instance.IsNull() && Instance != this as T )
+            if ( !Instance.IsNull<Singleton<T>>() && Instance != this as T )
             { 
                 Instance.gameObject.DestroyInRuntimeOrEditor();
             }

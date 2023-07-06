@@ -18,7 +18,7 @@ namespace dnSR_Coding.Utilities
 
         #region GameObject
 
-        [MethodImpl( INLINE )] public static void TryToDisplay( this GameObject gameObject ) 
+        [MethodImpl( INLINE )] public static void Display( this GameObject gameObject ) 
         {
             if ( gameObject.IsActive() ) return;
 
@@ -26,7 +26,7 @@ namespace dnSR_Coding.Utilities
             Debug.Log( gameObject.name.ToLogComponent() + " has been displayed." );
 
         }
-        [MethodImpl( INLINE )] public static void TryToHide( this GameObject gameObject ) 
+        [MethodImpl( INLINE )] public static void Hide( this GameObject gameObject ) 
         {
             if ( !gameObject.IsActive() ) return;
 
@@ -71,7 +71,9 @@ namespace dnSR_Coding.Utilities
                     continue;
                 }
 
-                if ( trs.gameObject.IsActive() ) { childCount++; }
+                if ( trs.gameObject.IsActive() ) {
+                    childCount++; 
+                }
             }
 
             return childCount;
@@ -82,7 +84,7 @@ namespace dnSR_Coding.Utilities
         {
             cameraToFace = Helper.GetMainCamera();
 
-            if ( trs.IsNull() || cameraToFace.IsNull() ) { return; }
+            if ( trs.IsNull<Transform>() || cameraToFace.IsNull<Camera>() ) { return; }
             
             trs.LookAt(
                 trs.position + cameraToFace.transform.rotation * Vector3.forward,
@@ -102,15 +104,21 @@ namespace dnSR_Coding.Utilities
         [MethodImpl( INLINE )] 
         public static void SetSprite( this Image image, Sprite sprite, bool overrides ) 
         {
-            if ( sprite.IsNull() ) { Debug.LogError( "The sprite you're trying to set is null, this means something is wrong." ); }
+            if ( sprite.IsNull<Sprite>() ) { 
+                Debug.LogError( "The sprite you're trying to set is null, this means something is wrong." ); 
+            }
 
             if ( !overrides )
             {
-                if ( image.sprite != sprite ) image.sprite = sprite;
+                if ( image.sprite != sprite ) {
+                    image.sprite = sprite;
+                }
                 return;
             }
 
-            if ( image.overrideSprite != sprite ) image.overrideSprite = sprite;
+            if ( image.overrideSprite != sprite ) {
+                image.overrideSprite = sprite;
+            }
         }
 
         /// <summary>
@@ -191,7 +199,7 @@ namespace dnSR_Coding.Utilities
         [MethodImpl( INLINE )] 
         public static void SetImageType( this Image image, Image.Type type, bool isSpriteOverriden, bool preserveAspect = true ) 
         {
-            if ( image.sprite.IsNull() || isSpriteOverriden && image.overrideSprite.IsNull() )
+            if ( image.sprite.IsNull<Sprite>() || isSpriteOverriden && image.overrideSprite.IsNull<Sprite>() )
             {
                 Debug.LogError( "The sprite you're trying to modify is null, this means something is wrong." );
                 return;
@@ -461,7 +469,7 @@ namespace dnSR_Coding.Utilities
         [MethodImpl( INLINE )]
         public static void ResetDestination( this NavMeshAgent nma )
         {
-            if ( nma.IsNull() || !nma.enabled ) { return; }
+            if ( nma.IsNull<NavMeshAgent>() || !nma.enabled ) { return; }
 
             nma.isStopped = true;
 
@@ -547,7 +555,7 @@ namespace dnSR_Coding.Utilities
         [MethodImpl( INLINE )]
         public static void AppendItem<T>( this List<T> list, T type, bool debugMessage = true )
         {
-            if ( type.IsNull() )
+            if ( type.IsNull<T>() )
             {
                 if ( debugMessage )
                 {
@@ -585,7 +593,7 @@ namespace dnSR_Coding.Utilities
         [MethodImpl( INLINE )]
         public static void RemoveItem<T>( this List<T> list, T type, bool debugMessage = true )
         {
-            if ( type.IsNull() )
+            if ( type.IsNull<T>() )
             {
                 if ( debugMessage )
                 {
@@ -641,10 +649,10 @@ namespace dnSR_Coding.Utilities
         /// <param name="obj"></param>
         /// <returns></returns>
         [MethodImpl( INLINE )] 
-        public static bool IsNull( this object obj )
+        public static bool IsNull<T>( this object obj )
         {
             bool isNull = obj is null || obj.Equals( null ) || obj == null;
-            if ( isNull ) { Debug.Log( $"Wanted object is null.", ( Object ) obj ); }
+            if ( isNull ) { Debug.Log( $"Wanted object is null. {Helper.GetTypeName( typeof( T ) )}", ( Object ) obj ); }
             
             return isNull;
         }
@@ -681,12 +689,8 @@ namespace dnSR_Coding.Utilities
         }
 
         [MethodImpl( INLINE )]
-        public static void LogNullException<T>( this T type )
-        {
-            if ( type.IsNull() )
-            {
-                Debug.Log( $"Wanted object is null." );
-            }
+        public static void LogNullException<T>( this T type ) {
+            Debug.Log( $"Wanted object is null." );
         }
 
         #endregion
@@ -704,7 +708,7 @@ namespace dnSR_Coding.Utilities
         public static void Debugger( this IDebuggable user, object message, DebugType debugType = DebugType.None )
         {
 #if UNITY_EDITOR
-            if ( user.IsNull() )
+            if ( user.IsNull<IDebuggable>() )
             {
                 user.LogNullException();
                 return;

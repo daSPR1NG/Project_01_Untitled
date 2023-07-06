@@ -1,8 +1,9 @@
 using UnityEngine;
-using NaughtyAttributes;
+//using NaughtyAttributes;
 using dnSR_Coding.Utilities;
 using DG.Tweening;
 using System.Collections.Generic;
+using System;
 
 namespace dnSR_Coding
 {
@@ -13,7 +14,9 @@ namespace dnSR_Coding
     public class WeatherSystem : MonoBehaviour, IEnvironmentLightsUser, IDebuggable
     {
         [Header( "Weather Presets" )]
-        [SerializeField] private List<WeatherPreset> _weatherPresets = new();
+        [SerializeField, LabeledArray( new [] { "Default", })] 
+        private List<WeatherPreset> _weatherPresets = new();
+
         private WeatherPreset _activePreset = null;
         private GameObject _rainGO;
 
@@ -24,7 +27,7 @@ namespace dnSR_Coding
 
         #region Debug
 
-        [Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
+        [Space( 10 ), /*HorizontalLine( .5f, EColor.Gray )*/]
         [SerializeField] private bool _isDebuggable = true;
         public bool IsDebuggable => _isDebuggable;
 
@@ -57,10 +60,14 @@ namespace dnSR_Coding
 
         private void Update()
         {
-            if ( KeyCode.T.IsPressed() )
+            if ( KeyCode.D.IsPressed() )
             {
-                _activePreset.StopThunder( this );
-                _activePreset.ApplyThunder( this, _thunderLightController, MainLightController.GetControllerLight().color );
+                ApplyWeatherPreset( 0 );
+            }
+
+            if ( KeyCode.S.IsPressed() )
+            {
+                StopActiveWeatherPreset();
             }
         }
 
@@ -79,7 +86,7 @@ namespace dnSR_Coding
             }
 
             // If no active preset is set, we set it...
-            if ( _activePreset.IsNull() ) 
+            if ( _activePreset.IsNull<WeatherPreset>() ) 
             {
                 _activePreset = _weatherPresets [ index ];
                 _activePreset.Init();
@@ -87,7 +94,7 @@ namespace dnSR_Coding
                 this.Debugger( "Assign active preset" );
             }
 
-            bool aPresetIsActive = !_activePreset.IsNull() && _activePreset.IsActive;
+            bool aPresetIsActive = !_activePreset.IsNull<WeatherPreset>() && _activePreset.IsActive;
 
             // If a preset is already active and we still trying to aply it again, we kill the method...
             if ( aPresetIsActive && _activePreset == _weatherPresets [ index ] ) 
@@ -99,7 +106,7 @@ namespace dnSR_Coding
             // If a preset is active but a new one is applied (different from the current one), we stop the current preset to properly activate the new one...
             if ( aPresetIsActive && _activePreset != _weatherPresets [ index ] )
             {
-                _activePreset.Stop( monoBehaviour: this, ref _rainGO, MainLightController );
+                _activePreset.Stop( monoBehaviour: this, _rainGO, MainLightController );
                 // Active preset is reassigned and we apply the preset we want.
                 _activePreset = _weatherPresets [ index ];
                 _activePreset.Init();
@@ -107,7 +114,7 @@ namespace dnSR_Coding
 
             _activePreset.Apply(
                 monoBehaviour: this,
-                ref _rainGO,
+                _rainGO,
                 MainLightController,
                 _thunderLightController );
 
@@ -118,9 +125,11 @@ namespace dnSR_Coding
         }
         public void StopActiveWeatherPreset()
         {
-            if ( _activePreset.IsNull() || !_activePreset.IsActive ) { return; }
+            if ( _activePreset.IsNull<WeatherPreset>() || !_activePreset.IsActive ) { return; }
 
-            _activePreset.Stop( monoBehaviour: this, ref _rainGO, MainLightController );
+            this.Debugger( $"{_activePreset.name} is being stopped." );
+
+            _activePreset.Stop( monoBehaviour: this, _rainGO, MainLightController );
             _activePreset = null;
         }
 

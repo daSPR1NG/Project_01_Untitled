@@ -16,12 +16,16 @@ MonoBehaviour:
   - _name: None
     _associatedFogType: 0
     <FogDensity>k__BackingField: 0
+    <FogColor>k__BackingField: {r: 0, g: 0, b: 0, a: 0}
   - _name: Low
     _associatedFogType: 1
     <FogDensity>k__BackingField: 0.005
+    <FogColor>k__BackingField: {r: 1, g: 0, b: 0, a: 1}
   - _name: Medium
     _associatedFogType: 2
     <FogDensity>k__BackingField: 0.02
+    <FogColor>k__BackingField: {r: 0.021979094, g: 1, b: 0, a: 1}
   - _name: High
     _associatedFogType: 3
     <FogDensity>k__BackingField: 0.02875
+    <FogColor>k__BackingField: {r: 1, g: 0.7957734, b: 0, a: 1}

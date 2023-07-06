@@ -192,7 +192,7 @@ Material:
     - _Mode: 0
     - _Normals_Sensitivity: 1
     - _OcclusionStrength: 1
-    - _OutlineDepthOffset: 0.05
+    - _OutlineDepthOffset: 0
     - _OutlineEnabled: 1
     - _OutlineScale: 1
     - _OutlineWidth: 1.25
@@ -241,7 +241,7 @@ Material:
     - _Inking_Inner_Mask_Color: {r: 1, g: 1, b: 1, a: 0}
     - _LightAttenuation: {r: 0.2844886, g: 1, b: 0, a: 0}
     - _LightmapDirection: {r: -0.74031687, g: -0.6691307, b: -0.06476938, a: 0}
-    - _OutlineColor: {r: 0.25, g: 0.25, b: 0.25, a: 0.8}
+    - _OutlineColor: {r: 0.20754719, g: 0.20754719, b: 0.20754719, a: 0}
     - _Rim_Color: {r: 1, g: 1, b: 1, a: 0}
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

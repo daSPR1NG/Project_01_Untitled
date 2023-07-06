@@ -4,6 +4,8 @@ using dnSR_Coding.Utilities;
 using NaughtyAttributes;
 using System;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
+using static UnityEngine.ParticleSystem;
 
 namespace dnSR_Coding
 {
@@ -30,7 +32,7 @@ namespace dnSR_Coding
 
             [field: Header( "Audio" )]
             [SerializeField] private bool _hasAudio;
-            [field: SerializeField, AllowNesting, ShowIf( "_hasAudio" )] 
+            [field: SerializeField, AllowNesting, NaughtyAttributes.ShowIf( "_hasAudio" )] 
             public SimpleAudioEvent AudioEvent { get; private set; }
         }
         public RainSettings GetSettingsByID( int id )
@@ -40,39 +42,31 @@ namespace dnSR_Coding
 
         private Tween _rainRateTween;
 
-        public void ApplySettings( Enums.RainType rainType, ref GameObject rainEffectGO )
+        public void ApplySettings( Enums.RainType rainType, GameObject rainGO )
         {
-            if ( rainEffectGO.TryGetComponent( out ParticleSystem rainParticleSystem ) )
+            if ( rainGO.TryGetComponent( out ParticleSystem rainParticleSystem ) )
             {
-                ParticleSystem.EmissionModule emissionModule = rainParticleSystem.emission;
+                EmissionModule emissionModule = rainParticleSystem.emission;
 
                 RainSettings settings = GetSettingsByID( ( int ) rainType );
-                if ( settings.IsNull() )
+                if ( settings.IsNull<RainSettings>() )
                 {
                     Debug.LogError( "Rain Module - ApplySettings - Rain settings reference is null" );
                     return;
                 }
 
-                if ( emissionModule.rateOverTime.Equals( settings.ParticleAmount ) || _rainRateTween.IsActive() ) { return; }
-
-                Debug.Log( $"Rain setting has been applied with a rate of : {settings.ParticleAmount}." );
-
-                _rainRateTween = DOTween.To( () => emissionModule.rateOverTime.Evaluate(.5f), _ => emissionModule.rateOverTime = _, settings.ParticleAmount, 5f );
-                _rainRateTween.OnStepComplete( () =>
-                {
-                    emissionModule.rateOverTime = settings.ParticleAmount;
-                    _rainRateTween.Kill();
-                } );
+                rainGO.Display();
+                SetRainRate( emissionModule, settings );
             }
             else {
                 Debug.LogError( "Rain Module - ApplySettings - Rain particle system reference is null" );
             }
         }
-        public void Stop( ref GameObject rainEffectGO )
+        public void Stop( GameObject rainGO )
         {
-            if ( rainEffectGO.TryGetComponent( out ParticleSystem rainParticleSystem ) )
+            if ( rainGO.TryGetComponent( out ParticleSystem rainParticleSystem ) )
             {
-                ParticleSystem.EmissionModule emissionModule = rainParticleSystem.emission;
+                EmissionModule emissionModule = rainParticleSystem.emission;
 
                 if ( emissionModule.rateOverTime.Equals( 0f ) ) { return; }
 
@@ -82,6 +76,22 @@ namespace dnSR_Coding
             else {
                 Debug.LogError( "Rain Module - ApplySettings - Rain particle system reference is null" );
             }
+
+            rainGO.Hide();
+        }
+
+        private void SetRainRate( EmissionModule emissionModule, RainSettings settings )
+        {
+            if ( emissionModule.rateOverTime.Equals( settings.ParticleAmount ) || _rainRateTween.IsActive() ) { return; }
+
+            Debug.Log( $"Rain setting has been applied with a rate of : {settings.ParticleAmount}." );
+
+            _rainRateTween = DOTween.To( () => emissionModule.rateOverTime.Evaluate( .5f ), _ => emissionModule.rateOverTime = _, settings.ParticleAmount, 5f );
+            _rainRateTween.OnStepComplete( () =>
+            {
+                emissionModule.rateOverTime = settings.ParticleAmount;
+                _rainRateTween.Kill();
+            } );
         }
     }
 }

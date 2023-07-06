@@ -16,22 +16,24 @@ namespace dnSR_Coding.Utilities
     public class SceneSelectionOverlayUtility : ToolbarOverlay
     {
         public const string K_ICON = "Assets/Utilities/Editor/Icons/UnityIcon.png";
+        public const string K_ICON_2 = "Assets/Utilities/Editor/Icons/Spr_Editor_Reset_Black.png";
 
         SceneSelectionOverlayUtility() : base( SceneDropdownToggle.K_ID ) { }
 
         [EditorToolbarElement( K_ID, typeof( SceneView ) )]
-        class SceneDropdownToggle : EditorToolbarDropdownToggle, IAccessContainerWindow
+        class SceneDropdownToggle : EditorToolbarButton, IAccessContainerWindow
         {
             public const string K_ID = "SceneSelectionOverlay/SceneDropdownToggle";
             public EditorWindow containerWindow { get; set; }
 
             SceneDropdownToggle()
             {
-                text = "Scenes";
+                text = " Scene Selection ";
                 tooltip = "Select a scene to load";
                 icon = AssetDatabase.LoadAssetAtPath<Texture2D>( K_ICON );
 
-                dropdownClicked += ShowSceneMenu;
+                //dropdownClicked += ShowSceneMenu;
+                clicked += ShowSceneMenu;
             }
 
             private void ShowSceneMenu()
@@ -40,49 +42,49 @@ namespace dnSR_Coding.Utilities
 
                 Scene currentScene = EditorSceneManager.GetActiveScene();
 
-                string [] sceneGuids = AssetDatabase.FindAssets( "t: scene", null );
-                //string [] sceneGuids = AssetDatabase.GetAssetPathsFromAssetBundle( "gamescene" );
+                Debug.Log( Application.dataPath );
+                Debug.Log( Application.dataPath + "/Scenes" );
 
-                Debug.Log( sceneGuids.Length );
+                string filter = "t: scene";
+                string sceneFolderPath = "Assets/Scenes";
+
+                string [] sceneGuids = AssetDatabase.FindAssets(
+                    filter,
+                    Directory.Exists( sceneFolderPath ) ? new [] { sceneFolderPath } : null );                
 
                 for ( int i = 0; i < sceneGuids.Length; i++ )
                 {
                     string path = AssetDatabase.GUIDToAssetPath( sceneGuids [ i ] );
-                    //string path = AssetDatabase.GetAssetPathsFromAssetBundle( "gamescene" ).GetValue( i ).ToString();
                     string name = Path.GetFileNameWithoutExtension( path );
 
-                    if ( string.Compare( currentScene.name, name ) == 0 )
-                    {
+                    Texture sceneTexture = AssetDatabase.LoadAssetAtPath<Texture2D>( K_ICON_2 );
+
+                    if ( string.Compare( currentScene.name, name ) == 0 ) {
                         menu.AddDisabledItem( new GUIContent( name ) );
                     }
                     else
                     {
-                        menu.AddItem( new GUIContent( name + "/Single" ), false, () => OpenScene( currentScene, path, OpenSceneMode.Single ) );
-                        menu.AddItem( new GUIContent( name + "/Additive" ), false, () => OpenScene( currentScene, path, OpenSceneMode.Additive ) );
+                        menu.AddItem( 
+                            new GUIContent( name + "/Single"),
+                            false, 
+                            () => OpenScene( currentScene, path, OpenSceneMode.Single ) );
+
+                        menu.AddItem( 
+                            new GUIContent( 
+                                name + "/Additive" ), 
+                            false, 
+                            () => OpenScene( currentScene, path, OpenSceneMode.Additive ) );
                     }
                 }
 
                 menu.ShowAsContext();
             }
 
-            private bool ContainsLabel( string [] labels, string targetLabel )
-            {
-                foreach ( string label in labels )
-                {
-                    if ( label == targetLabel )
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
             private void OpenScene( Scene currentScene, string path, OpenSceneMode openSceneMode )
             {
                 if ( currentScene.isDirty )
                 {
-                    if ( EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo() )
-                    {
+                    if ( EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo() ) {
                         EditorSceneManager.OpenScene( path, openSceneMode );
                     }
 

@@ -1,7 +1,6 @@
 using UnityEngine;
 using dnSR_Coding.Utilities;
 using UnityEngine.InputSystem;
-using NaughtyAttributes;
 
 namespace dnSR_Coding
 {
@@ -16,7 +15,7 @@ namespace dnSR_Coding
 
         #region Debug
 
-        [Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
+        [Space( 10 ),/* HorizontalLine( .5f, EColor.Gray )*/]
         [SerializeField] private bool _isDebuggable = true;
         public bool IsDebuggable => _isDebuggable;
 
@@ -30,7 +29,7 @@ namespace dnSR_Coding
 
         private void EnableInputs()
         {
-            if ( _inputs.IsNull() ) { return; }
+            if ( _inputs.IsNull<PlayerInputs>() ) { return; }
 
             if ( !_isEnabledAtStart )
             {
@@ -42,7 +41,7 @@ namespace dnSR_Coding
         }
         private void DisableInputs()
         {
-            if ( _inputs.IsNull() ) { return; }
+            if ( _inputs.IsNull<PlayerInputs>() ) { return; }
 
             _inputs.Disable();
         }
@@ -62,7 +61,7 @@ namespace dnSR_Coding
 
         public InputAction GetTogglePauseMenuAction()
         {
-            InputAction action = _inputs.IsNull()
+            InputAction action = _inputs.IsNull<PlayerInputs>()
                 ? null
                 : _inputs.UI.TogglePauseMenu;
 
@@ -71,7 +70,7 @@ namespace dnSR_Coding
 
         public InputAction GetToggleCharacterSheetMenuAction()
         {
-            InputAction action = _inputs.IsNull()
+            InputAction action = _inputs.IsNull<PlayerInputs>()
                 ? null
                 : _inputs.UI.ToggleCharacterSheetMenu;
 

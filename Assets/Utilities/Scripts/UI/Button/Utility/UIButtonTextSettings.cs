@@ -1,5 +1,4 @@
 using UnityEngine;
-using NaughtyAttributes;
 using TMPro;
 using dnSR_Coding.Utilities;
 
@@ -14,18 +13,18 @@ namespace dnSR_Coding
     {
         [Header( "Button text settings" )]
         [SerializeField] private bool _hasText = false;
-        [SerializeField, ShowIf( "_hasText" ), Multiline] 
+        [SerializeField, /*ShowIf( "_hasText" ),*/ Multiline] 
         private string _buttonTextInput = "_type Here";
-        [SerializeField, ShowIf( "_hasText" ), Range( 0.1f, 36 )]
+        [SerializeField, /*ShowIf( "_hasText" ),*/ Range( 0.1f, 36 )]
         private float _buttonTextMaxSize = 24;
-        [SerializeField, ShowIf( "_hasText" ), Range( -20, 20 )]
+        [SerializeField, /*ShowIf( "_hasText" ),*/ Range( -20, 20 )]
         private float _buttonTextMargin = 0;
         private Transform _content;
         private TextMeshProUGUI _buttonTextComponent;
 
         #region Debug
 
-        [Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
+        [Space( 10 ), /*HorizontalLine( .5f, EColor.Gray )*/]
         [SerializeField] private bool _isDebuggable = true;
         public bool IsDebuggable => _isDebuggable;
 
@@ -50,7 +49,9 @@ namespace dnSR_Coding
             _content = transform.GetFirstChild();
 
             TextMeshProUGUI possibleText = _content.GetComponentInChildren<TextMeshProUGUI>();
-            if ( !possibleText.IsNull() ) { _buttonTextComponent = possibleText; }
+            if ( !possibleText.IsNull<TextMeshProUGUI>() ) {
+                _buttonTextComponent = possibleText; 
+            }
         }
 
         #region Button text handle
@@ -59,15 +60,14 @@ namespace dnSR_Coding
         {
             if ( !_hasText ) { return; }
 
-            if ( _buttonTextComponent.IsNull() )
+            if ( _buttonTextComponent.IsNull<TextMeshProUGUI>() )
             {
                 Debug.LogError( "No text mesh pro component found, can't set the text value.", transform );
                 return;
             }
 
-            if ( !_buttonTextComponent.text.Equals( _buttonTextInput ) )
-            {
-                _buttonTextComponent.text = _buttonTextInput;
+            if ( !_buttonTextComponent.text.Equals( _buttonTextInput ) ) {
+                _buttonTextComponent.SetText( _buttonTextInput );
             }
         }
 
@@ -75,7 +75,7 @@ namespace dnSR_Coding
         {
             if ( !_hasText ) { return; }
 
-            if ( _buttonTextComponent.IsNull() )
+            if ( _buttonTextComponent.IsNull<TextMeshProUGUI>() )
             {
                 Debug.LogError( "No text mesh pro component found, can't set the text value.", transform );
                 return;
@@ -83,8 +83,7 @@ namespace dnSR_Coding
 
             Vector4 margin = new( _buttonTextMargin, _buttonTextMargin, _buttonTextMargin, _buttonTextMargin );
 
-            if ( _buttonTextComponent.margin != margin )
-            {
+            if ( _buttonTextComponent.margin != margin ) {
                 _buttonTextComponent.margin = margin;
             }
         }
@@ -93,14 +92,13 @@ namespace dnSR_Coding
         {
             if ( !_hasText ) { return; }
 
-            if ( _buttonTextComponent.IsNull() )
+            if ( _buttonTextComponent.IsNull<TextMeshProUGUI>() )
             {
                 Debug.LogError( "No text mesh pro component found, can't set the text value.", transform );
                 return;
             }
 
-            if ( _buttonTextComponent.fontSizeMax != _buttonTextMaxSize )
-            {
+            if ( _buttonTextComponent.fontSizeMax != _buttonTextMaxSize ) {
                 _buttonTextComponent.fontSizeMax = _buttonTextMaxSize;
             }
         }

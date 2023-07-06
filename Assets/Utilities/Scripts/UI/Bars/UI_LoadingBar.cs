@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using dnSR_Coding.Utilities;
-using NaughtyAttributes;
 
 namespace dnSR_Coding
 {
@@ -25,7 +24,9 @@ namespace dnSR_Coding
 
         public override void SetFillBarValueText( string input )
         {
-            _fillAmountValueText.text = input;
+            if ( _fillAmountValueText.text.Equals( input ) ) { return; }
+
+            _fillAmountValueText.SetText( input );
         }
     }
 }

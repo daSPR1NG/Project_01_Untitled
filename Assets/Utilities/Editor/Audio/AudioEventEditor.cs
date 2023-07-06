@@ -86,7 +86,7 @@ namespace dnSR_Coding
 			{
 				for ( int i = simpleAudioEvent.Clips.Count - 1; i >= 0; i-- )
 				{
-					if ( simpleAudioEvent.Clips [ i ].Clip.IsNull() )
+					if ( simpleAudioEvent.Clips [ i ].Clip.IsNull<SimpleAudioEvent.ClipData>() )
 					{
 						simpleAudioEvent.Clips.RemoveAt( i );
 					}
@@ -131,7 +131,7 @@ namespace dnSR_Coding
 				bool cantUsePreviewButton = 
 					simpleAudioHasNoClip 
 					|| OneOrMoreClipsAreNull( simpleAudioEvent ) 
-					|| !_previewer.IsNull() && _previewer.isPlaying;
+					|| !_previewer.IsNull<AudioSource>() && _previewer.isPlaying;
 
 				Repaint();
 
@@ -147,7 +147,7 @@ namespace dnSR_Coding
 				{
 					GUILayout.FlexibleSpace();
 
-					GUIContent previewContent = !_previewer.IsNull() && _previewer.isPlaying 
+					GUIContent previewContent = !_previewer.IsNull<AudioSource>() && _previewer.isPlaying 
 						? new( "Currently Playing...".ToUpper() ) : new( "Preview".ToUpper() );
 
 					GUIStyle previewStyle = new( GUI.skin.button )
@@ -163,7 +163,7 @@ namespace dnSR_Coding
 
 					if ( GUILayout.Button( previewContent, previewStyle, GUILayout.Height( 35 ) ) )
 					{
-						if ( _previewer.IsNull() )
+						if ( _previewer.IsNull<AudioSource>() )
 						{
 							_previewer = EditorUtility.CreateGameObjectWithHideFlags(
 								"Audio preview", HideFlags.HideAndDontSave, typeof( AudioSource ) ).GetComponent<AudioSource>();
@@ -179,7 +179,7 @@ namespace dnSR_Coding
 
                 #region Stop button section
 
-                using ( new EditorGUI.DisabledScope( _previewer.IsNull() || !_previewer.isPlaying ) )
+                using ( new EditorGUI.DisabledScope( _previewer.IsNull<AudioSource>() || !_previewer.isPlaying ) )
                 {
 					GUI.backgroundColor = Color.red;
 
@@ -201,7 +201,7 @@ namespace dnSR_Coding
 
 			#region Is type simple audio event
 
-			if ( !simpleAudioEvent.IsNull() )
+			if ( !simpleAudioEvent.IsNull<SimpleAudioEvent>() )
             {
 				if ( OneOrMoreClipsAreNull( simpleAudioEvent ) )
 				{
@@ -234,7 +234,7 @@ namespace dnSR_Coding
 
 			GUILayout.Space( 2f );
 
-			if ( !simpleAudioEvent.Clips.IsEmpty() && !simpleAudioEvent.ChosenClip.IsNull() && !string.IsNullOrEmpty( simpleAudioEvent.ChosenClip.GetName() ) )
+			if ( !simpleAudioEvent.Clips.IsEmpty() && !simpleAudioEvent.ChosenClip.IsNull<SimpleAudioEvent>() && !string.IsNullOrEmpty( simpleAudioEvent.ChosenClip.GetName() ) )
             {
 				EditorGUILayout.HelpBox( "Last recorded settings in memory" + '\n' +
 				simpleAudioEvent.ChosenClip.GetName() +
@@ -254,7 +254,7 @@ namespace dnSR_Coding
             for ( int i = simpleAudioEvent.Clips.Count - 1; i >= 0; i-- )
             {
 				//Debug.Debug( simpleAudioEvent.Clips [ i ].name);
-				if ( simpleAudioEvent.Clips [ i ].Clip.IsNull() ) return true;
+				if ( simpleAudioEvent.Clips [ i ].Clip.IsNull<SimpleAudioEvent.ClipData>() ) return true;
             }
 
 			return false;

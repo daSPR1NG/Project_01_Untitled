@@ -34,14 +34,18 @@ namespace dnSR_Coding.Utilities
         private static Camera _mainCamera;
         public static Camera GetMainCamera()
         {
-            if ( _mainCamera.IsNull() ) { _mainCamera = Camera.main; }
+            if ( _mainCamera.IsNull<Camera>() ) {
+                _mainCamera = Camera.main; 
+            }
             return _mainCamera;
         }
 
         private static Transform _playerCamera;
         public static Transform GetPlayerCamera()
         {
-            if ( _playerCamera.IsNull() ) { _playerCamera = GameObject.FindGameObjectWithTag( "PlayerCamera" ).transform; }
+            if ( _playerCamera.IsNull<Transform>() ) { 
+                _playerCamera = GameObject.FindGameObjectWithTag( "PlayerCamera" ).transform; 
+            }
 
             return _playerCamera;
         }
@@ -311,7 +315,9 @@ namespace dnSR_Coding.Utilities
         /// <returns> The player transform. </returns>
         public static Transform GetPlayerTransformReference()
         {
-            if ( _playerTransform.IsNull() ) { _playerTransform = GameObject.FindGameObjectWithTag( PLAYER_TAG ).transform; }
+            if ( _playerTransform.IsNull<Transform>() ) {
+                _playerTransform = GameObject.FindGameObjectWithTag( PLAYER_TAG ).transform;
+            }
             return _playerTransform;
         }
 
@@ -319,8 +325,7 @@ namespace dnSR_Coding.Utilities
 
         #region Type
 
-        public static string GetTypeName( Type type )
-        {
+        public static string GetTypeName( Type type ) {
             return type.Name.ToString();
         }
 

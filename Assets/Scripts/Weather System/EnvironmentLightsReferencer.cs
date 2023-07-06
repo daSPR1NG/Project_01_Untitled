@@ -6,13 +6,14 @@ namespace dnSR_Coding
 {
     ///<summary> EnvironmentLightsReferencer description <summary>
     [DisallowMultipleComponent]
+    
     public class EnvironmentLightsReferencer : MonoBehaviour, IDebuggable
     {
-        private GameObject _lightsContainer;
+        [SerializeField, ReadOnly] private GameObject _lightsContainer;
 
-        private LightController _mainLightController;
-        private LightController _additionalLightController;
-        private LightController _thunderLightController;
+        [SerializeField, ReadOnly] private LightController _mainLightController;
+        [SerializeField, ReadOnly] private LightController _additionalLightController;
+        [SerializeField, ReadOnly] private LightController _thunderLightController;
 
         public LightController MainLightController { get => _mainLightController; private set => _mainLightController = value; }
         public LightController AdditionalLightController { get => _additionalLightController; private set => _additionalLightController = value; }
@@ -39,13 +40,13 @@ namespace dnSR_Coding
         /// <param name="lightsContainer"></param>
         private void SetLightsReference( ref GameObject lightsContainer )
         {
-            if ( !transform.GetFirstChild().IsNull() )
+            if ( !transform.GetFirstChild().IsNull<Transform>() )
             {
                 lightsContainer = transform.GetFirstChild().gameObject;
                 lightsContainer.GetComponent<EnvironmentLightContainer>().Init();
             }
 
-            if ( lightsContainer.IsNull() )
+            if ( lightsContainer.IsNull<GameObject>() )
             {
                 GameObject container = new( "Light Container", typeof( EnvironmentLightContainer ) );
                 lightsContainer = container;

@@ -2,10 +2,9 @@ using UnityEngine;
 using dnSR_Coding.Utilities;
 using System;
 using dnSR_Coding.Attributes;
-using NaughtyAttributes;
-using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using NaughtyAttributes;
 
 namespace dnSR_Coding
 {
@@ -38,7 +37,7 @@ namespace dnSR_Coding
 
             [field: Header( "Audio" )]
             [SerializeField] private bool _hasAudio;
-            [field: SerializeField, AllowNesting, ShowIf( "_hasAudio" )]
+            [field: SerializeField, NaughtyAttributes.AllowNesting, NaughtyAttributes.ShowIf( "_hasAudio" )]
             public SimpleAudioEvent AudioEvent { get; private set; }
 
             public readonly Vector2 GetFlickeringRate() => _flickeringRate;
@@ -63,26 +62,28 @@ namespace dnSR_Coding
 
         public void ApplySettings( MonoBehaviour monoBehaviour, Enums.ThunderType thunderType, LightController thunderLightController, Color mainLightColor )
         {
-            if ( !thunderCoroutine.IsNull() ) { return; }
+            if ( !thunderCoroutine.IsNull<Coroutine>() ) { return; }
 
             ThunderSettings settings = GetSettingsByID( ( int ) thunderType );
-            if ( settings.IsNull() )
+            if ( settings.IsNull<ThunderSettings>() )
             {
                 Debug.LogError( "Thunder Module - ApplySettings - Thunder settings reference is null" );
                 return;
             }
             this.Debugger( $"Thunder setting has been applied with ID : {settings.ID}." );
 
-            if ( thunderLightController.IsNull() ) {
+            if ( thunderLightController.IsNull<LightController>() ) {
                 Debug.LogError( "Thunder Module - ApplySettings - Thunder light reference is null" );
                 return;
             }
 
             thunderCoroutine = monoBehaviour.StartCoroutine( StartLightFlickering( settings, thunderLightController, mainLightColor ) );
+
+            Debug.Log( $"Thunder setting has been applied with a flickering rate of : {settings.GetFlickeringRate()}." );
         }
         public void Stop( MonoBehaviour monoBehaviour )
         {
-            if ( thunderCoroutine.IsNull() ) { return; }
+            if ( thunderCoroutine.IsNull<Coroutine>() ) { return; }
 
             this.Debugger( "Thunder setting has been stopped." );
 
@@ -100,11 +101,11 @@ namespace dnSR_Coding
 
             do
             {
-                bool hasLastKeyReached = !currentCurve.IsNull() && _currentKey >= ( currentCurve.length - 1 );
+                bool hasLastKeyReached = !currentCurve.IsNull<AnimationCurve>() && _currentKey >= ( currentCurve.length - 1 );
 
                 // BLOC THAT NEEDS TO ITERATE ONCE (When no curve has been chosen or when reaching the end of a curve) --
-                if ( currentCurve.IsNull()
-                    || !currentCurve.IsNull() && hasLastKeyReached )
+                if ( currentCurve.IsNull<AnimationCurve>()
+                    || !currentCurve.IsNull<AnimationCurve>() && hasLastKeyReached )
                 {
                     this.Debugger( "Curve has been picked, a thunder will be shot" );
 

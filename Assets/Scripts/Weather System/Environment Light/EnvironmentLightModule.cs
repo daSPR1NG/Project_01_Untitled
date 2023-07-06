@@ -37,19 +37,30 @@ namespace dnSR_Coding
         public void ApplySettings( Enums.EnvironmentLightIntensityType lightIntensity, LightController mainLightController )
         {
             EnvironmentLightSettings settings = GetSettingsByID( ( int ) lightIntensity );
-            if ( settings.IsNull() )
+            if ( settings.IsNull<EnvironmentLightSettings>() )
             {
                 Debug.LogError( "Environment Light Module - ApplySettings - Environment Light settings reference is null" );
                 return;
             }
 
-            if ( mainLightController.IsNull() )
+            SetLightIntensity( settings, mainLightController );
+
+            Debug.Log( $"Environment light setting has been applied with an intensity of : {settings.Intensity}." );
+        }
+
+        private void SetLightIntensity( EnvironmentLightSettings settings, LightController mainLightController )
+        {
+            if ( mainLightController.IsNull<LightController>() )
             {
                 Debug.LogError( "Environment Light Module - ApplySettings - Environment Light main light reference is null" );
                 return;
             }
 
-            if ( mainLightController.DoesLightIntensityEquals( settings.Intensity ) || _lightIntensityTween.IsActive() ) { return; }
+            if ( mainLightController.DoesLightIntensityEquals( settings.Intensity )
+                || _lightIntensityTween.IsActive() )
+            {
+                return;
+            }
 
             _lightIntensityTween = DOTween.To(
                 () => mainLightController.GetControllerLight().intensity,
@@ -62,8 +73,6 @@ namespace dnSR_Coding
                 mainLightController.SetLightIntensity( settings.Intensity );
                 _lightIntensityTween.Kill();
             } );
-
-            Debug.Log( $"Environment light setting has been applied with an intensity of : {settings.Intensity}." );
         }
     }
 }

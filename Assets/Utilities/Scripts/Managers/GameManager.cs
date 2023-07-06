@@ -1,8 +1,7 @@
 using UnityEngine;
 using System;
-using NaughtyAttributes;
+//using NaughtyAttributes;
 using UnityEngine.InputSystem;
-using UnityEngine.Playables;
 
 namespace dnSR_Coding.Utilities
 {
@@ -18,14 +17,14 @@ namespace dnSR_Coding.Utilities
 
         [Header( "Debug section" )]
 
-        [SerializeField, ShowIf( "IsDebuggable" )]
+        [SerializeField, /*NaughtyAttributes.ShowIf( "IsDebuggable" )*/]
         private int _refreshRate = 60;
 
         public static Action<object> OnGameStateChanged;
 
         #region Debug
 
-        [ Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
+        [ Space( 10 ), /*HorizontalLine( .5f, EColor.Gray )*/]
         [SerializeField] private bool _isDebuggable = false;
         public bool IsDebuggable => _isDebuggable;
 
@@ -50,11 +49,10 @@ namespace dnSR_Coding.Utilities
         {
             InputAction input = PlayerInputsHelper.Instance.GetTogglePauseMenuAction();
 
-            if ( !input.IsNull() && input.WasPerformedThisFrame() )
+            if ( !input.IsNull<InputAction>() && input.WasPerformedThisFrame() )
             {
-                if ( !UIManager.Instance.IsNull() 
-                    && UIManager.Instance.AWindowIsDisplayed() ) 
-                {
+                if ( !UIManager.Instance.IsNull<UIManager>() 
+                    && UIManager.Instance.AWindowIsDisplayed() ) {
                     return;
                 }
 
@@ -65,7 +63,7 @@ namespace dnSR_Coding.Utilities
         }
 
 #if UNITY_EDITOR
-        [Button]
+        //[Button]
 #endif
         public void SetTimeScale()
         {

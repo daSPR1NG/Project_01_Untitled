@@ -18,28 +18,37 @@ namespace dnSR_Coding
     [DisallowMultipleComponent]
     public abstract class InteractiveObject : MonoBehaviour, IInteractable, ISelectable, IOutlineable, IDebuggable
     {
-        [field: Header( "Interaction Settings" )]
+        #region Interaction variables
 
-        [field: SerializeField, ReadOnly] public bool IsInteractive { get; set; } = false;
-        [field: SerializeField] public Enums.Cursor_RelatedAction CursorRelatedAction { get; set; } = Enums.Cursor_RelatedAction.Default;
-        [field: SerializeField, InfoBox(
+        [field: SerializeField, ReadOnly, Foldout( "Interaction Group" )]
+        public bool IsInteractive { get; set; } = false;
+        public object Interactor { get; set; } = null;
+
+        #endregion
+
+        #region Selection variables
+
+        [field: SerializeField, Foldout( "Interaction Group")] 
+        public Enums.Cursor_SelectionType CursorSelectionType { get; set; } = Enums.Cursor_SelectionType.Default;
+
+        [field: SerializeField, Foldout( "Interaction Group"), InfoBox(
             "By default, the selection is only possible when the object is interactive. This overrides the default behaviour.",
             EInfoBoxType.Normal )]
         public bool IsItAlwaysSelectable { get; set; } = false;
-        public object Interactor { get; set; } = null;
 
-        public bool IsOutlined { get => !_outlineComponent.IsNull() && _outlineComponent.enabled; }
-        [field: SerializeField, Range( 0, 10 )] public float OutlineWidth { get; set; } = .5f;
+        [field: SerializeField, Range( 0, 3 ), Foldout( "Interaction Group")] 
+        public float OutlineWidth { get; set; } = .5f;
+        public bool IsOutlined { get => !_outlineComponent.IsNull<Outline>() && _outlineComponent.enabled; }
 
         private Outline _outlineComponent;
         public Outline OutlineComponent
         {
             get
             {
-                if ( _outlineComponent.IsNull() && gameObject.TryGetComponent( out Outline component ) ) {
+                if ( _outlineComponent.IsNull<Outline>() && gameObject.TryGetComponent( out Outline component ) ) {
                     _outlineComponent = component;
                 }
-                else if ( _outlineComponent.IsNull() && gameObject.GetComponent<Outline>().IsNull() ) {
+                else if ( _outlineComponent.IsNull<Outline>() && gameObject.GetComponent<Outline>().IsNull<Outline>() ) {
                     _outlineComponent = gameObject.AddComponent<Outline>();
                     _outlineComponent.OutlineMode = Outline.Mode.OutlineVisible;
                 }
@@ -48,10 +57,11 @@ namespace dnSR_Coding
             }
         }
 
+        #endregion
+
         #region DEBUG
 
-        [Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
-        [SerializeField] private bool _isDebuggable = true;
+        [SerializeField, BoxGroup()] private bool _isDebuggable = true;
         public bool IsDebuggable => _isDebuggable;
 
         #endregion
@@ -70,7 +80,7 @@ namespace dnSR_Coding
             Interactor = null;
         }
 
-        #region Outline group
+        #region Outline handling
 
         public void DisplayOutline( float width = 1 )
         {
@@ -91,7 +101,7 @@ namespace dnSR_Coding
 
         #endregion
 
-        #region Mouse events group
+        #region Mouse events handling
 
         public void OnMouseEnter()
         {
@@ -99,7 +109,7 @@ namespace dnSR_Coding
             DisplayOutline( OutlineWidth );
 
             // Ajouter le changement de curseur => spécifique
-            EventManager.OnCursorHover( CursorRelatedAction );
+            EventManager.OnCursorHover( CursorSelectionType );
         }
 
         public void OnMouseOver()
@@ -115,7 +125,7 @@ namespace dnSR_Coding
             HideOutline();
 
             // Ajouter le changement de curseur => default
-            EventManager.OnCursorHover( Enums.Cursor_RelatedAction.Default );
+            EventManager.OnCursorHover( Enums.Cursor_SelectionType.Default );
         }
 
         

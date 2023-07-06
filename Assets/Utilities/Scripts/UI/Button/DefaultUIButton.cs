@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using dnSR_Coding.Utilities;
 using UnityEngine.UI;
-using NaughtyAttributes;
 
 namespace dnSR_Coding
 {
@@ -22,7 +21,7 @@ namespace dnSR_Coding
         // Let this at top.
         #region Debug
 
-        [Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
+        [Space( 10 ), /*HorizontalLine( .5f, EColor.Gray )*/]
         [SerializeField] private bool _isDebuggable = false;
         public bool IsDebuggable => _isDebuggable;
 
@@ -42,7 +41,7 @@ namespace dnSR_Coding
         [SerializeField] private Color _obstructorDisplayedColor;        
 
         [Header( "Clickable area settings" )]
-        [InfoBox( "The clickable area is defined by the component of _type Image attached to this transform" )]
+        //[InfoBox( "The clickable area is defined by the component of _type Image attached to this transform" )]
         [SerializeField, Range( -20, 0 )] private float _paddingOffset = 0;
 
         private Image _requiredImageComponent;
@@ -62,7 +61,10 @@ namespace dnSR_Coding
         }
         private void GetLinkedComponents()
         {
-            if ( _requiredImageComponent.IsNull() ) { _requiredImageComponent = GetComponent<Image>(); }
+            if ( _requiredImageComponent.IsNull<Image>()
+                && TryGetComponent( out Image imageComponent )) {
+                _requiredImageComponent = imageComponent; 
+            }
         }
 
         public abstract void OnClick();
@@ -102,14 +104,16 @@ namespace dnSR_Coding
 
         private void ApplySelectedLook()
         {
-            if ( !_isInteractive || _selectionTrs.IsNull() )
+            if ( !_isInteractive 
+                || _selectionTrs.IsNull<Transform>() )
             {
                 Debug.LogError( "Expected selection transform has not been found." );
                 return;
             }
 
-            Image selectionImage = _selectionTrs.GetComponent<Image>();
-            if ( selectionImage.color != _selectionColor ) { selectionImage.color = _selectionColor; }
+            if ( _selectionTrs.TryGetComponent( out Image imageComponent ) ) {
+                imageComponent.SetColor( _selectionColor );
+            }
         }
 
         private void DisplaySelection()
@@ -118,16 +122,18 @@ namespace dnSR_Coding
 
             this.Debugger( "Display selection." );            
 
-            if ( !_selectionTrs.IsNull() ) { _selectionTrs.gameObject.TryToDisplay(); }
+            if ( !_selectionTrs.IsNull<Transform>() ) {
+                _selectionTrs.gameObject.Display(); 
+            }
         }
 
         private void HideSelection()
         {
             this.Debugger( "Hide selection." );
 
-            if ( !_selectionTrs.IsNull() )
+            if ( !_selectionTrs.IsNull<Transform>() )
             {
-                _selectionTrs.gameObject.TryToHide();
+                _selectionTrs.gameObject.Hide();
                 _isSelected = false;
             }
         }
@@ -138,9 +144,9 @@ namespace dnSR_Coding
 
         private void DisplayObstructor()
         {
-            if ( _togglesOnInteraction && !_obstructor.gameObject.IsActive() )
-            {
-                _obstructor.gameObject.TryToDisplay();
+            if ( _togglesOnInteraction 
+                && !_obstructor.gameObject.IsActive() ) {
+                _obstructor.gameObject.Display();
             }
 
             SetObstructorColor( _obstructorDisplayedColor );
@@ -148,9 +154,9 @@ namespace dnSR_Coding
 
         private void HideObstructor()
         {
-            if ( _togglesOnInteraction && _obstructor.gameObject.IsActive() )
-            {
-                _obstructor.gameObject.TryToHide();
+            if ( _togglesOnInteraction 
+                && _obstructor.gameObject.IsActive() ) {
+                _obstructor.gameObject.Hide();
             }
 
             Color hiddenColor = new ( 0, 0, 0, 0 );
@@ -169,7 +175,7 @@ namespace dnSR_Coding
 
         private void SetClickableArea()
         {
-            if ( _requiredImageComponent.IsNull() )
+            if ( _requiredImageComponent.IsNull<Image>() )
             {
                 Debug.LogError( "No image component attached found, this mono requires one !", transform );
                 return;
@@ -180,7 +186,7 @@ namespace dnSR_Coding
 
         private void ApplyPaddingOffsetToClickableArea()
         {
-            if ( _requiredImageComponent.IsNull() ) 
+            if ( _requiredImageComponent.IsNull<Image>() ) 
             {
                 Debug.LogError( "No image component attached found, this mono requires one !", transform );
                 return; 

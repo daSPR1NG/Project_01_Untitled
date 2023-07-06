@@ -1,9 +1,5 @@
 using UnityEngine;
-using System.Collections;
-using dnSR_Coding.Utilities;
-using NaughtyAttributes;
 using UnityEditor;
-using dnSR_Coding.Attributes;
 
 namespace dnSR_Coding
 {

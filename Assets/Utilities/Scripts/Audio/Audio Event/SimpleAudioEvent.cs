@@ -9,11 +9,11 @@ namespace dnSR_Coding
     [CreateAssetMenu(fileName = "", menuName = "Scriptable Objects/Audio Events/Simple")]
     public class SimpleAudioEvent : AudioEvent
     {
-        [Header( "SETTINGS" ), HorizontalLine( .5f, EColor.Gray )]
+        [Header( "SETTINGS" )]
         [MinMaxSlider( -3, 3 )] public Vector2 Pitch = new ( 0, 1);
         [MinMaxSlider( 0, 1 )] public Vector2 Volume = new ( 1, 1 );
 
-        [Space( 4f ), HorizontalLine( .5f, EColor.Gray )]
+        [Space( 4f ), /*NaughtyAttributes.HorizontalLine( .5f, NaughtyAttributes.EColor.Gray )*/]
 
         public List<ClipData> Clips = new();
 
@@ -55,7 +55,7 @@ namespace dnSR_Coding
         {
             _chosenClip = Clips [ Random.Range( 0, Clips.Count ) ].Clip;
 
-            if ( Clips.Count == 0 || _chosenClip.IsNull() ) { return; }
+            if ( Clips.Count == 0 || _chosenClip.IsNull<SimpleAudioEvent>() ) { return; }
 
             source.clip = _chosenClip;
 
@@ -81,7 +81,7 @@ namespace dnSR_Coding
 
             for ( int i = Clips.Count - 1; i >= 0; i-- )
             {
-                if ( Clips [ i ].Clip.IsNull() ) continue;
+                if ( Clips [ i ].Clip.IsNull<AudioClip>() ) { continue; }
 
                 Clips [ i ].Name = i + " - " + Clips [ i ].Clip.GetName().ToUpper();
             }
