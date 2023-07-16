@@ -633,8 +633,7 @@ namespace dnSR_Coding.Utilities
         [MethodImpl( INLINE )]
         public static void LogIsEmpty<T>( this List<T> list ) 
         {
-            if( list.IsEmpty() )
-            {
+            if( list.IsEmpty() ) {
                 Debug.Log( $"{ list.ToString().Bolded() } is empty." );
             }
         }
@@ -652,7 +651,11 @@ namespace dnSR_Coding.Utilities
         public static bool IsNull<T>( this object obj )
         {
             bool isNull = obj is null || obj.Equals( null ) || obj == null;
-            if ( isNull ) { Debug.Log( $"Wanted object is null. {Helper.GetTypeName( typeof( T ) )}", ( Object ) obj ); }
+            if ( isNull ) { 
+                Debug.Log( 
+                    $"Component is null. {Helper.GetTypeName( typeof( T ) ).ToLogComponent()}", 
+                    ( Object ) obj );
+            }
             
             return isNull;
         }
@@ -662,14 +665,18 @@ namespace dnSR_Coding.Utilities
         /// </summary>
         /// <param name="b"></param>
         [MethodImpl( INLINE )] 
-        public static void Enable( this Behaviour b ) { if ( !b.enabled ) b.enabled = true; }
+        public static void Enable( this Behaviour b ) {
+            if ( !b.enabled ) b.enabled = true; 
+        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="b"></param>
         [MethodImpl( INLINE )] 
-        public static void Disable( this Behaviour b ) { if ( b.enabled ) b.enabled = false; }
+        public static void Disable( this Behaviour b ) {
+            if ( b.enabled ) b.enabled = false; 
+        }
 
         /// <summary>
         /// 

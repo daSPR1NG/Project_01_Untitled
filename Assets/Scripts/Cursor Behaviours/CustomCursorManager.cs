@@ -10,7 +10,8 @@ namespace dnSR_Coding
     public class CustomCursorManager : MonoBehaviour, IDebuggable
     {
         [SerializeField] private CursorLockMode _lockMode;
-        [SerializeField] private List<CustomCursorSetting> _customCursorSettings = new();
+        [SerializeField, LabeledArray( typeof( Enums.Cursor_SelectionType ) ) ] 
+        private List<CustomCursorSetting> _customCursorSettings = new();
         private CustomCursorSetting _currentSetting = null;
 
         private Enums.Cursor_SelectionType _currentRelatedAction;
@@ -21,7 +22,7 @@ namespace dnSR_Coding
 
         #region Debug
 
-        [Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
+        //[Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
         [SerializeField] private bool _isDebuggable = true;
         public bool IsDebuggable => _isDebuggable;
 
@@ -108,18 +109,14 @@ namespace dnSR_Coding
         /// <param name="relatedAction"></param>
         private void ExecuteCursorSpriteSequence()
         {
-            if ( _currentSetting.SequenceSprites.IsEmpty() )
+            if ( _currentSetting.SequenceSprites.IsEmpty() || _currentSetting.IsNull<CustomCursorSetting>() )
             {
-                _currentSetting.SequenceSprites.LogIsEmpty();
+                this.Debugger( "No setting set!"
+                    + ( _currentSetting.SequenceSprites.IsEmpty() ? "Sequence sprite is empty!" : "" ), DebugType.Error );
                 return;
             }
-            if ( _currentSetting.IsNull<CustomCursorSetting>() || _currentSetting.SequenceSprites.Count <= 1 )
-            {
-                this.Debugger( "No setting set or the current setting contains only one frame sprite" );
-                return; 
-            }
 
-            if ( _isLeftClickPressed ) { return; }
+            if ( _isLeftClickPressed || _currentSetting.SequenceSprites.Count <= 1 ) { return; }
 
             // Timer decremente
             _currentFrameTimer -= Helper.GetDeltaTime();

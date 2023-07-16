@@ -13,7 +13,7 @@ namespace dnSR_Coding
 
 		public void OnEnable()
 		{
-			_previewer = EditorUtility.CreateGameObjectWithHideFlags( "Audio preview", HideFlags.HideAndDontSave, typeof( AudioSource ) ).GetComponent<AudioSource>();
+            _previewer = UnityEditor.EditorUtility.CreateGameObjectWithHideFlags( "Audio preview", HideFlags.HideAndDontSave, typeof( AudioSource ) ).GetComponent<AudioSource>();
 
 			_showFields = false;
 		}
@@ -108,7 +108,7 @@ namespace dnSR_Coding
 
 			if ( _showFields && simpleAudioEvent.Clips.Count > 0 && GUILayout.Button( "REMOVE ALL CLIPS", clipManagementStyle, GUILayout.Height( 30 ) ) )
 			{
-				bool decision = EditorUtility.DisplayDialog(
+				bool decision = UnityEditor.EditorUtility.DisplayDialog(
 					"REMOVE ALL CLIPS",
 					"Are you sure want to remove all existing listed clips for " + simpleAudioEvent.name + "?",
 					"Yes, remove these clips.",
@@ -165,7 +165,7 @@ namespace dnSR_Coding
 					{
 						if ( _previewer.IsNull<AudioSource>() )
 						{
-							_previewer = EditorUtility.CreateGameObjectWithHideFlags(
+                            _previewer = UnityEditor.EditorUtility.CreateGameObjectWithHideFlags(
 								"Audio preview", HideFlags.HideAndDontSave, typeof( AudioSource ) ).GetComponent<AudioSource>();
 						}
 

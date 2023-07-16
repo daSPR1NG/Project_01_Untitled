@@ -8,10 +8,10 @@ namespace dnSR_Coding.Project
     [DisallowMultipleComponent]
     public class Plant : InteractiveObject, ISaveable, IDebuggable
     {
-        [SerializeField, /*ReadOnly*/] private string _id;
+        [SerializeField, ReadOnly, Foldout( "Plant Group" )] private string _id;
         public string ID { get => _id; set => _id = value; }
 
-        [SerializeField] private PlantSettings _plantSettings;
+        [SerializeField, Foldout( "Plant Group" )] private PlantSettings _plantSettings;
         private Enums.Plant_GrowingState _growingState = Enums.Plant_GrowingState.Seed;
         private float _currentLifeCycleValue;
 

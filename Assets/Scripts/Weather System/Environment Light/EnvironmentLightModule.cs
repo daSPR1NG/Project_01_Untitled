@@ -20,7 +20,7 @@ namespace dnSR_Coding
                 }
             }
 
-            [SerializeField, NamedArrayElement( typeof( Enums.EnvironmentLightIntensityType ) )] private string _name;
+            [SerializeField, LabeledArray( typeof( Enums.EnvironmentLightIntensityType ) )] private string _name;
 
             [field: Header( "Main" )]
             [SerializeField] private Enums.EnvironmentLightIntensityType _lightIntensity;

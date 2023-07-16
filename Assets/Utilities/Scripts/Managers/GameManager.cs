@@ -1,7 +1,8 @@
 using UnityEngine;
 using System;
-//using NaughtyAttributes;
+using NaughtyAttributes;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 namespace dnSR_Coding.Utilities
 {
@@ -10,21 +11,46 @@ namespace dnSR_Coding.Utilities
     ///<summary> GameManager description <summary>
     public class GameManager : Singleton<GameManager>, IDebuggable
     {
-        [Header( "Game State details" )]
-
+        [CenteredHeader( "Game State details" )]
         [SerializeField] private GameState _gameState = GameState.Playing;
+        [CenteredHeader( "Game State details" )]
         [SerializeField] private int _timeScale = 1;
 
-        [Header( "Debug section" )]
+        //[Header( "Debug section" )]
 
-        [SerializeField, /*NaughtyAttributes.ShowIf( "IsDebuggable" )*/]
+        [SerializeField, ShowIf( "IsDebuggable" )]
         private int _refreshRate = 60;
 
         public static Action<object> OnGameStateChanged;
 
+        public List<TestIndentation> _testIndentations = new(3);
+
+        [System.Serializable]
+        public class TestIndentation
+        {
+            [CenteredHeader( "Test - 1", true )]
+            public string Name = "Test - 1";
+            public TestIndentation2 TestIndentation2;
+        }
+
+        [System.Serializable]
+        public class TestIndentation2
+        {
+            [CenteredHeader( "Test - 2", 64 )]
+            public string Name = "Test - 2";
+            public TestIndentation3 TestIndentation3;
+        }
+
+        [System.Serializable]
+        public class TestIndentation3
+        {
+            [CenteredHeader( "Test - 3", true )]
+            public string Name = "Test - 3";
+        }
+
         #region Debug
 
-        [ Space( 10 ), /*HorizontalLine( .5f, EColor.Gray )*/]
+        [HorizontalLine( 1, 4, EditorColor.Grey )]
         [SerializeField] private bool _isDebuggable = false;
         public bool IsDebuggable => _isDebuggable;
 

@@ -161,7 +161,7 @@ namespace dnSR_Coding.Utilities
            GUIContent content = default,                                            // Content
            GUIStyle style = default,                                                // Style
            GUILayoutOption [] options = null,                                       // Size
-           Color backgroundColor = default,                                         // Color
+           Color backgroundColor = default,                                         // EditorColor
            System.Action OnClickingButton = null )                                  // Execution
         {
             GUI.backgroundColor = backgroundColor;
@@ -201,7 +201,7 @@ namespace dnSR_Coding.Utilities
         public static void DrawButton(
            GUIContent content = default,                                            // Content
            GUILayoutOption [] options = null,                                       // Size
-           Color backgroundColor = default,                                         // Color
+           Color backgroundColor = default,                                         // EditorColor
            System.Action OnClickingButton = null )                                  // Execution
         {
             GUI.backgroundColor = backgroundColor;

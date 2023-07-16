@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-namespace dnSR_Coding
+namespace dnSR_Coding.Utilities
 {
     ///<summary> LabeledArrayAttribute description <summary>
     public class LabeledArrayAttribute : PropertyAttribute

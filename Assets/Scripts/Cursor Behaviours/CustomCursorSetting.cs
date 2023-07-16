@@ -14,10 +14,10 @@ namespace dnSR_Coding
 
         [Header( "Click Pressed settings" )]
         [SerializeField] private bool _hasAPressedSprite = true;
-        [NaughtyAttributes.ShowIf( "_hasAPressedSprite" )] public Sprite PressedSprite;
+        [ShowIf( "_hasAPressedSprite" ), ShowAssetPreview] public Sprite PressedSprite;
 
         [Header( "Sequence settings" )]
-        public List<Sprite> SequenceSprites = new();
+        [ShowAssetPreview( 15, 15 )] public List<Sprite> SequenceSprites = new();
 
         public bool HasAPressedSprite => _hasAPressedSprite;
     }

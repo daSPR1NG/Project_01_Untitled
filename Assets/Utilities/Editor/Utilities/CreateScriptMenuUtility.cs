@@ -22,7 +22,7 @@ namespace dnSR_Coding.Utilities
         #endregion
         static void CreateMonoBehaviourMenuItem()
         {
-            string pathToNewFile = EditorUtility.SaveFilePanel( "Create Mono Behaviour", GetCurrentPath(), "NewMonoBehaviour.cs", "cs" );
+            string pathToNewFile = UnityEditor.EditorUtility.SaveFilePanel( "Create Mono Behaviour", GetCurrentPath(), "NewMonoBehaviour.cs", "cs" );
             string pathToTemplate = Application.dataPath + FOLDER_DIRECTORY + "/Mono/MonoBehaviourTemplate.txt";
 
             MakeScriptFromTemplate( pathToNewFile, pathToTemplate );
@@ -38,7 +38,7 @@ namespace dnSR_Coding.Utilities
         #endregion
         static void CreateAbstractClassMenuItem()
         {
-            string pathToNewFile = EditorUtility.SaveFilePanel( "Create Abstract Class", GetCurrentPath(), "NewAbstractClass.cs", "cs" );
+            string pathToNewFile = UnityEditor.EditorUtility.SaveFilePanel( "Create Abstract Class", GetCurrentPath(), "NewAbstractClass.cs", "cs" );
             string pathToTemplate = Application.dataPath + FOLDER_DIRECTORY + "/Mono/AbstractClassTemplate.txt";
 
             MakeScriptFromTemplate( pathToNewFile, pathToTemplate );
@@ -54,7 +54,7 @@ namespace dnSR_Coding.Utilities
         #endregion
         static void CreateScriptableObjectMenuItem()
         {
-            string pathToNewFile = EditorUtility.SaveFilePanel( "Create ScriptableObject", GetCurrentPath(), "NewScriptableObject.cs", "cs" );
+            string pathToNewFile = UnityEditor.EditorUtility.SaveFilePanel( "Create ScriptableObject", GetCurrentPath(), "NewScriptableObject.cs", "cs" );
             string pathToTemplate = Application.dataPath + FOLDER_DIRECTORY + "/Mono/ScriptableObjectTemplate.txt";
 
             MakeScriptFromTemplate( pathToNewFile, pathToTemplate );
@@ -70,7 +70,7 @@ namespace dnSR_Coding.Utilities
         #endregion
         static void CreateInterfaceMenuItem()
         {
-            string pathToNewFile = EditorUtility.SaveFilePanel( "Create Interface", GetCurrentPath(), "NewInterface.cs", "cs" );
+            string pathToNewFile = UnityEditor.EditorUtility.SaveFilePanel( "Create Interface", GetCurrentPath(), "NewInterface.cs", "cs" );
             string pathToTemplate = Application.dataPath + FOLDER_DIRECTORY + "/Mono/InterfaceTemplate.txt";
 
             MakeScriptFromTemplate( pathToNewFile, pathToTemplate );
@@ -82,7 +82,7 @@ namespace dnSR_Coding.Utilities
 
         #region Editor Related
 
-        #region Editor Class
+        #region Default Editor Class
 
         #region Menu Items
         [MenuItem( "Assets/Create Script Menu/Editor/Create Editor" )]
@@ -90,8 +90,24 @@ namespace dnSR_Coding.Utilities
         #endregion
         static void CreateEditorMenuItem()
         {
-            string pathToNewFile = EditorUtility.SaveFilePanel( "Create Editor", GetCurrentPath(), "NewEditor.cs", "cs" );
+            string pathToNewFile = UnityEditor.EditorUtility.SaveFilePanel( "Create Editor", GetCurrentPath(), "NewEditor.cs", "cs" );
             string pathToTemplate = Application.dataPath + FOLDER_DIRECTORY + "/Editor/EditorTemplate.txt";
+
+            MakeScriptFromTemplate( pathToNewFile, pathToTemplate );
+        }
+
+        #endregion
+
+        #region Editor Attribute
+
+        #region Menu Items
+        [MenuItem( "Assets/Create Script Menu/Editor/Create Attribute" )]
+        [MenuItem( "Create Script Menu/Editor/Create Attribute" )]
+        #endregion
+        static void CreateAttributeMenuItem()
+        {
+            string pathToNewFile = UnityEditor.EditorUtility.SaveFilePanel( "Create Attribute", GetCurrentPath(), "NewAttribute.cs", "cs" );
+            string pathToTemplate = Application.dataPath + FOLDER_DIRECTORY + "/Editor/AttributeTemplate.txt";
 
             MakeScriptFromTemplate( pathToNewFile, pathToTemplate );
         }
@@ -106,8 +122,24 @@ namespace dnSR_Coding.Utilities
         #endregion
         static void CreatePropertyDrawerMenuItem()
         {
-            string pathToNewFile = EditorUtility.SaveFilePanel( "Create Property Drawer", GetCurrentPath(), "NewPropertyDrawer.cs", "cs" );
+            string pathToNewFile = UnityEditor.EditorUtility.SaveFilePanel( "Create Property Drawer", GetCurrentPath(), "NewPropertyDrawer.cs", "cs" );
             string pathToTemplate = Application.dataPath + FOLDER_DIRECTORY + "/Editor/PropertyDrawerTemplate.txt";
+
+            MakeScriptFromTemplate( pathToNewFile, pathToTemplate );
+        }
+
+        #endregion
+
+        #region Decorator Drawer
+
+        #region Menu Items
+        [MenuItem( "Assets/Create Script Menu/Editor/Create Decorator Drawer" )]
+        [MenuItem( "Create Script Menu/Editor/Create Decorator Drawer" )]
+        #endregion
+        static void CreateDecoratorDrawerMenuItem()
+        {
+            string pathToNewFile = UnityEditor.EditorUtility.SaveFilePanel( "Create Decorator Drawer", GetCurrentPath(), "NewDecoratorDrawer.cs", "cs" );
+            string pathToTemplate = Application.dataPath + FOLDER_DIRECTORY + "/Editor/DecoratorDrawerTemplate.txt";
 
             MakeScriptFromTemplate( pathToNewFile, pathToTemplate );
         }

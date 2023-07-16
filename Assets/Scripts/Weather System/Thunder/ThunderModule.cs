@@ -27,7 +27,7 @@ namespace dnSR_Coding
                 }
             }
 
-            [SerializeField, NamedArrayElement( typeof( Enums.ThunderType ) )] private string _name;
+            [SerializeField, LabeledArray( typeof( Enums.ThunderType ) )] private string _name;
 
             [field: Header( "Main" )]
             [SerializeField] private Enums.ThunderType _associatedThunderType;
@@ -54,7 +54,7 @@ namespace dnSR_Coding
 
         #region Debug
 
-        [Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
+        //[Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
         [SerializeField] private bool _isDebuggable = true;
         public bool IsDebuggable => _isDebuggable;
 

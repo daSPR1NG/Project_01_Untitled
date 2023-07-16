@@ -4,7 +4,7 @@ using UnityEditor;
 namespace dnSR_Coding
 {
     ///<summary> #SCRIPTNAME# description <summary>
-    [CustomEditor(typeof(#SCRIPTNAMEWITHOUTEDITOR#))]
+    [CustomEditor( typeof( #SCRIPTNAMEWITHOUTEDITOR# ) )]
     public class #SCRIPTNAME# : Editor
     {
         public override void OnInspectorGUI()

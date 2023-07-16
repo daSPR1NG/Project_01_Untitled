@@ -6,7 +6,7 @@ using dnSR_Coding.Utilities;
 namespace dnSR_Coding.Attributes.Drawer
 {
     [CustomPropertyDrawer( typeof( ScriptableObject ), true )]
-    public class ScriptableObjectDrawer : PropertyDrawer
+    public class ScriptableObjectPropertyDrawer : PropertyDrawer
     {
         // Static foldout dictionary
         private static readonly Dictionary<System.Type, bool> foldoutByType = new();

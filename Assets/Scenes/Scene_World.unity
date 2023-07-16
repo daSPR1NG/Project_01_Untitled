@@ -12413,7 +12413,7 @@ GameObject:
   - component: {fileID: 1085670133}
   - component: {fileID: 1085670132}
   m_Layer: 0
-  m_Name: '!: Data Save Manager'
+  m_Name: Data Save Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12777,7 +12777,7 @@ GameObject:
   - component: {fileID: 1345959961}
   - component: {fileID: 1345959962}
   m_Layer: 0
-  m_Name: ': Cursor System Manager'
+  m_Name: Cursor System Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13027,7 +13027,7 @@ GameObject:
   - component: {fileID: 1542700098}
   - component: {fileID: 1542700097}
   m_Layer: 0
-  m_Name: '!: Game Manager'
+  m_Name: Game Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13048,6 +13048,12 @@ MonoBehaviour:
   _gameState: 0
   _timeScale: 1
   _refreshRate: 60
+  _testIndentations:
+  - Name: Test - 1
+    TestIndentation2:
+      Name: Test - 2
+      TestIndentation3:
+        Name: Test - 3
   _isDebuggable: 1
 --- !u!4 &1542700098
 Transform:
@@ -13191,7 +13197,7 @@ GameObject:
   - component: {fileID: 1569963348}
   - component: {fileID: 1569963347}
   m_Layer: 0
-  m_Name: EventSystem
+  m_Name: Event System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13262,7 +13268,7 @@ GameObject:
   - component: {fileID: 1592639151}
   - component: {fileID: 1592639156}
   m_Layer: 0
-  m_Name: MainCamera
+  m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18850,7 +18856,7 @@ GameObject:
   - component: {fileID: 1780592913}
   - component: {fileID: 1780592912}
   m_Layer: 0
-  m_Name: ': Environment Systems'
+  m_Name: Environment Systems
   m_TagString: Untagged
   m_Icon: {fileID: 7148428337604731935, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0

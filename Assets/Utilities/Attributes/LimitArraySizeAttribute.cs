@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-namespace dnSR_Coding
+namespace dnSR_Coding.Utilities
 {
     ///<summary> LimitArraySizeAttribute description <summary>
     [AttributeUsage( AttributeTargets.Field, Inherited = true, AllowMultiple = true )]

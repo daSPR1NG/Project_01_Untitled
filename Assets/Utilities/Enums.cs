@@ -22,7 +22,7 @@ public static class Enums
 
     public enum Cursor_SelectionType
     {
-        Default, Default_Pressed, 
+        Default, 
         Interaction,
     }
 

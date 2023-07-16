@@ -33,7 +33,7 @@ namespace dnSR_Coding
 
         #region DEBUG
 
-        [Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
+        //[Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
         [SerializeField] private bool _isDebuggable = true;
         public bool IsDebuggable => _isDebuggable;
 

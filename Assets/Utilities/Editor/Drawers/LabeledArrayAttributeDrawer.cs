@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 
-namespace dnSR_Coding
+namespace dnSR_Coding.Utilities
 {
     ///<summary> LabeledArrayDrawer description <summary>
     [CustomPropertyDrawer(typeof( LabeledArrayAttribute ), true)]

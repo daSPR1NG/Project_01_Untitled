@@ -21,7 +21,7 @@ namespace dnSR_Coding
 
         #region DEBUG
 
-        [Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
+        //[Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
         [SerializeField] private bool _isDebuggable = true;
         public bool IsDebuggable => _isDebuggable;
 
@@ -141,7 +141,7 @@ namespace dnSR_Coding
         [Button( "Open Save file " )]
         public void OpenSaveFile()
         {
-            EditorUtility.OpenWithDefaultApp( Application.persistentDataPath + SAVE_DIRECTORY + SAVE_FILE_NAME );
+            UnityEditor.EditorUtility.OpenWithDefaultApp( Application.persistentDataPath + SAVE_DIRECTORY + SAVE_FILE_NAME );
         }
 #endif
     }

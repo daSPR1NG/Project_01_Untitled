@@ -23,9 +23,9 @@ namespace dnSR_Coding
                 }
             }
 
-            [SerializeField, NamedArrayElement( typeof( Enums.RainType ) )] private string _name;
+            [SerializeField, LabeledArray( typeof( Enums.RainType ) )] private string _name;
 
-            [field: Header( "Main" )]
+            [field: Header( "Main" , true )]
             [SerializeField] private Enums.RainType _associatedRainType;
             [field: SerializeField, Range( 0, 500 )]
             public float ParticleAmount { get; private set; }
