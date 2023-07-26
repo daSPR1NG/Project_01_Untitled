@@ -10,8 +10,8 @@ namespace dnSR_Coding
     public class SimpleAudioEvent : AudioEvent
     {
         [Header( "SETTINGS" )]
-        [MinMaxSlider( -3, 3 )] public Vector2 Pitch = new ( 0, 1);
-        [MinMaxSlider( 0, 1 )] public Vector2 Volume = new ( 1, 1 );
+        [NaughtyAttributes.MinMaxSlider( -3, 3 )] public Vector2 Pitch = new ( 0, 1);
+        [NaughtyAttributes.MinMaxSlider( 0, 1 )] public Vector2 Volume = new( 1, 1 );
 
         [Space( 4f ), /*NaughtyAttributes.HorizontalLine( .5f, NaughtyAttributes.EColor.Gray )*/]
 

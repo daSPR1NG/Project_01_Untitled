@@ -31,8 +31,8 @@ namespace dnSR_Coding
 
             [field: Header( "Main" )]
             [SerializeField] private Enums.Thunder_Type _associatedThunderType;
-            [SerializeField, MinMaxSlider( 0, 1 )] private Vector2 _flickeringRate;
-            [SerializeField, MinMaxSlider( 0, 5 )] private Vector2 _timerBetweenConsecutiveApplications;
+            [SerializeField, NaughtyAttributes.MinMaxSlider( 0, 1 )] private Vector2 _flickeringRate;
+            [SerializeField, NaughtyAttributes.MinMaxSlider( 0, 5 )] private Vector2 _timerBetweenConsecutiveApplications;
             [SerializeField] private List<AnimationCurve> _flickeringCurves;
 
             [field: Header( "Audio" )]

@@ -1,6 +1,5 @@
 using UnityEngine;
 using System;
-using NaughtyAttributes;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
@@ -18,7 +17,7 @@ namespace dnSR_Coding.Utilities
 
         //[Header( "Debug section" )]
 
-        [SerializeField, ShowIf( "IsDebuggable" )]
+        [SerializeField, NaughtyAttributes.ShowIf( "IsDebuggable" )]
         private int _refreshRate = 60;
 
         public static Action<object> OnGameStateChanged;
@@ -28,11 +27,13 @@ namespace dnSR_Coding.Utilities
         [System.Serializable]
         public class TestIndentation
         {
-            [CenteredHeader( "Test - 1", true )]
-            public string Name = "Test - 1";
-            [NotNull]
-            public GameObject Go;
-            public TestIndentation2 TestIndentation2;
+            //[CenteredHeader( "Test - 1", true )]
+            //public string Name = "Test - 1";
+            //[NotNull]
+            //public GameObject Go;
+            [MinMaxSlider( 1, 5 )]
+            public Vector2 TestMinMax;
+            public TestIndentation2 TestIndentation2;            
         }
 
         [System.Serializable]

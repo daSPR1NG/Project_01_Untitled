@@ -13049,8 +13049,7 @@ MonoBehaviour:
   _timeScale: 1
   _refreshRate: 60
   _testIndentations:
-  - Name: Test - 1
-    Go: {fileID: 0}
+  - TestMinMax: {x: 1.981836, y: 2.963672}
     TestIndentation2:
       Name: Test - 2
       TestIndentation3:
