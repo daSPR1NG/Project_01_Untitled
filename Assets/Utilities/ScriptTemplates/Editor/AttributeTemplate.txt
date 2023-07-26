@@ -1,10 +1,10 @@
 using UnityEngine;
-using UnityEditor;
+using System;
 
 namespace dnSR_Coding
 {
     ///<summary> #SCRIPTNAME# description <summary>
-    //[AttributeUsage( AttributeTargets.?, Inherited = ?, AllowMultiple = ? )]
+    [AttributeUsage( AttributeTargets.Field, Inherited = false, AllowMultiple = true )]
     public class #SCRIPTNAME# : PropertyAttribute
     {
         public #SCRIPTNAME# ()

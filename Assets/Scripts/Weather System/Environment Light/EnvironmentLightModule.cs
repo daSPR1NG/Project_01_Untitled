@@ -20,10 +20,10 @@ namespace dnSR_Coding
                 }
             }
 
-            [SerializeField, LabeledArray( typeof( Enums.EnvironmentLightIntensityType ) )] private string _name;
+            [SerializeField, LabeledArray( typeof( Enums.Environment_LightIntensity_Type ) )] private string _name;
 
             [field: Header( "Main" )]
-            [SerializeField] private Enums.EnvironmentLightIntensityType _lightIntensity;
+            [SerializeField] private Enums.Environment_LightIntensity_Type _lightIntensity;
             [field: SerializeField, Range( 0, 1 )]
             public float Intensity { get; private set; }
         }
@@ -34,7 +34,7 @@ namespace dnSR_Coding
 
         private Tween _lightIntensityTween;
 
-        public void ApplySettings( Enums.EnvironmentLightIntensityType lightIntensity, LightController mainLightController )
+        public void ApplySettings( Enums.Environment_LightIntensity_Type lightIntensity, LightController mainLightController )
         {
             EnvironmentLightSettings settings = GetSettingsByID( ( int ) lightIntensity );
             if ( settings.IsNull<EnvironmentLightSettings>() )

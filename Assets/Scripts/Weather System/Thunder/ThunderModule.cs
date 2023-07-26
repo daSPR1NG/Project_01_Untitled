@@ -27,10 +27,10 @@ namespace dnSR_Coding
                 }
             }
 
-            [SerializeField, LabeledArray( typeof( Enums.ThunderType ) )] private string _name;
+            [SerializeField, LabeledArray( typeof( Enums.Thunder_Type ) )] private string _name;
 
             [field: Header( "Main" )]
-            [SerializeField] private Enums.ThunderType _associatedThunderType;
+            [SerializeField] private Enums.Thunder_Type _associatedThunderType;
             [SerializeField, MinMaxSlider( 0, 1 )] private Vector2 _flickeringRate;
             [SerializeField, MinMaxSlider( 0, 5 )] private Vector2 _timerBetweenConsecutiveApplications;
             [SerializeField] private List<AnimationCurve> _flickeringCurves;
@@ -60,7 +60,7 @@ namespace dnSR_Coding
 
         #endregion
 
-        public void ApplySettings( MonoBehaviour monoBehaviour, Enums.ThunderType thunderType, LightController thunderLightController, Color mainLightColor )
+        public void ApplySettings( MonoBehaviour monoBehaviour, Enums.Thunder_Type thunderType, LightController thunderLightController, Color mainLightColor )
         {
             if ( !thunderCoroutine.IsNull<Coroutine>() ) { return; }
 

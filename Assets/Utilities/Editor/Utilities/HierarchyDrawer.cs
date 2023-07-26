@@ -12,12 +12,16 @@ namespace dnSR_Coding
     public static class HierarchyDrawer
     {
         private static bool _isInitialized = false;
-        private static InstanceInfo _currentItem;
-        private static Dictionary<int, InstanceInfo> _sceneInstances = new ();
+        private static InstanceInfo _currentInstanceInfo;
+        private static readonly Dictionary<int, InstanceInfo> _sceneInstances = new ();
+
+        private const int ICON_SIZE = 16;
+        private const float SEPARATOR_HEIGHT = 1f;
+        private const float LABEL_BACKGROUND_HEIGHT_REDUCTION = 2f;
+        private const float ELEMENTS_WIDTH_OFFSET = 8f;
 
         static HierarchyDrawer() {
             Init();
-            Debug.Log( _isInitialized );
         }
 
         [Serializable]
@@ -25,7 +29,7 @@ namespace dnSR_Coding
         {
             public string GoName;
             public bool IsGoActive;
-            public Color HierarchyColor;
+            public EditorColor HierarchyColor;
         }
 
         private static void Init()
@@ -38,59 +42,34 @@ namespace dnSR_Coding
 
             EditorApplication.hierarchyWindowItemOnGUI += DrawCore;
             EditorApplication.hierarchyChanged += GetHierarchyElements;
-            // Dessiner une ligne séparatrice entre ces "objets"
-            // Ajouter un toggle pour désactiver/activer l'objet dans la scène/game view
-            // Possibilité d'ajouter une icône représentant le.s composant.s principal.aux
         }
 
-        private static void DrawCore( int instanceID, Rect selectionRect )
+        private static void DrawCore( int instanceID, Rect rect )
         {
             _isInitialized = true;
 
             if ( !_sceneInstances.ContainsKey( instanceID ) ) { return; }
 
-            _currentItem = _sceneInstances [ instanceID ];
+            _currentInstanceInfo = _sceneInstances [ instanceID ];
             GameObject go = EditorUtility.InstanceIDToObject( instanceID ) as GameObject;
 
-            if ( go.IsNull<GameObject>() ) { return; }            
+            if ( go.IsNull() ) { return; }
 
-            Rect backgroundRect = new Rect( 
-                selectionRect.xMin, selectionRect.yMin,
-                        width: selectionRect.width - selectionRect.xMin + 8, 
-                        height: selectionRect.height );
+            Rect backgroundRect = new Rect(
+                rect.xMin,
+                rect.yMin + 1,
+                rect.width - rect.xMin + ELEMENTS_WIDTH_OFFSET,
+                rect.height - LABEL_BACKGROUND_HEIGHT_REDUCTION );
 
-            // Background
-            EditorGUI.DrawRect( backgroundRect, _currentItem.HierarchyColor );
-
-            // Label
-            GUIStyle style = new GUIStyle
-            {
-                alignment = TextAnchor.MiddleCenter,
-                fontStyle = FontStyle.Bold,
-                fontSize = 11,
-                normal = new GUIStyleState()
-                {
-                    textColor = Color.white,
-                }
-            };
-
-            EditorGUI.LabelField( backgroundRect, _currentItem.GoName.ToUpper(), style );
-
-            // Separators
-            EditorGUI.DrawRect(
-                    new Rect(
-                        selectionRect.xMin /*+ 16*/, selectionRect.yMax - 1,
-                        width: selectionRect.width - selectionRect.xMin + 8, height: .5f ),
-                    new Color( 1, 1, 1, 1f ) );
-
-            DrawVisibilityToggle( go, selectionRect, 2 );
-
-            Debug.Log( _isInitialized );
+            DrawElementsBackground( backgroundRect );
+            DrawLabel( backgroundRect, _currentInstanceInfo );
+            DrawSeparator( rect );
+            DrawVisibilityToggle( go, rect, 2 );
         }
 
         private static void GetHierarchyElements()
         {
-            if ( Application.isPlaying ) { return; }
+            //if ( Application.isPlaying ) { return; }
 
             _sceneInstances.Clear();
 
@@ -105,44 +84,38 @@ namespace dnSR_Coding
                 if ( activeScene.isLoaded )
                 {
                     sceneObjects = activeScene.GetRootGameObjects();
-                    Debug.Log( $"{sceneObjects.Length} " );
+                    //Debug.Log( $"{sceneObjects.Length} " );
 
                     for ( int j = 1; j < sceneObjects.Length; j++ )
                     {
                         GameObject go = sceneObjects [ j ];
 
                         if ( _sceneInstances.ContainsKey( go.GetInstanceID() )
-                            || go.IsNull<GameObject>() 
-                            || !go.transform.parent.IsNull<GameObject>()) {
+                            || go.IsNull() 
+                            || !go.transform.parent.IsNull()) {
                             continue;
                         }
-
-                        Color grey = new Color( .5f, .5f, .5f, 1f );
-                        Color black = new Color( 0, 0, 0, 1f );
 
                         InstanceInfo newInfo = new()
                         {
                             GoName = go.name,
                             IsGoActive = go.activeInHierarchy,
-                            HierarchyColor = j % 2 == 0 ? grey : black,
+                            HierarchyColor = j % 2 == 0 ? EditorColor.Black : EditorColor.Grey,
                         };
 
                         _sceneInstances.Add( go.GetInstanceID(), newInfo );
-                        
-                        Debug.Log( sceneObjects [ j ].name );
-                        Debug.Log( sceneObjects [ j ].GetInstanceID() );
                     }
                 }
-
-                Debug.Log( $"{_sceneInstances.Count}");
             }
         }
 
-        private static void DrawVisibilityToggle( GameObject go, Rect selectionRect, int xPosOffset = 1 )
+        private static void DrawVisibilityToggle( GameObject go, Rect rect, int xPosOffset = 1 )
         {
             Rect visibilityToggle = new Rect( 
-                selectionRect.xMax - 16 * xPosOffset, selectionRect.yMin, 
-                width: 16, height: 16 );
+                rect.xMax - ICON_SIZE * xPosOffset, 
+                rect.yMin, 
+                ICON_SIZE,
+                ICON_SIZE );
 
             bool wasGOActive = go.activeSelf;
             bool isGOActive = GUI.Toggle( visibilityToggle, wasGOActive, "" );
@@ -156,6 +129,45 @@ namespace dnSR_Coding
                     EditorUtility.SetDirty( go );
                 }
             }
+        }
+
+        private static void DrawElementsBackground( Rect rect ) 
+        {
+            Color color = EditorHelper.GetColor( _currentInstanceInfo.HierarchyColor );
+            // Background
+            EditorGUI.DrawRect( rect, color );
+        }
+
+        private static void DrawLabel( Rect rect, InstanceInfo instanceInfo ) {
+            // Label
+            GUIStyle style = new GUIStyle
+            {
+                alignment = TextAnchor.MiddleCenter,
+                fontStyle = FontStyle.Bold,
+                fontSize = 11,
+                clipping = TextClipping.Clip,
+                normal = new GUIStyleState()
+                {
+                    textColor = instanceInfo.HierarchyColor ==  EditorColor.Grey ? 
+                    EditorHelper.GetColor( EditorColor.Black ) : EditorHelper.GetColor( EditorColor.White ),
+                }
+            };
+
+            EditorGUI.LabelField( rect, _currentInstanceInfo.GoName.ToUpper(), style );
+        }
+
+        private static void DrawSeparator( Rect rect ) 
+        {
+            Color color = EditorHelper.GetColor( EditorColor.Orange );
+
+            // Separator
+            EditorGUI.DrawRect(
+                    new Rect(
+                        rect.xMin, 
+                        rect.yMax - ( LABEL_BACKGROUND_HEIGHT_REDUCTION / 2 ),
+                        rect.width - rect.xMin + ELEMENTS_WIDTH_OFFSET, 
+                        SEPARATOR_HEIGHT ), 
+                    color );
         }
     }
 }

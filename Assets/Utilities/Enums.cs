@@ -1,23 +1,27 @@
 public static class Enums
 {
-    public enum RainType 
+    public enum Rain_Type 
     { 
-        None, Low, Medium, High, Heavy 
+        None, 
+        Low, Medium, High, Heavy 
     }
 
-    public enum FogType
+    public enum Fog_Type
     {
-        None, Low, Medium, High
+        None, 
+        Low, Medium, High
     }
 
-    public enum ThunderType
+    public enum Thunder_Type
     {
-        None, Low, Medium, High
+        None, 
+        Low, Medium, High
     }
 
-    public enum EnvironmentLightIntensityType
+    public enum Environment_LightIntensity_Type
     {
-        Low, Medium, High, Max
+        Low, 
+        Medium, High, Max
     }
 
     public enum Cursor_SelectionType
@@ -26,12 +30,12 @@ public static class Enums
         Interaction,
     }
 
-    public enum LightType
+    public enum Light_Type
     {
         None, Main, Additional, Thunder, Other,
     }
 
-    public enum PlantType
+    public enum Plant_Type
     {
         None, Wheat, Carrot,
     }

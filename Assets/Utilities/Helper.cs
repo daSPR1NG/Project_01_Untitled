@@ -40,14 +40,14 @@ namespace dnSR_Coding.Utilities
             return _mainCamera;
         }
 
-        private static Transform _playerCamera;
-        public static Transform GetPlayerCamera()
+        private static Transform _playerCameraPivot;
+        public static Transform GetPlayerCameraPivot()
         {
-            if ( _playerCamera.IsNull<Transform>() ) { 
-                _playerCamera = GameObject.FindGameObjectWithTag( "PlayerCamera" ).transform; 
+            if ( _playerCameraPivot.IsNull<Transform>() ) { 
+                _playerCameraPivot = GameObject.FindGameObjectWithTag( "PlayerCamera" ).transform; 
             }
 
-            return _playerCamera;
+            return _playerCameraPivot;
         }
         #endregion
 
@@ -327,6 +327,21 @@ namespace dnSR_Coding.Utilities
 
         public static string GetTypeName( Type type ) {
             return type.Name.ToString();
+        }
+
+        #endregion
+
+        #region Color Utility
+
+        public static Color GetColorFromHexCode( string hexCode )
+        {
+            Color color = Color.white;
+
+            if ( ColorUtility.TryParseHtmlString( hexCode, out Color c ) ) {
+                color = c;
+            }
+
+            return color;
         }
 
         #endregion

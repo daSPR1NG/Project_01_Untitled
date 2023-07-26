@@ -20,10 +20,10 @@ namespace dnSR_Coding
                 }
             }
 
-            [SerializeField, LabeledArray( typeof( Enums.FogType ) )] private string _name;
+            [SerializeField, LabeledArray( typeof( Enums.Fog_Type ) )] private string _name;
 
             [field: Header( "Main" )]
-            [SerializeField] private Enums.FogType _associatedFogType;
+            [SerializeField] private Enums.Fog_Type _associatedFogType;
 
             [field: SerializeField, Range( 0, .085f )]
             public float FogDensity { get; private set; }
@@ -39,7 +39,7 @@ namespace dnSR_Coding
         private Tween _fogDensityTween;
         private Tween _fogColorTween;
 
-        public void ApplySettings( Enums.FogType fogType )
+        public void ApplySettings( Enums.Fog_Type fogType )
         {
             FogSettings settings = GetSettingsByID( ( int ) fogType );
             if ( settings.IsNull<FogSettings>() )

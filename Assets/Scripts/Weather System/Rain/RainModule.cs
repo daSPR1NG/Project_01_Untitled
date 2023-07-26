@@ -23,10 +23,10 @@ namespace dnSR_Coding
                 }
             }
 
-            [SerializeField, LabeledArray( typeof( Enums.RainType ) )] private string _name;
+            [SerializeField, LabeledArray( typeof( Enums.Rain_Type ) )] private string _name;
 
             [field: Header( "Main" , true )]
-            [SerializeField] private Enums.RainType _associatedRainType;
+            [SerializeField] private Enums.Rain_Type _associatedRainType;
             [field: SerializeField, Range( 0, 500 )]
             public float ParticleAmount { get; private set; }
 
@@ -42,7 +42,7 @@ namespace dnSR_Coding
 
         private Tween _rainRateTween;
 
-        public void ApplySettings( Enums.RainType rainType, GameObject rainGO )
+        public void ApplySettings( Enums.Rain_Type rainType, GameObject rainGO )
         {
             if ( rainGO.TryGetComponent( out ParticleSystem rainParticleSystem ) )
             {

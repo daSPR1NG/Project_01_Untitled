@@ -13,8 +13,8 @@ namespace dnSR_Coding.Utilities
     {
         [CenteredHeader( "Game State details" )]
         [SerializeField] private GameState _gameState = GameState.Playing;
-        [CenteredHeader( "Game State details" )]
-        [SerializeField] private int _timeScale = 1;
+        [Header( "Game State details", true )]
+        [SerializeField, ReadOnly] private int _timeScale = 1;
 
         //[Header( "Debug section" )]
 
@@ -30,6 +30,8 @@ namespace dnSR_Coding.Utilities
         {
             [CenteredHeader( "Test - 1", true )]
             public string Name = "Test - 1";
+            [NotNull]
+            public GameObject Go;
             public TestIndentation2 TestIndentation2;
         }
 

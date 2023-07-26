@@ -84,7 +84,7 @@ namespace dnSR_Coding.Utilities
         {
             cameraToFace = Helper.GetMainCamera();
 
-            if ( trs.IsNull<Transform>() || cameraToFace.IsNull<Camera>() ) { return; }
+            if ( trs.IsNull() || cameraToFace.IsNull<Camera>() ) { return; }
             
             trs.LookAt(
                 trs.position + cameraToFace.transform.rotation * Vector3.forward,
@@ -421,9 +421,10 @@ namespace dnSR_Coding.Utilities
         }
 
         [MethodImpl( INLINE )] 
-        public static string ToLogComponent( this string input )
+        public static string ToLogComponent( this string input, bool bolded = true )
         {
-            return input.ToUpper().Bolded().InColor( Color.green );
+            input = bolded ? input.ToUpper().Bolded().InColor( Color.green ) : input.ToUpper().InColor( Color.green );
+            return input;
         }
 
         [MethodImpl( INLINE )]
@@ -643,14 +644,15 @@ namespace dnSR_Coding.Utilities
         #region Generic
 
         /// <summary>
-        /// 
+        /// This IsNull is used to throw an additional log, informing what type is concerned.
         /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
+        /// <param name="obj"> This is the object you are checking weither it is null or not. </param>
+        /// <returns> True if the object is null, equals null or matches the operand == null </returns>
         [MethodImpl( INLINE )] 
         public static bool IsNull<T>( this object obj )
         {
             bool isNull = obj is null || obj.Equals( null ) || obj == null;
+
             if ( isNull ) { 
                 Debug.Log( 
                     $"Component is null. {Helper.GetTypeName( typeof( T ) ).ToLogComponent()}", 
@@ -658,6 +660,15 @@ namespace dnSR_Coding.Utilities
             }
             
             return isNull;
+        }
+
+        /// <summary>
+        /// This IsNull is used when not wanting a particular log message.
+        /// </summary>
+        /// <param name="obj"> This is the object you are checking weither it is null or not. </param>
+        /// <returns> True if the object is null, equals null or matches the operand == null </returns>
+        public static bool IsNull( this object obj ) {
+            return obj is null || obj.Equals( null ) || obj == null;
         }
 
         /// <summary>

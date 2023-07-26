@@ -1,6 +1,6 @@
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace dnSR_Coding.Utilities
 {
@@ -10,6 +10,11 @@ namespace dnSR_Coding.Utilities
         White,
         Grey,
         Black,
+        Orange, 
+        Red,
+        Yellow,
+        Green,
+        Blue,
     }
 
     ///<summary> EditorHelper description <summary>
@@ -19,16 +24,25 @@ namespace dnSR_Coding.Utilities
         {
             switch ( color )
             {
-                case EditorColor.Clear:
-                    return new Color32( 0, 0, 0, 0 );
-                case EditorColor.White:
-                    return new Color32( 255, 255, 255, 255 );
-                case EditorColor.Grey:
-                    return new Color32( 128, 128, 128, 255 );
-                case EditorColor.Black:
-                    return new Color32( 0, 0, 0, 255 );
-                default: 
-                    return new Color32( 0, 0, 0, 255 );
+                case EditorColor.Clear: return new Color32( 0, 0, 0, 0 );
+
+                case EditorColor.White: return Helper.GetColorFromHexCode( "#f3f5f0" );
+
+                case EditorColor.Grey: return Helper.GetColorFromHexCode( "#808080" );
+
+                case EditorColor.Black: return Helper.GetColorFromHexCode( "#2f2e2e" );
+
+                case EditorColor.Orange: return Helper.GetColorFromHexCode( "#ffae00" );
+
+                case EditorColor.Red: return Helper.GetColorFromHexCode( "#b32424" );
+
+                case EditorColor.Yellow: return Helper.GetColorFromHexCode( "#ffff19" );
+
+                case EditorColor.Green: return Helper.GetColorFromHexCode( "#61c928" );
+
+                case EditorColor.Blue: return Helper.GetColorFromHexCode( "#286ec9" );
+
+                default: return new Color32( 0, 0, 0, 255 );
             }
         }
 
@@ -50,6 +64,31 @@ namespace dnSR_Coding.Utilities
             texture.SetPixel( 0, 0, color );
             texture.Apply();
             return texture;
+        }
+
+        public static bool IsIndented() {
+            return EditorGUI.indentLevel >= 1;
+        }
+
+        public static Vector2 GetGUIContentSize( GUIContent content )
+        {
+            GUIStyle style = new();
+            return style.CalcSize( content );
+        }
+    }
+
+    public class InspectorUtility
+    {
+        public static InspectorMode GetInspectorMode()
+        {
+            InspectorMode inspectorMode;
+            
+            System.Type type = Assembly.GetAssembly( typeof( UnityEditor.Editor ) ).GetType( "UnityEditor.InspectorWindow" );
+            FieldInfo field = type.GetField( "m_InspectorMode", BindingFlags.NonPublic | BindingFlags.Instance );
+
+            inspectorMode = ( InspectorMode ) field.GetValue( EditorWindow.GetWindow( type ) );
+
+            return inspectorMode;
         }
     }
 }

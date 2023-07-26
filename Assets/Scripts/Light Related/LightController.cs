@@ -11,10 +11,10 @@ namespace dnSR_Coding
     [DisallowMultipleComponent]
     public class LightController : MonoBehaviour, IDebuggable
     {
-        [SerializeField] private Enums.LightType _lightType = Enums.LightType.None;
+        [SerializeField] private Enums.Light_Type _lightType = Enums.Light_Type.None;
         private Light _controllerLight;
 
-        public LightController( Enums.LightType lightType, Light light )
+        public LightController( Enums.Light_Type lightType, Light light )
         {
             _lightType = lightType;
             _controllerLight = light;
@@ -33,7 +33,7 @@ namespace dnSR_Coding
         void Awake() => SetControllerLight( GetComponent<Light>() );
         
         // Set all datas that need it at the start of the game
-        public void Init( Light light, Enums.LightType lightType )
+        public void Init( Light light, Enums.Light_Type lightType )
         {
             SetControllerLight( light );
             SetLightType( lightType );
@@ -189,11 +189,11 @@ namespace dnSR_Coding
             return !_controllerLight.IsNull<LightController>(); 
         }
 
-        public Enums.LightType GetLightType() {
+        public Enums.Light_Type GetLightType() {
             return _lightType;
         }
 
-        public void SetLightType( Enums.LightType lightType ) {
+        public void SetLightType( Enums.Light_Type lightType ) {
             _lightType = lightType;
         }
 

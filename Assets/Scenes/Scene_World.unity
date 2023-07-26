@@ -12335,7 +12335,7 @@ GameObject:
   - component: {fileID: 1083907519}
   - component: {fileID: 1083907523}
   m_Layer: 3
-  m_Name: Character_Goblin_Male (1)
+  m_Name: Character_Goblin_Male
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13050,6 +13050,7 @@ MonoBehaviour:
   _refreshRate: 60
   _testIndentations:
   - Name: Test - 1
+    Go: {fileID: 0}
     TestIndentation2:
       Name: Test - 2
       TestIndentation3:

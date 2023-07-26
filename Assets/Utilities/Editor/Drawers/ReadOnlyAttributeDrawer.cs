@@ -3,13 +3,15 @@ using UnityEditor;
 
 namespace dnSR_Coding
 {
-    ///<summary> #SCRIPTNAME# description <summary>
-    [CustomPropertyDrawer( typeof( #SCRIPTNAMEWITHOUTDRAWER# ), true )]
-    public class #SCRIPTNAME# : PropertyDrawer
+    ///<summary> ReadOnlyAttributeDrawer description <summary>
+    [CustomPropertyDrawer( typeof( ReadOnlyAttribute ), true )]
+    public class ReadOnlyAttributeDrawer : PropertyDrawer
     {
         public override void OnGUI( Rect position, SerializedProperty property, GUIContent label )
         {
-            base.OnGUI( position, property, label );
+            GUI.enabled = false;
+            EditorGUI.PropertyField( position, property, label, true );
+            GUI.enabled = true;
         }
 
         ///<inheritdoc/>

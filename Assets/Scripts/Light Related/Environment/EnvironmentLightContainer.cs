@@ -56,7 +56,7 @@ namespace dnSR_Coding
 
         private void SetMainLightReference()
         {
-            LightController mainLightController = GetLightControllerByType( Enums.LightType.Main );
+            LightController mainLightController = GetLightControllerByType( Enums.Light_Type.Main );
 
             if ( !mainLightController.IsNull<LightController>() )
             {
@@ -77,12 +77,18 @@ namespace dnSR_Coding
             LightController mainLightController = mainLightGO.GetComponent<LightController>();
             _environmentLightsReferencer.SetMainLightController( mainLightController );
 
-            mainLightController.Init( mainLightGO.GetComponent<Light>(), Enums.LightType.Main );
+            mainLightController.Init( mainLightGO.GetComponent<Light>(), Enums.Light_Type.Main );
             SetMainLightParametersAsDefault( mainLightController );
         }
-        private void SetMainLightParametersAsDefault( LightController controller )
-        {
-            controller.SetLightParameters( LightType.Directional, LightmapBakeType.Realtime, Color.white, 1, LightShadows.Soft, .1f, .85f );
+        private void SetMainLightParametersAsDefault( LightController controller ) {
+            controller.SetLightParameters(
+                LightType.Directional,
+                LightmapBakeType.Realtime,
+                Color.white,
+                1,
+                LightShadows.Soft,
+                .1f,
+                .85f );
         }
 
         #endregion
@@ -91,7 +97,7 @@ namespace dnSR_Coding
 
         private void SetAdditionalLightReference()
         {
-            LightController additionalLightController = GetLightControllerByType( Enums.LightType.Additional );
+            LightController additionalLightController = GetLightControllerByType( Enums.Light_Type.Additional );
 
             if ( !additionalLightController.IsNull<LightController>() )
             {
@@ -112,7 +118,7 @@ namespace dnSR_Coding
             LightController additionalLightController = additionalLightGO.GetComponent<LightController>();
             _environmentLightsReferencer.SetAdditionalLightController( additionalLightController );
 
-            additionalLightController.Init( additionalLightGO.GetComponent<Light>(), Enums.LightType.Additional );
+            additionalLightController.Init( additionalLightGO.GetComponent<Light>(), Enums.Light_Type.Additional );
             SetAdditionalLightParametersAsDefault( additionalLightController );
             additionalLightController.DisableLight();
         }
@@ -128,7 +134,7 @@ namespace dnSR_Coding
 
         private void SetThunderLightReference()
         {
-            LightController thunderLightController = GetLightControllerByType( Enums.LightType.Thunder );
+            LightController thunderLightController = GetLightControllerByType( Enums.Light_Type.Thunder );
 
             if ( !thunderLightController.IsNull<LightController>() )
             {
@@ -150,7 +156,7 @@ namespace dnSR_Coding
             LightController thunderLightController = thunderLightGO.GetComponent<LightController>();
             _environmentLightsReferencer.SetThunderLightController( thunderLightController );
 
-            thunderLightController.Init( thunderLightGO.GetComponent<Light>(), Enums.LightType.Thunder );
+            thunderLightController.Init( thunderLightGO.GetComponent<Light>(), Enums.Light_Type.Thunder );
             SetThunderLightParametersAsDefault( thunderLightController );
         }
         private void SetThunderLightParametersAsDefault( LightController controller )
@@ -164,7 +170,7 @@ namespace dnSR_Coding
             controller.SetLightParameters( LightType.Directional, LightmapBakeType.Mixed, LightRenderMode.ForceVertex, Color.white, 0, cullingMask );
         }
 
-        public LightController GetLightControllerByType( Enums.LightType type )
+        public LightController GetLightControllerByType( Enums.Light_Type type )
         {
             foreach ( Transform trs in transform )
             {

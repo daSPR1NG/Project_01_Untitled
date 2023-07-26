@@ -10,7 +10,7 @@ namespace dnSR_Coding
     public class HeaderAttribute : PropertyAttribute
     {
         public readonly string Header;
-        public readonly bool? HasUnderline;
+        public readonly bool HasUnderline;
 
         public HeaderAttribute( string header ) {
             Header = header.ToUpper();

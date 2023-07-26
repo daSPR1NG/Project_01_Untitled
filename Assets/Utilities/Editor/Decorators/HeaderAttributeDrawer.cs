@@ -54,10 +54,10 @@ namespace dnSR_Coding
         {
             float singleLineHeight = EditorGUIUtility.singleLineHeight * 1.5f;
 
-            float totalHeightWithUnderline = _horizontalLineAttribute.IsNull<HorizontalLineAttribute>() ? 
+            float totalHeightWithUnderline = _horizontalLineAttribute.IsNull() ? 
                 0 : singleLineHeight + _horizontalLineAttribute.Height + _horizontalLineAttribute.YOffset;
 
-            return _hasUnderline && !_horizontalLineAttribute.IsNull<HorizontalLineAttribute>() ? 
+            return _hasUnderline && !_horizontalLineAttribute.IsNull() ? 
                 totalHeightWithUnderline : singleLineHeight;
         }
     }

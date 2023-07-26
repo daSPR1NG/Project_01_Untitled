@@ -10,8 +10,8 @@ namespace dnSR_Coding.Utilities
         private const float DEFAULT_HEIGHT = 18;
 
         public readonly string Header;
-        public float Height { get; private set; }
-        public bool IsIndented { get; private set; } = false;
+        public readonly float Height = DEFAULT_HEIGHT;
+        public readonly bool IsIndented  = false;
 
         public CenteredHeaderAttribute( string header )
         {
