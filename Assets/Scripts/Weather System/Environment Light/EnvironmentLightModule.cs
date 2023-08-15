@@ -1,8 +1,9 @@
 using UnityEngine;
-using dnSR_Coding.Attributes;
 using System;
-using dnSR_Coding.Utilities;
 using DG.Tweening;
+using dnSR_Coding.Utilities.Helpers;
+using dnSR_Coding.Utilities.Attributes;
+
 
 namespace dnSR_Coding
 {

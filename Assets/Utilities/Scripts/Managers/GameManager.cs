@@ -2,38 +2,38 @@ using UnityEngine;
 using System;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using dnSR_Coding.Utilities.Helpers;
+using dnSR_Coding.Utilities.Interfaces;
+using dnSR_Coding.Utilities.Attributes;
 
-namespace dnSR_Coding.Utilities
+namespace dnSR_Coding.Utilities.Runtime
 {
-    public enum GameState { Playing, Paused }    
+    public enum GameState { Playing, Paused }
 
     ///<summary> GameManager description <summary>
     public class GameManager : Singleton<GameManager>, IDebuggable
     {
         [CenteredHeader( "Game State details" )]
         [SerializeField] private GameState _gameState = GameState.Playing;
-        [Header( "Game State details", true )]
+        [CstmHeader( "Game State details", true )]
         [SerializeField, ReadOnly] private int _timeScale = 1;
-
-        //[Header( "Debug section" )]
 
         [SerializeField, NaughtyAttributes.ShowIf( "IsDebuggable" )]
         private int _refreshRate = 60;
 
         public static Action<object> OnGameStateChanged;
 
-        public List<TestIndentation> _testIndentations = new(3);
+        [ClampValue] public float CountFLOAT;
+
+        public List<TestIndentation> _testIndentations = new( 3 );
 
         [System.Serializable]
         public class TestIndentation
         {
-            //[CenteredHeader( "Test - 1", true )]
-            //public string Name = "Test - 1";
-            //[NotNull]
-            //public GameObject Go;
-            [MinMaxSlider( 1, 5 )]
-            public Vector2 TestMinMax;
-            public TestIndentation2 TestIndentation2;            
+            //[ClampValue] public int CountINT;
+            public float CountF;
+            [ClampValue] public float CountFLOAT;
+            public TestIndentation2 TestIndentation2;
         }
 
         [System.Serializable]
@@ -41,6 +41,10 @@ namespace dnSR_Coding.Utilities
         {
             [CenteredHeader( "Test - 2", 64 )]
             public string Name = "Test - 2";
+            [CstmHeader( "Min Max", true ), MinMaxSlider( 1, 5 )]
+            public Vector2 TestMinMax;
+            [NaughtyAttributes.MinMaxSlider( 1, 5 )]
+            public Vector2 TestMinMaxNaughty;
             public TestIndentation3 TestIndentation3;
         }
 
@@ -48,7 +52,8 @@ namespace dnSR_Coding.Utilities
         public class TestIndentation3
         {
             [CenteredHeader( "Test - 3", true )]
-            public string Name = "Test - 3";
+            public float CountF;
+            [ClampValue] public float CountFLOAT;
         }
 
         #region Debug
@@ -80,8 +85,9 @@ namespace dnSR_Coding.Utilities
 
             if ( !input.IsNull<InputAction>() && input.WasPerformedThisFrame() )
             {
-                if ( !UIManager.Instance.IsNull<UIManager>() 
-                    && UIManager.Instance.AWindowIsDisplayed() ) {
+                if ( !UIManager.Instance.IsNull<UIManager>()
+                    && UIManager.Instance.AWindowIsDisplayed() )
+                {
                     return;
                 }
 
@@ -109,7 +115,7 @@ namespace dnSR_Coding.Utilities
         private void ResumeOrPauseTheGame()
         {
             if ( IsGamePaused() )
-            {                
+            {
                 //OnGameResumed?.Invoke();
                 return;
             }
@@ -147,7 +153,7 @@ namespace dnSR_Coding.Utilities
         {
             if ( !Application.isEditor ) { return; }
 
-            GUIContent timeScale = new ( _gameState.ToString() + " | Time Scale : " + Time.timeScale );
+            GUIContent timeScale = new( _gameState.ToString() + " | Time Scale : " + Time.timeScale );
 
             GUI.Label( new Rect( 15, 5, 150, 25 ), timeScale );
 

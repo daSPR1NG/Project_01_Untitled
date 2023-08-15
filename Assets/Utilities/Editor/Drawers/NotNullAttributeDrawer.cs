@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEditor;
-using dnSR_Coding.Utilities;
-using static dnSR_Coding.Utilities.EditorHelper;
+using dnSR_Coding.Utilities.Helpers;
+using dnSR_Coding.Utilities.Attributes;
+using static dnSR_Coding.Utilities.Helpers.EditorHelper;
 
-namespace dnSR_Coding
+namespace dnSR_Coding.Utilities.Editor
 {
     ///<summary> NotNullAttributeDrawer description <summary>
     [CustomPropertyDrawer( typeof( NotNullAttribute ), true )]
@@ -31,7 +32,8 @@ namespace dnSR_Coding
                     text = $" Null Reference Exception",
                 };
 
-                _contentSize = GetGUIContentSize( _errorMessageContent );
+                GUIStyle contentStyle = new GUIStyle();
+                _contentSize = contentStyle.GetGUIContentSize( _errorMessageContent );
 
                 DrawErrorBox( backgroundRect, _errorMessageContent );
                 DrawPropertyBackground( backgroundRect );
@@ -44,7 +46,7 @@ namespace dnSR_Coding
 
         private void DrawErrorBox( Rect rect, GUIContent content )
         {
-            _errorMessageRect = new Rect( 
+            _errorMessageRect = new Rect(
                 rect.x,
                 rect.y,
                 rect.width,
@@ -59,7 +61,7 @@ namespace dnSR_Coding
             {
                 GUIStyle style = new GUIStyle();
 
-                style.normal.background = CreateColorPixel( GetColor( EditorColor.Red ).WithAlpha( .35f ) );
+                style.normal.background = CreateBackground( EditorColor.Red );
 
                 _propertyRect = new Rect(
                     rect.x,
@@ -89,7 +91,8 @@ namespace dnSR_Coding
         }
 
         ///<inheritdoc/>
-        public override float GetPropertyHeight( SerializedProperty property, GUIContent label ) {
+        public override float GetPropertyHeight( SerializedProperty property, GUIContent label )
+        {
             return EditorGUI.GetPropertyHeight( property, label ) + _contentsOffset + DEFAULT_RECT_OFFSET;
         }
     }

@@ -1,0 +1,23 @@
+{
+    "name": "Utilities.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:776d03a35f1b52c4a9aed9f56d7b4229",
+        "GUID:f88fb04354076c646a4107a491394033",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:c28c478e87fc43548b7a622606114ffe",
+        "GUID:94883244a1b5e614e902f69bbda2c35c",
+        "GUID:b3b89f805a0f2a144a327e4f028c3362",
+        "GUID:07b79f75c21dd69459c24977219adcf1"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

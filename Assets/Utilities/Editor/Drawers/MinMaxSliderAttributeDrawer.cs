@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEditor;
-using dnSR_Coding.Utilities;
-using static dnSR_Coding.Utilities.EditorHelper;
+using dnSR_Coding.Utilities.Attributes;
+using static dnSR_Coding.Utilities.Helpers.EditorHelper;
 
-namespace dnSR_Coding
+namespace dnSR_Coding.Utilities.Editor
 {
     ///<summary> MinMaxSliderAttributeDrawer description <summary>
     [CustomPropertyDrawer( typeof( MinMaxSliderAttribute ), true )]
@@ -16,53 +16,63 @@ namespace dnSR_Coding
         {
             MinMaxSliderAttribute minMaxSliderAttribute = attribute as MinMaxSliderAttribute;
 
-            if ( _minValue < minMaxSliderAttribute.Min ) {
-                _minValue = minMaxSliderAttribute.Min;
-            }
+            float valueFieldWidth = GetDefaultPropertyFieldWidth() + GetXOffset_BasedOnIndentation( position );
+            float xOffsetFromLabel = EditorGUIUtility.labelWidth - GetXOffset_BasedOnIndentation( position );
 
-            if ( _maxValue < minMaxSliderAttribute.Min && !( _maxValue > minMaxSliderAttribute.Max ) 
-                || _maxValue > minMaxSliderAttribute.Max ) 
-            {
-                _maxValue = minMaxSliderAttribute.Min;
-            }
-
-            Debug.Log( $"Min: {minMaxSliderAttribute.Min}" );
-            Debug.Log( $"Max: {minMaxSliderAttribute.Max}" );
+            float sliderBaseWidth = GetInspectorWidthBasedOnIndentation( position );
+            float sliderPadding = 5;
+            float sliderXOffsetFromLabel = xOffsetFromLabel + valueFieldWidth + sliderPadding + DEFAULT_MIN_HORIZONTAL_LAYOUT_OFFSET;
+            float sliderSizeWithNoIndent = sliderBaseWidth - EditorGUIUtility.labelWidth - ( ( GetDefaultPropertyFieldWidth() + sliderPadding ) * 2 ) - DEFAULT_MIN_HORIZONTAL_LAYOUT_OFFSET;
 
             GUIContent labelName = new GUIContent( $"{property.displayName}" );
-            EditorGUI.LabelField( position, labelName );
 
-            EditorGUI.BeginProperty( position, label, property );
-
-            Rect minValueRect = new Rect( 
-                position.x + GetGUIContentSize( labelName ).x + 12, 
-                position.y, 
-                50, 
+            Rect minValueRect = new Rect(
+                position.xMin + xOffsetFromLabel + DEFAULT_MIN_HORIZONTAL_LAYOUT_OFFSET,
+                position.y,
+                valueFieldWidth,
                 GetPropertyHeight( property, label ) );
             _minValue = EditorGUI.FloatField( minValueRect, _minValue );
 
-            float sliderBaseWidth = IsIndented() ? GetInspectorWidth_BasedOnIndentation( position ) : GetInspectorWidth_BasedOnPositionX( position );
-            Rect sliderRect = new Rect( 
-                position.x + minValueRect.x - 6,
-                position.y,
-                sliderBaseWidth / 2 + 12,
-                GetPropertyHeight( property, label )
-                );
-            EditorGUI.MinMaxSlider( sliderRect, ref _minValue, ref _maxValue, minMaxSliderAttribute.Min, minMaxSliderAttribute.Max );
-
             Rect maxValueRect = new Rect(
-                position.xMax - 50,
+                position.xMax - valueFieldWidth,
                 position.y,
-                50,
+                valueFieldWidth,
                 GetPropertyHeight( property, label )
                 );
             _maxValue = EditorGUI.FloatField( maxValueRect, _maxValue );
 
-            if ( _maxValue < _minValue ) {
-                _maxValue = _minValue;
-            }
+            Rect sliderRect = new Rect(
+                position.xMin + sliderXOffsetFromLabel - GetXOffset_BasedOnIndentation( position ),
+                position.y,
+                sliderSizeWithNoIndent + ( GetXOffset_BasedOnIndentation( position ) * 2 ),
+                GetPropertyHeight( property, label )
+                );
+
+            EditorGUI.LabelField( position, labelName );
+
+            EditorGUI.BeginProperty( position, label, property );
+
+            CheckSliderValuesAndClampIt( minMaxSliderAttribute.Min, minMaxSliderAttribute.Max );
+            
+            EditorGUI.MinMaxSlider( sliderRect, ref _minValue, ref _maxValue, minMaxSliderAttribute.Min, minMaxSliderAttribute.Max );
 
             EditorGUI.EndProperty();
+        }
+
+        private void CheckSliderValuesAndClampIt( float minLimit, float maxLimit )
+        {
+            EditorGUI.BeginChangeCheck();
+            if ( _minValue < minLimit )
+            {
+                _minValue = minLimit;
+            }
+
+            if ( _maxValue < minLimit && !( _maxValue > maxLimit )
+                || _maxValue > maxLimit )
+            {
+                _maxValue = minLimit;
+            }
+            EditorGUI.EndChangeCheck();
         }
 
         ///<inheritdoc/>

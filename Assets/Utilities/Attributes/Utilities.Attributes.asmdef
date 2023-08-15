@@ -1,0 +1,16 @@
+{
+    "name": "Utilities.Attributes",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c28c478e87fc43548b7a622606114ffe"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

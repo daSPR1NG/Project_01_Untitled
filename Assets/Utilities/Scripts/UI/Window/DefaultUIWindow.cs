@@ -1,9 +1,10 @@
 using UnityEngine;
-using dnSR_Coding.Utilities;
 using System;
 using System.Collections;
-//using NaughtyAttributes;
 using UnityEngine.InputSystem;
+using dnSR_Coding.Utilities.Helpers;
+using dnSR_Coding.Utilities.Interfaces;
+using dnSR_Coding.Utilities.Runtime;
 
 namespace dnSR_Coding
 {

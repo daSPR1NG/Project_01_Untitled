@@ -13048,12 +13048,20 @@ MonoBehaviour:
   _gameState: 0
   _timeScale: 1
   _refreshRate: 60
+  TestMinMax: {x: 0, y: 0}
+  TestMinMaxNaughty: {x: 0, y: 0}
   _testIndentations:
   - TestMinMax: {x: 1.981836, y: 2.963672}
+    TestMinMaxNaughty: {x: 0, y: 0}
+    TestMinMaxVector2: {x: 0, y: 0}
     TestIndentation2:
       Name: Test - 2
+      TestMinMax: {x: 0, y: 0}
+      TestMinMaxNaughty: {x: 0, y: 0}
       TestIndentation3:
         Name: Test - 3
+        TestMinMax: {x: 0, y: 0}
+        TestMinMaxNaughty: {x: 0, y: 0}
   _isDebuggable: 1
 --- !u!4 &1542700098
 Transform:

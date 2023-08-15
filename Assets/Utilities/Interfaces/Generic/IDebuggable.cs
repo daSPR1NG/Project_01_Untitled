@@ -1,4 +1,4 @@
-namespace dnSR_Coding
+namespace dnSR_Coding.Utilities.Interfaces
 {
     ///<summary> If this interface is on an object, it means that this object is debuggable and can use Logs in console. <summary>
     public interface IDebuggable

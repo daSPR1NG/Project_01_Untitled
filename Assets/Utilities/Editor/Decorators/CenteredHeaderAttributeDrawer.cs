@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEditor;
-using static dnSR_Coding.Utilities.EditorHelper;
+using dnSR_Coding.Utilities.Helpers;
+using dnSR_Coding.Utilities.Attributes;
+using static dnSR_Coding.Utilities.Helpers.EditorHelper;
 
-namespace dnSR_Coding.Utilities
+namespace dnSR_Coding.Utilities.Editor
 {
     ///<summary> CenteredHeaderAttributeDrawer description <summary>
     [CustomPropertyDrawer( typeof( CenteredHeaderAttribute ), true )]
@@ -24,7 +26,7 @@ namespace dnSR_Coding.Utilities
             _height = ( float ) ( centeredHeaderAttribute?.Height );
             _isIndented = ( bool ) ( centeredHeaderAttribute?.IsIndented );
 
-            position.yMin += 10;
+            //position.yMin += 10;
 
             float fontRatio = EditorGUIUtility.currentViewWidth / MIN_WIDTH;            float fontSizePadding = _height - ( _height / 4 ) - PADDING_HEIGHT_OFFSET;
 
@@ -37,14 +39,13 @@ namespace dnSR_Coding.Utilities
                     fontRatio, fontSizePadding, 
                     EditorColor.Black );
 
-                style.Draw( 
+                style.Draw(
                     new Rect(
                         rect.x, rect.y,
-                        _isIndented ? 
-                        GetInspectorWidth_BasedOnIndentation( position ) : GetInspectorWidth_BasedOnPositionX( position ), 
-                        style.fixedHeight ),
+                     GetInspectorWidthBasedOnIndentation( position ),
+                     style.fixedHeight ),
                     new GUIContent( _header ),
-                    false, false, false, false);
+                    false, false, false, false );
             }
         }
 

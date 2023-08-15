@@ -1,4 +1,4 @@
-namespace dnSR_Coding.Interfaces.Gameplay
+namespace dnSR_Coding
 {
     ///<summary> IInteractable description <summary>
     public interface IInteractable

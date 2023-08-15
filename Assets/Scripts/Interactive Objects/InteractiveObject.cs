@@ -1,7 +1,7 @@
 using UnityEngine;
-using dnSR_Coding.Utilities;
-using dnSR_Coding.Interfaces.Gameplay;
 using NaughtyAttributes;
+using dnSR_Coding.Utilities.Helpers;
+using dnSR_Coding.Utilities.Interfaces;
 
 namespace dnSR_Coding
 {

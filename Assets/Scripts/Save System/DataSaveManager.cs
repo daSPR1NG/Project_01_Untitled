@@ -5,10 +5,11 @@ using System.Linq;
 using System.IO;
 using UnityEditor;
 using System;
-using dnSR_Coding.Utilities;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using dnSR_Coding.Utilities.Helpers;
+using dnSR_Coding.Utilities.Interfaces;
 
 namespace dnSR_Coding
 {

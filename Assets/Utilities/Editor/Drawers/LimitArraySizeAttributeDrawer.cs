@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEditor;
+using dnSR_Coding.Utilities.Attributes;
 
-namespace dnSR_Coding.Utilities
+namespace dnSR_Coding.Utilities.Editor
 {
     [CustomPropertyDrawer( typeof( LimitArraySizeAttribute ), true )]
     public class LimitArraySizeAttributeDrawer : PropertyDrawer

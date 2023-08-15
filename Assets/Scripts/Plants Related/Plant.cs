@@ -1,17 +1,18 @@
 using UnityEngine;
-using dnSR_Coding.Utilities;
-using NaughtyAttributes;
+using dnSR_Coding.Utilities.Helpers;
+using dnSR_Coding.Utilities.Interfaces;
+using dnSR_Coding.Utilities.Attributes;
 
-namespace dnSR_Coding.Project
+namespace dnSR_Coding
 {
     ///<summary> Plant description <summary>
     [DisallowMultipleComponent]
     public class Plant : InteractiveObject, ISaveable, IDebuggable
     {
-        [SerializeField, ReadOnly, Foldout( "Plant Group" )] private string _id;
+        [SerializeField, ReadOnly, NaughtyAttributes.Foldout( "Plant Group" )] private string _id;
         public string ID { get => _id; set => _id = value; }
 
-        [SerializeField, Foldout( "Plant Group" )] private PlantSettings _plantSettings;
+        [SerializeField, NaughtyAttributes.Foldout( "Plant Group" )] private PlantSettings _plantSettings;
         private Enums.Plant_GrowingState _growingState = Enums.Plant_GrowingState.Seed;
         private float _currentLifeCycleValue;
 

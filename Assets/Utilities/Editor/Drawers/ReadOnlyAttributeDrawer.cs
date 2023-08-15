@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEditor;
+using dnSR_Coding.Utilities.Attributes;
 
-namespace dnSR_Coding
+namespace dnSR_Coding.Utilities.Editor
 {
     ///<summary> ReadOnlyAttributeDrawer description <summary>
     [CustomPropertyDrawer( typeof( ReadOnlyAttribute ), true )]

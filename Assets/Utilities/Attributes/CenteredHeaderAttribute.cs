@@ -1,13 +1,13 @@
 using UnityEngine;
 using System;
 
-namespace dnSR_Coding.Utilities
+namespace dnSR_Coding.Utilities.Attributes
 {
     ///<summary> CenteredHeaderAttribute description <summary>
     [AttributeUsage( AttributeTargets.Field, Inherited = true, AllowMultiple = true )]
     public class CenteredHeaderAttribute : PropertyAttribute
     {
-        private const float DEFAULT_HEIGHT = 18;
+        private const float DEFAULT_HEIGHT = 20;
 
         public readonly string Header;
         public readonly float Height = DEFAULT_HEIGHT;

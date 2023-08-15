@@ -1,8 +1,9 @@
 using UnityEngine;
-using dnSR_Coding.Utilities;
 using UnityEngine.InputSystem;
+using dnSR_Coding.Utilities.Helpers;
+using dnSR_Coding.Utilities.Interfaces;
 
-namespace dnSR_Coding
+namespace dnSR_Coding.Utilities.Runtime
 {
     ///<summary> PlayerInputsHelper description <summary>
     public class PlayerInputsHelper : Singleton<PlayerInputsHelper>, IDebuggable

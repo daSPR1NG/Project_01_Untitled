@@ -1,4 +1,4 @@
-using dnSR_Coding.Utilities;
+using dnSR_Coding.Utilities.Helpers;
 
 namespace dnSR_Coding
 {

@@ -1,8 +1,8 @@
 using System;
 using UnityEngine;
-using static dnSR_Coding.Utilities.EditorHelper;
+using dnSR_Coding.Utilities.Helpers;
 
-namespace dnSR_Coding.Utilities
+namespace dnSR_Coding.Utilities.Attributes
 {
     ///<summary> HorizontalLineAttribute description <summary>
     [AttributeUsage( AttributeTargets.Field, Inherited = true, AllowMultiple = true )]

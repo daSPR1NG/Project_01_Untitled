@@ -1,5 +1,5 @@
-using dnSR_Coding.Utilities;
 using UnityEngine;
+using dnSR_Coding.Utilities.Helpers;
 
 public class LightCookieMotion : MonoBehaviour
 {

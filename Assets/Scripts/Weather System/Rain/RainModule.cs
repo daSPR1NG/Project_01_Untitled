@@ -1,10 +1,11 @@
 using DG.Tweening;
-using dnSR_Coding.Attributes;
-using dnSR_Coding.Utilities;
 using NaughtyAttributes;
 using System;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
+using dnSR_Coding.Utilities.Helpers;
+using dnSR_Coding.Utilities.Attributes;
+using dnSR_Coding.Utilities.Runtime;
 using static UnityEngine.ParticleSystem;
 
 namespace dnSR_Coding
@@ -25,7 +26,7 @@ namespace dnSR_Coding
 
             [SerializeField, LabeledArray( typeof( Enums.Rain_Type ) )] private string _name;
 
-            [field: Header( "Main" , true )]
+            [field: CstmHeader( "Main" , true )]
             [SerializeField] private Enums.Rain_Type _associatedRainType;
             [field: SerializeField, Range( 0, 500 )]
             public float ParticleAmount { get; private set; }

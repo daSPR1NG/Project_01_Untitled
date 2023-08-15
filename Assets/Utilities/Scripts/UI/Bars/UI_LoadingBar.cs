@@ -1,13 +1,11 @@
 using UnityEngine;
-using System.Collections;
-using dnSR_Coding.Utilities;
+using dnSR_Coding.Utilities.Helpers;
 
 namespace dnSR_Coding
 {
     [DisallowMultipleComponent]
     public class UI_LoadingBar : UI_FilledBar
     {
-        
         private void Start() => Init();
 
         private void Init()

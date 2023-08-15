@@ -1,0 +1,16 @@
+{
+    "name": "Utilities.Helpers",
+    "rootNamespace": "",
+    "references": [
+        "Utilities.Interfaces"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

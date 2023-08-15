@@ -1,11 +1,15 @@
 {
-    "name": "Project",
+    "name": "ProjectScripts",
     "rootNamespace": "",
     "references": [
-        "GUID:e7fee0ab914dba54ca7544fbaec2ab08",
         "GUID:776d03a35f1b52c4a9aed9f56d7b4229",
         "GUID:f88fb04354076c646a4107a491394033",
-        "GUID:955607348bdaa784ba960c38e7dc2d8e"
+        "GUID:955607348bdaa784ba960c38e7dc2d8e",
+        "GUID:c28c478e87fc43548b7a622606114ffe",
+        "GUID:b3b89f805a0f2a144a327e4f028c3362",
+        "GUID:07b79f75c21dd69459c24977219adcf1",
+        "GUID:94883244a1b5e614e902f69bbda2c35c",
+        "GUID:2da702d4b0508834f8bc518d4b9941b7"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

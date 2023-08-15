@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using dnSR_Coding.Utilities;
+using dnSR_Coding.Utilities.Helpers;
 
-namespace dnSR_Coding.Attributes.Drawer
+namespace dnSR_Coding.Utilities.Editor
 {
     [CustomPropertyDrawer( typeof( ScriptableObject ), true )]
     public class ScriptableObjectPropertyDrawer : PropertyDrawer
@@ -12,7 +12,7 @@ namespace dnSR_Coding.Attributes.Drawer
         private static readonly Dictionary<System.Type, bool> foldoutByType = new();
 
         // Cached scriptable object _editor
-        private Editor _editor = null;
+        private UnityEditor.Editor _editor = null;
 
         public override void OnGUI( Rect position, SerializedProperty property, GUIContent label )
         {
@@ -44,7 +44,10 @@ namespace dnSR_Coding.Attributes.Drawer
 
                 // Draw object properties
                 if ( !_editor )
-                    Editor.CreateCachedEditor( property.objectReferenceValue, null, ref _editor );
+                {
+                    UnityEditor.Editor.CreateCachedEditor( property.objectReferenceValue, null, ref _editor );
+                }
+
                 _editor.OnInspectorGUI();
 
                 // Set indent back to what it was

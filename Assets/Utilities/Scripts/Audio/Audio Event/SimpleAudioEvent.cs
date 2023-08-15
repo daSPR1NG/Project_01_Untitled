@@ -1,9 +1,8 @@
-using dnSR_Coding.Utilities;
-using NaughtyAttributes;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
+using dnSR_Coding.Utilities.Helpers;
 
-namespace dnSR_Coding
+namespace dnSR_Coding.Utilities.Runtime
 {
     ///<summary> SimpleAudioEvent description <summary>
     [CreateAssetMenu(fileName = "", menuName = "Scriptable Objects/Audio Events/Simple")]

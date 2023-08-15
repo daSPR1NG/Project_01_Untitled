@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using dnSR_Coding.Utilities;
+using dnSR_Coding.Utilities.Helpers;
+using dnSR_Coding.Utilities.Interfaces;
 using UnityEngine.UI;
 
 namespace dnSR_Coding
