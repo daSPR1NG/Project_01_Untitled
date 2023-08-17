@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using dnSR_Coding.Utilities.Helpers;
 using dnSR_Coding.Utilities.Attributes;
 using dnSR_Coding.Utilities.Interfaces;
+using Sirenix.OdinInspector;
 
 namespace dnSR_Coding
 {
@@ -10,33 +11,36 @@ namespace dnSR_Coding
     [DisallowMultipleComponent]
     public class CustomCursorManager : MonoBehaviour, IDebuggable
     {
-        [SerializeField] private CursorLockMode _lockMode;
-        [SerializeField, LabeledArray( typeof( Enums.Cursor_SelectionType ) ) ] 
+        [SerializeField, PropertySpace( 5, 5 )] 
+        private CursorLockMode _lockMode = CursorLockMode.None;
+
+        [SerializeField]
+        [ListDrawerSettings( DraggableItems = false, ShowIndexLabels = false, ShowItemCount = true )]
         private List<CustomCursorSetting> _customCursorSettings = new();
+
         private CustomCursorSetting _currentSetting = null;
 
         private Enums.Cursor_SelectionType _currentRelatedAction;
         private bool _isLeftClickPressed = false;
 
-        private float _currentFrameTimer;
-        private int _currentFrame;
+        private float _currentFrameTimer = 0.03f;
+        private int _currentFrame = 0;
 
-        #region Debug
+        #region DEBUG
 
-        //[Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
-        [SerializeField] private bool _isDebuggable = true;
-        public bool IsDebuggable => _isDebuggable;
+        [field: SerializeField, FoldoutGroup( "Debug Section", Order = -1 )]
+        public bool IsDebuggable { get; set; } = true;
 
         #endregion
 
         #region Enable, Disable
 
-        void OnEnable() 
+        void OnEnable()
         {
             EventManager.OnCursorHover += SetCursorFirstAppearance_ByAction;
         }
 
-        void OnDisable() 
+        void OnDisable()
         {
             EventManager.OnCursorHover -= SetCursorFirstAppearance_ByAction;
         }
@@ -133,12 +137,12 @@ namespace dnSR_Coding
 
         private void SetCursorAppearance_OnLeftClickState()
         {
-            if ( Helper.IsLeftClickPressed() ) 
+            if ( Helper.IsLeftClickPressed() )
             {
                 _isLeftClickPressed = true;
                 SetCursor( _currentSetting.PressedSprite.texture, _currentSetting.HotspotOffset, CursorMode.Auto );
             }
-            else if ( Helper.IsLeftClickUnpressed() ) 
+            else if ( Helper.IsLeftClickUnpressed() )
             {
                 _isLeftClickPressed = false;
                 SetCursor( _currentSetting.SequenceSprites [ 0 ].texture, _currentSetting.HotspotOffset, CursorMode.Auto );
@@ -147,10 +151,10 @@ namespace dnSR_Coding
 
         private CustomCursorSetting GetCustomCursorSetting_ByType( Enums.Cursor_SelectionType relatedAction )
         {
-            if ( _customCursorSettings.IsEmpty() ) 
+            if ( _customCursorSettings.IsEmpty() )
             {
                 _customCursorSettings.LogIsEmpty();
-                return null; 
+                return null;
             }
 
             for ( int i = 0; i < _customCursorSettings.Count; i++ )

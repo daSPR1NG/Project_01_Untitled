@@ -6345,8 +6345,8 @@ MonoBehaviour:
   <IsInteractive>k__BackingField: 1
   <CursorSelectionType>k__BackingField: 0
   <IsItAlwaysSelectable>k__BackingField: 0
-  <OutlineWidth>k__BackingField: 5
-  _isDebuggable: 1
+  <OutlineWidth>k__BackingField: 3
+  <IsDebuggable>k__BackingField: 1
 --- !u!1 &686712234
 GameObject:
   m_ObjectHideFlags: 0
@@ -11550,7 +11550,7 @@ MonoBehaviour:
   <CursorSelectionType>k__BackingField: 2
   <IsItAlwaysSelectable>k__BackingField: 1
   <OutlineWidth>k__BackingField: 0.5
-  _isDebuggable: 1
+  <IsDebuggable>k__BackingField: 1
   _id: 875152fd-23de-47f3-aa6e-cbd7d8c1cb84
   _plantSettings: {fileID: 11400000, guid: 936d8d08479576a429c8c34fc0de995b, type: 2}
 --- !u!1 &771250963
@@ -12431,7 +12431,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6e7e9fe1103fe24dbf8740b90be1cc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isDebuggable: 0
+  <IsDebuggable>k__BackingField: 1
 --- !u!4 &1085670133
 Transform:
   m_ObjectHideFlags: 0
@@ -12814,7 +12814,7 @@ MonoBehaviour:
   _customCursorSettings:
   - {fileID: 11400000, guid: 29744f1c23233374893272f6d990384a, type: 2}
   - {fileID: 11400000, guid: 90ed120a06cff7a47bf323bad2daca44, type: 2}
-  _isDebuggable: 0
+  <IsDebuggable>k__BackingField: 1
 --- !u!1 &1394557565
 GameObject:
   m_ObjectHideFlags: 0
@@ -13048,21 +13048,7 @@ MonoBehaviour:
   _gameState: 0
   _timeScale: 1
   _refreshRate: 60
-  TestMinMax: {x: 0, y: 0}
-  TestMinMaxNaughty: {x: 0, y: 0}
-  _testIndentations:
-  - TestMinMax: {x: 1.981836, y: 2.963672}
-    TestMinMaxNaughty: {x: 0, y: 0}
-    TestMinMaxVector2: {x: 0, y: 0}
-    TestIndentation2:
-      Name: Test - 2
-      TestMinMax: {x: 0, y: 0}
-      TestMinMaxNaughty: {x: 0, y: 0}
-      TestIndentation3:
-        Name: Test - 3
-        TestMinMax: {x: 0, y: 0}
-        TestMinMaxNaughty: {x: 0, y: 0}
-  _isDebuggable: 1
+  <IsDebuggable>k__BackingField: 1
 --- !u!4 &1542700098
 Transform:
   m_ObjectHideFlags: 0
@@ -18772,24 +18758,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1752896025}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1752896027 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6383225993754793597, guid: a5618650894ff554eb884bfaecbfdffe,
-    type: 3}
-  m_PrefabInstance: {fileID: 1752896025}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1752896028 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3650060046088654870, guid: a5618650894ff554eb884bfaecbfdffe,
-    type: 3}
-  m_PrefabInstance: {fileID: 1752896025}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1752896029 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2057532772704251032, guid: a5618650894ff554eb884bfaecbfdffe,
-    type: 3}
-  m_PrefabInstance: {fileID: 1752896025}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1752896030 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4754077166574675771, guid: a5618650894ff554eb884bfaecbfdffe,
@@ -18808,17 +18776,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95c29e2dd1095164ba2b0d784d4d8284, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _childPositions:
-  - Name: Seed
-    Position: 0
-    ChildrenTrs: {fileID: 1752896029}
-  - Name: Sprout
-    Position: 1
-    ChildrenTrs: {fileID: 1752896028}
-  - Name: Plant
-    Position: 2
-    ChildrenTrs: {fileID: 1752896027}
-  _isDebuggable: 0
 --- !u!1 &1770998867
 GameObject:
   m_ObjectHideFlags: 0
@@ -18904,7 +18861,7 @@ MonoBehaviour:
   _timeOfDay: 60
   _mainLightIntensityShiftDurationOnDay: 1.25
   _mainLightIntensityShiftDurationOnNight: 1.25
-  _isDebuggable: 1
+  <IsDebuggable>k__BackingField: 1
 --- !u!114 &1780592913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18919,7 +18876,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _weatherPresets:
   - {fileID: 11400000, guid: 78955f9dc7804a841b678af680bbde9a, type: 2}
-  _isDebuggable: 1
+  <IsDebuggable>k__BackingField: 1
 --- !u!114 &1780592914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18936,7 +18893,7 @@ MonoBehaviour:
   _mainLightController: {fileID: 837973036}
   _additionalLightController: {fileID: 1060818754}
   _thunderLightController: {fileID: 1980790914}
-  _isDebuggable: 1
+  <IsDebuggable>k__BackingField: 1
 --- !u!1 &1795718878
 GameObject:
   m_ObjectHideFlags: 0

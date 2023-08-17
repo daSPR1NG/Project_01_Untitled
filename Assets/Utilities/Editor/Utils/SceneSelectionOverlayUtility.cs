@@ -41,8 +41,8 @@ namespace dnSR_Coding.Utilities.Editor
 
                 Scene currentScene = EditorSceneManager.GetActiveScene();
 
-                Debug.Log( Application.dataPath );
-                Debug.Log( Application.dataPath + "/Scenes" );
+                //Debug.Log( Application.dataPath );
+                //Debug.Log( Application.dataPath + "/Scenes" );
 
                 string filter = "t: scene";
                 string sceneFolderPath = "Assets/Scenes";

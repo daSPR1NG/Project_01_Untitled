@@ -1,7 +1,7 @@
 using UnityEngine;
-using NaughtyAttributes;
 using dnSR_Coding.Utilities.Helpers;
 using dnSR_Coding.Utilities.Interfaces;
+using Sirenix.OdinInspector;
 
 namespace dnSR_Coding
 {
@@ -20,7 +20,9 @@ namespace dnSR_Coding
     {
         #region Interaction variables
 
-        [field: SerializeField, ReadOnly, Foldout( "Interaction Group" )]
+        internal string _groupName = "Interaction";
+
+        [field: SerializeField, ReadOnly, FoldoutGroup( "$_groupName" )]
         public bool IsInteractive { get; set; } = false;
         public object Interactor { get; set; } = null;
 
@@ -28,15 +30,14 @@ namespace dnSR_Coding
 
         #region Selection variables
 
-        [field: SerializeField, Foldout( "Interaction Group")] 
+        [field: SerializeField, FoldoutGroup( "$_groupName" )]
         public Enums.Cursor_SelectionType CursorSelectionType { get; set; } = Enums.Cursor_SelectionType.Default;
 
-        [field: SerializeField, Foldout( "Interaction Group"), InfoBox(
-            "By default, the selection is only possible when the object is interactive. This overrides the default behaviour.",
-            EInfoBoxType.Normal )]
+        [field: SerializeField, FoldoutGroup( "$_groupName" ), InfoBox(
+            "By default, the selection is only possible when the object is interactive. This overrides the default behaviour.")]
         public bool IsItAlwaysSelectable { get; set; } = false;
 
-        [field: SerializeField, Range( 0, 3 ), Foldout( "Interaction Group")] 
+        [field: SerializeField, Range( 0, 3 ), FoldoutGroup( "$_groupName" )] 
         public float OutlineWidth { get; set; } = .5f;
         public bool IsOutlined { get => !_outlineComponent.IsNull<Outline>() && _outlineComponent.enabled; }
 
@@ -61,8 +62,8 @@ namespace dnSR_Coding
 
         #region DEBUG
 
-        [SerializeField, BoxGroup()] private bool _isDebuggable = true;
-        public bool IsDebuggable => _isDebuggable;
+        [field: SerializeField, FoldoutGroup( "Debug Section", Order = -1 )]
+        public bool IsDebuggable { get; set; } = true;
 
         #endregion
 

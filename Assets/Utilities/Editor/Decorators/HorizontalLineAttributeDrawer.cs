@@ -22,7 +22,12 @@ namespace dnSR_Coding.Utilities.Editor
             _yOffset = ( float ) ( horizontalLineAttribute?.YOffset );
             _color = ( EditorColor ) ( horizontalLineAttribute?.Color );
 
-            DrawLine( position, GetInspectorWidthBasedOnIndentation( position ), _lineHeight, _yOffset, _color );
+            DrawLine( 
+                position, 
+                GetInspectorWidthBasedOnIndentation( position ), 
+                _lineHeight, 
+                _yOffset, 
+                _color );
         }
 
         public static void DrawLine( Rect position, float width, float height, float yOffset, EditorColor color )
@@ -34,7 +39,11 @@ namespace dnSR_Coding.Utilities.Editor
             {
                 GUIStyle style = GUIStyles.GetLineStyle( height, CreateBackground( color ) );
                 style.Draw(
-                    new Rect( rect.x, rect.y, width, style.fixedHeight ),
+                    new Rect( 
+                        rect.x + DEFAULT_MIN_HORIZONTAL_LAYOUT_OFFSET, 
+                        rect.y, 
+                        width - DEFAULT_MIN_HORIZONTAL_LAYOUT_OFFSET * 2,
+                        style.fixedHeight ),
                     false, false, false, false );
             }
         }

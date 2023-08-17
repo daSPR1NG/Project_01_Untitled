@@ -6,13 +6,21 @@ namespace dnSR_Coding.Utilities.Editor
 {
     public static class GUIStyles
     {
-        public static GUIStyle GetCenteredHeaderStyle( float height, float fontRatio, float fontSizePadding, EditorColor color )
+        public static GUIStyle GetHeaderWithBackground(
+            float height,
+            float fontRatio,
+            float fontSizePadding,
+            EditorColor color,
+            TextAnchor textAnchor = TextAnchor.MiddleCenter )
         {
             GUIStyle style = new()
             {
-                alignment = TextAnchor.MiddleCenter,
+                alignment = textAnchor,
                 fontStyle = FontStyle.Bold,
-                fontSize = ( int ) ( fontRatio >= 1 ? fontSizePadding : fontSizePadding * fontRatio ),
+                fontSize = ( int ) ( fontRatio >= 1
+                    ? fontSizePadding
+                    : fontSizePadding * fontRatio ),
+                padding = new RectOffset( 10, 10, 2, 2 ),
 
                 fixedHeight = height,
                 normal = CreateStyleWithBackground( GUI.skin.box.ToString(), color ).normal

@@ -1,10 +1,10 @@
 using UnityEngine;
 using System;
 using UnityEngine.InputSystem;
-using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using dnSR_Coding.Utilities.Helpers;
-using dnSR_Coding.Utilities.Interfaces;
 using dnSR_Coding.Utilities.Attributes;
+using dnSR_Coding.Utilities.Interfaces;
 
 namespace dnSR_Coding.Utilities.Runtime
 {
@@ -18,50 +18,15 @@ namespace dnSR_Coding.Utilities.Runtime
         [CstmHeader( "Game State details", true )]
         [SerializeField, ReadOnly] private int _timeScale = 1;
 
-        [SerializeField, NaughtyAttributes.ShowIf( "IsDebuggable" )]
+        [SerializeField, ShowIf( "IsDebuggable" )]
         private int _refreshRate = 60;
 
         public static Action<object> OnGameStateChanged;
 
-        [ClampValue] public float CountFLOAT;
-
-        public List<TestIndentation> _testIndentations = new( 3 );
-
-        [System.Serializable]
-        public class TestIndentation
-        {
-            //[ClampValue] public int CountINT;
-            public float CountF;
-            [ClampValue] public float CountFLOAT;
-            public TestIndentation2 TestIndentation2;
-        }
-
-        [System.Serializable]
-        public class TestIndentation2
-        {
-            [CenteredHeader( "Test - 2", 64 )]
-            public string Name = "Test - 2";
-            [CstmHeader( "Min Max", true ), MinMaxSlider( 1, 5 )]
-            public Vector2 TestMinMax;
-            [NaughtyAttributes.MinMaxSlider( 1, 5 )]
-            public Vector2 TestMinMaxNaughty;
-            public TestIndentation3 TestIndentation3;
-        }
-
-        [System.Serializable]
-        public class TestIndentation3
-        {
-            [CenteredHeader( "Test - 3", true )]
-            public float CountF;
-            [ClampValue] public float CountFLOAT;
-        }
-
-        #region Debug
-
-        [HorizontalLine( 1, 4, EditorColor.Grey )]
-        [SerializeField] private bool _isDebuggable = false;
-        public bool IsDebuggable => _isDebuggable;
-
+        #region DEBUG
+        [field: SerializeField, FoldoutGroup( "Debug Section", -1 )]
+        [field: InfoBox("Test")]
+        public bool IsDebuggable { get; set; } = true;
         #endregion
 
         protected override void Init( bool dontDestroyOnLoad = false )
@@ -72,7 +37,7 @@ namespace dnSR_Coding.Utilities.Runtime
 
         private void Update()
         {
-            //CheckIfPauseInputHasBeenPressed();
+            CheckIfPauseInputHasBeenPressed();
         }
 
         /// <summary>
@@ -95,15 +60,6 @@ namespace dnSR_Coding.Utilities.Runtime
 
                 ResumeOrPauseTheGame();
             }
-        }
-
-#if UNITY_EDITOR
-        //[Button]
-#endif
-        public void SetTimeScale()
-        {
-            Helper.SetTimeScale( _timeScale );
-            Debug.Log( $"Time scale set to {Time.timeScale.ToString().ToLogValue()}." );
         }
 
         #region GameState Handle

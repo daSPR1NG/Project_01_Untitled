@@ -5,7 +5,7 @@ using dnSR_Coding.Utilities.Helpers;
 namespace dnSR_Coding.Utilities.Attributes
 {
     ///<summary> HorizontalLineAttribute description <summary>
-    [AttributeUsage( AttributeTargets.Field, Inherited = true, AllowMultiple = true )]
+    [AttributeUsage( AttributeTargets.Field, Inherited = true, AllowMultiple = false )]
     public class HorizontalLineAttribute : PropertyAttribute
     {
         private const float DEFAULT_HEIGHT = .25f;

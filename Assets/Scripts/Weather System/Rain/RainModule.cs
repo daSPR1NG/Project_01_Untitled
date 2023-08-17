@@ -1,5 +1,5 @@
 using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using System;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
@@ -33,7 +33,7 @@ namespace dnSR_Coding
 
             [field: Header( "Audio" )]
             [SerializeField] private bool _hasAudio;
-            [field: SerializeField, AllowNesting, NaughtyAttributes.ShowIf( "_hasAudio" )] 
+            [field: SerializeField, ShowIf( "_hasAudio" )] 
             public SimpleAudioEvent AudioEvent { get; private set; }
         }
         public RainSettings GetSettingsByID( int id )

@@ -1,18 +1,17 @@
 using UnityEngine;
+using Sirenix.OdinInspector;
 using dnSR_Coding.Utilities.Helpers;
-using dnSR_Coding.Utilities.Interfaces;
-using dnSR_Coding.Utilities.Attributes;
 
 namespace dnSR_Coding
 {
     ///<summary> Plant description <summary>
     [DisallowMultipleComponent]
-    public class Plant : InteractiveObject, ISaveable, IDebuggable
+    public class Plant : InteractiveObject, ISaveable
     {
-        [SerializeField, ReadOnly, NaughtyAttributes.Foldout( "Plant Group" )] private string _id;
+        [SerializeField, ReadOnly, FoldoutGroup( "Plant Group" )] private string _id;
         public string ID { get => _id; set => _id = value; }
 
-        [SerializeField, NaughtyAttributes.Foldout( "Plant Group" )] private PlantSettings _plantSettings;
+        [SerializeField, FoldoutGroup( "Plant Group" )] private PlantSettings _plantSettings;
         private Enums.Plant_GrowingState _growingState = Enums.Plant_GrowingState.Seed;
         private float _currentLifeCycleValue;
 

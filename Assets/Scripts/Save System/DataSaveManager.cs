@@ -1,11 +1,11 @@
 using UnityEngine;
-using NaughtyAttributes;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using UnityEditor;
 using System;
 using System.Text;
+using Sirenix.OdinInspector;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using dnSR_Coding.Utilities.Helpers;
@@ -22,9 +22,8 @@ namespace dnSR_Coding
 
         #region DEBUG
 
-        //[Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
-        [SerializeField] private bool _isDebuggable = true;
-        public bool IsDebuggable => _isDebuggable;
+        [field: SerializeField, FoldoutGroup( "Debug Section", Order = -1 )]
+        public bool IsDebuggable { get; set; } = true;
 
         #endregion
 
@@ -142,7 +141,7 @@ namespace dnSR_Coding
         [Button( "Open Save file " )]
         public void OpenSaveFile()
         {
-            UnityEditor.EditorUtility.OpenWithDefaultApp( Application.persistentDataPath + SAVE_DIRECTORY + SAVE_FILE_NAME );
+            EditorUtility.OpenWithDefaultApp( Application.persistentDataPath + SAVE_DIRECTORY + SAVE_FILE_NAME );
         }
 #endif
     }

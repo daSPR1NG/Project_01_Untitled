@@ -3,12 +3,13 @@ using UnityEditor;
 using dnSR_Coding.Utilities.Helpers;
 using dnSR_Coding.Utilities.Attributes;
 using static dnSR_Coding.Utilities.Helpers.EditorHelper;
+using Sirenix.OdinInspector.Editor;
 
 namespace dnSR_Coding.Utilities.Editor
 {
     ///<summary> MonoBehaviourCustomEditor description <summary>
-    [CustomEditor( typeof( MonoBehaviour ), true )]
-    public class MonoBehaviourCustomEditor : UnityEditor.Editor
+    [CustomEditor( typeof( CustomMonoBehaviour ), true )]
+    public class MonoBehaviourCustomEditor : OdinEditor
     {
         private string _assetPath;
         private string _scriptName;
@@ -17,10 +18,11 @@ namespace dnSR_Coding.Utilities.Editor
         private const float INITIAL_Y_OFFSET = 6;
         private const float BUTTON_HEIGHT = 24;
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
-            _assetPath = AssetDatabase.GetAssetPath( MonoScript.FromMonoBehaviour( target as MonoBehaviour ) );
-            _scriptName = MonoScript.FromMonoBehaviour( target as MonoBehaviour ).name;
+            base.OnEnable();
+            _assetPath = AssetDatabase.GetAssetPath( MonoScript.FromMonoBehaviour( ( MonoBehaviour ) target ) );
+            _scriptName = MonoScript.FromMonoBehaviour( ( MonoBehaviour ) target ).name;
         }
 
         public override void OnInspectorGUI()
@@ -42,8 +44,10 @@ namespace dnSR_Coding.Utilities.Editor
 
             GUILayout.Space( offsetFromBanner + sectionTotalHeight );
 
-            // Base Inspector, minus the default script field
-            DrawPropertiesExcluding( serializedObject, new string [] { "m_Script", } );
+            DrawPropertiesExcluding( serializedObject, "m_Script" );
+            serializedObject.ApplyModifiedProperties();
+
+            Debug.Log( "COUCOU" );
         }
 
         #region Banner
@@ -111,14 +115,14 @@ namespace dnSR_Coding.Utilities.Editor
             {
                 openInVisualStudioButton = DrawButton(
                new Rect(
-                   INITIAL_X_OFFSET ,
+                   INITIAL_X_OFFSET,
                    yPositionOffset,
                    GetCurrentViewWidth( INITIAL_X_OFFSET ) * .2f,
                    BUTTON_HEIGHT ),
                new GUIContent( "OPEN", "Open in visual studio" ),
                buttonStyle,
                EditorColor.Blue,
-               () => OpenInVisualStudio() );
+               () => OpenInVisualStudio( _assetPath ) );
 
                 pingButton = DrawButton(
                 new Rect(
@@ -129,7 +133,7 @@ namespace dnSR_Coding.Utilities.Editor
                 new GUIContent( "Ping asset".ToUpper(), "Ping asset in project" ),
                 buttonStyle,
                 EditorColor.Blue,
-                () => PingAsset() );
+                () => PingAsset( _assetPath ) );
 
                 openInFolderButton = DrawButton(
                     new Rect(
@@ -142,7 +146,7 @@ namespace dnSR_Coding.Utilities.Editor
                         "Show asset in folder" ),
                     buttonStyle,
                     EditorColor.Blue,
-                () => ShowInExplorer() );
+                () => ShowInExplorer( _assetPath ) );
             }
 
             sectionTotalHeight = BUTTON_HEIGHT;
@@ -166,47 +170,5 @@ namespace dnSR_Coding.Utilities.Editor
         }
 
         #endregion
-
-        private void ShowInExplorer()
-        {
-            try
-            {
-                EditorUtility.RevealInFinder( _assetPath );
-            }
-            catch ( System.Exception e )
-            {
-
-                Debug.Log( $"Can't reveal target file {e.StackTrace} {e.Message}" );
-                throw;
-            }
-        }
-
-        private void OpenInVisualStudio()
-        {
-            try
-            {
-                AssetDatabase.OpenAsset( AssetDatabase.LoadMainAssetAtPath( _assetPath ) );
-            }
-            catch ( System.Exception e )
-            {
-
-                Debug.Log( $"Can't open target file in VS: {e.StackTrace} {e.Message}" );
-                throw;
-            }
-        }
-
-        private void PingAsset()
-        {
-            try
-            {
-                EditorGUIUtility.PingObject( AssetDatabase.LoadMainAssetAtPath( _assetPath ) );
-            }
-            catch ( System.Exception e )
-            {
-
-                Debug.Log( $"Can't open target file {e.StackTrace} {e.Message}" );
-                throw;
-            }
-        }
     }
 }

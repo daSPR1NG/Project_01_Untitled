@@ -3,6 +3,8 @@ using DG.Tweening;
 using System;
 using dnSR_Coding.Utilities.Helpers;
 using dnSR_Coding.Utilities.Interfaces;
+using dnSR_Coding.Utilities.Attributes;
+using Sirenix.OdinInspector;
 
 namespace dnSR_Coding
 {
@@ -10,18 +12,18 @@ namespace dnSR_Coding
 
     ///<summary> NightDayCycle description <summary>
     [DisallowMultipleComponent]
-    public class NightDayCycle : MonoBehaviour , IEnvironmentLightsUser, IDebuggable
+    public class NightDayCycle : MonoBehaviour, IEnvironmentLightsUser, IDebuggable
     {
-        [SerializeField] public AmbientLightingPreset _lightingPreset;
+        [SerializeField, PropertySpace( 5 )] public AmbientLightingPreset _lightingPreset;
 
-        [Header( "Night and day settings" )]
+        [CenteredHeader( "Night and day settings" )]
         [SerializeField] private bool _stopNightAndDayCycle = false;
         [SerializeField, Range( 1, 240 )] private float _dayDuration = 240f;
         [SerializeField, Range( 1, 240 )] private float _timeOfDay = 120f;
         private float _currentTimeOfDay = 0f;
         private float _firstPartOfDayLength, _secondPartOfDayLength;
 
-        [Header( "Main light settings" )]
+        [CenteredHeader( "Main light settings" )]
         [SerializeField] private float _mainLightIntensityShiftDurationOnDay = 1.25f;
         [SerializeField] private float _mainLightIntensityShiftDurationOnNight = 1.25f;
         private float _mainLightIntensityAtDay = 0f;
@@ -56,20 +58,19 @@ namespace dnSR_Coding
 
         #region DEBUG
 
-        //[Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
-        [SerializeField] private bool _isDebuggable = true;
-        public bool IsDebuggable => _isDebuggable;
+        [field: SerializeField, FoldoutGroup( "Debug Section", Order = -1 )]
+        public bool IsDebuggable { get; set; } = true;
 
         #endregion
 
         #region ENABLE, DISABLE
 
-        void OnEnable() 
+        void OnEnable()
         {
             EventManager.OnApplyingWeatherPreset += SetActivePreset;
         }
 
-        void OnDisable() 
+        void OnDisable()
         {
             EventManager.OnApplyingWeatherPreset -= SetActivePreset;
         }
@@ -110,14 +111,16 @@ namespace dnSR_Coding
 
             RotateMainLight( timePercent );
 
-            if ( _isDaytime ) {
+            if ( _isDaytime )
+            {
                 SetMainLightIntensity_WhenStartingTheDay();
                 SetAdditionalLightIntensity_BasedOnDayTime();
-            } 
-            else {
+            }
+            else
+            {
                 SetMainLightIntensity_WhenStartingTheNight();
             }
-        }            
+        }
 
         #region COLOR SETTER FOR AMBIENT, DIRECTIONNAL LIGHT AND FOG COLORS
 
@@ -127,12 +130,14 @@ namespace dnSR_Coding
             RenderSettings.ambientLight = _lightingPreset.AmbientColor.Evaluate( timePercent );
 
             // Main light color
-            if ( !MainLightController.IsNull<LightController>() ) {
+            if ( !MainLightController.IsNull<LightController>() )
+            {
                 MainLightController.SetLightColor( _lightingPreset.DirectionalColor.Evaluate( timePercent ) );
             }
 
             // Fog color
-            if ( RenderSettings.fog ) {
+            if ( RenderSettings.fog )
+            {
                 RenderSettings.fogColor = _initialFogColor.MultiplyRGB( _lightingPreset.FogColor.Evaluate( timePercent ) );
             }
         }
@@ -153,15 +158,15 @@ namespace dnSR_Coding
         {
             if ( MainLightController.IsNull<LightController>() ) { return; }
 
-            bool isMainLightIntensitySetOrBeingSet = MainLightController.DoesLightIntensityEquals( _mainLightIntensityAtDay ) 
+            bool isMainLightIntensitySetOrBeingSet = MainLightController.DoesLightIntensityEquals( _mainLightIntensityAtDay )
                 || _mainLightIntensityTween.IsActive();
             if ( isMainLightIntensitySetOrBeingSet ) { return; }
 
-            TweenMainLightIntensity( 
+            TweenMainLightIntensity(
                 _mainLightIntensityTween,
                 MainLightController,
                 _mainLightIntensityAtDay,
-                _mainLightIntensityShiftDurationOnDay, 
+                _mainLightIntensityShiftDurationOnDay,
                 () => MainLightController.SetLightIntensity( _mainLightIntensityAtDay ) );
         }
 
@@ -169,7 +174,7 @@ namespace dnSR_Coding
         {
             if ( MainLightController.IsNull<LightController>() ) { return; }
 
-            bool isMainLightIntensitySetOrBeingSet = MainLightController.DoesLightIntensityEquals( NIGHT_MAIN_LIGHT_INTENSITY ) 
+            bool isMainLightIntensitySetOrBeingSet = MainLightController.DoesLightIntensityEquals( NIGHT_MAIN_LIGHT_INTENSITY )
                 || _mainLightIntensityTween.IsActive();
             if ( isMainLightIntensitySetOrBeingSet ) { return; }
 
@@ -189,7 +194,7 @@ namespace dnSR_Coding
 
             tween.OnComplete( () =>
             {
-                onComplete?.Invoke();                
+                onComplete?.Invoke();
                 tween.Kill();
             } );
         }
@@ -222,7 +227,7 @@ namespace dnSR_Coding
             // When we are in the second part of the day...
             AdditionalLightController.SetLightIntensity( GetEndingDayValue() / _secondPartOfDayLength );
         }
-        
+
         #endregion
 
         private void SetActivePreset( WeatherPreset sentWeatherPreset )
@@ -230,7 +235,7 @@ namespace dnSR_Coding
             _activeWeatherPreset = sentWeatherPreset;
 
             EnvironmentLightModule module = _activeWeatherPreset.GetEnvironmentLightInfo().module;
-            EnvironmentLightModule.EnvironmentLightSettings lightSettings = 
+            EnvironmentLightModule.EnvironmentLightSettings lightSettings =
                 module.GetSettingsByID( ( int ) _activeWeatherPreset.GetEnvironmentLightInfo().type );
             _mainLightIntensityAtDay = lightSettings.Intensity;
 
@@ -243,17 +248,19 @@ namespace dnSR_Coding
 
         #region DAY VALUES | START - MEDIAN - END
 
-        private float GetStartingDayValue() {
+        private float GetStartingDayValue()
+        {
             return ( _timeOfDay - ( _dayDuration * DAY_START_THRESHOLD ) );
         }
-        private float GetEndingDayValue() {
+        private float GetEndingDayValue()
+        {
             return -( _timeOfDay - ( _dayDuration * DAY_END_THRESHOLD ) );
         }
         private float GetMedianOfDay()
         {
             float totalDayDuration = DAY_START_THRESHOLD + DAY_END_THRESHOLD;
             return totalDayDuration / 2;
-        }     
+        }
 
         #endregion
 

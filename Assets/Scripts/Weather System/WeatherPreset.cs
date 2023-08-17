@@ -1,30 +1,49 @@
 using UnityEngine;
 using dnSR_Coding.Utilities.Helpers;
+using Sirenix.OdinInspector;
+using dnSR_Coding.Utilities.Attributes;
 
 namespace dnSR_Coding
 {
     [CreateAssetMenu( menuName = "Scriptable Objects/Weather System/Presets/Create New Weather Preset" )]
+    [InlineEditor( InlineEditorObjectFieldModes.Foldout )]
     public class WeatherPreset : ScriptableObject
     {
         public int ID => GetInstanceID();
         public bool IsActive { get; private set; } = false;
 
-        [Header( "Rain details" )]
+        #region Rain module
+
+        [CenteredHeader( Header = "Rain details", TextAnchor = TextAnchor.MiddleLeft )]
         [SerializeField] private RainModule _rainModule;
         [SerializeField] private Enums.Rain_Type _rainType;
 
-        [Header( "Thunder details" )]
+        #endregion
+
+        #region Thunder module
+
+        [CenteredHeader( Header = "Thunder details", TextAnchor = TextAnchor.MiddleLeft )]
         [SerializeField] private ThunderModule _thunderModule;
         [SerializeField] private Enums.Thunder_Type _thunderType;
 
-        [Header( "Fog details" )]
+        #endregion
+
+        #region Fog module
+
+        [CenteredHeader( Header = "Fog details" )]
         [SerializeField] private FogModule _fogModule;
         [SerializeField] private Enums.Fog_Type _fogType;
 
-        [Header( "Environment Light details" )]
+        #endregion
+
+        #region Light module
+
+        [CenteredHeader( Header = "Lighting details" )]
         [SerializeField] private EnvironmentLightModule _environmentLightModule;
         [SerializeField] private Enums.Environment_LightIntensity_Type _environmentLightIntensityType;
         [field: SerializeField] public bool IsSunHidden { get; private set; }
+
+        #endregion        
 
         private bool HasActiveRainModule => _rainType != Enums.Rain_Type.None;
         private bool HasActiveThunderModule => _thunderType != Enums.Thunder_Type.None;

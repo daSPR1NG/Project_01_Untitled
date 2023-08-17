@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using dnSR_Coding.Utilities.Helpers;
 using dnSR_Coding.Utilities.Interfaces;
 using dnSR_Coding.Utilities.Attributes;
+using Sirenix.OdinInspector;
 
 namespace dnSR_Coding
 {
@@ -14,7 +15,9 @@ namespace dnSR_Coding
     public class WeatherSystem : MonoBehaviour, IEnvironmentLightsUser, IDebuggable
     {
         [Header( "Weather Presets" )]
-        [SerializeField, LabeledArray( new [] { "Default", })] 
+        [SerializeField,
+            ListDrawerSettings( ShowItemCount = true, DraggableItems = false, ShowIndexLabels = false ),
+            LabeledArray( new string [] { "Default", } )]
         private List<WeatherPreset> _weatherPresets = new();
 
         private WeatherPreset _activePreset = null;
@@ -25,11 +28,10 @@ namespace dnSR_Coding
         public LightController AdditionalLightController { get; set; }
         private LightController _thunderLightController;
 
-        #region Debug
+        #region DEBUG
 
-        [Space( 10 ), /*HorizontalLine( .5f, EColor.Gray )*/]
-        [SerializeField] private bool _isDebuggable = true;
-        public bool IsDebuggable => _isDebuggable;
+        [field: SerializeField, FoldoutGroup( "Debug Section", Order = -1 )]
+        public bool IsDebuggable { get; set; } = true;
 
         #endregion
 
@@ -37,7 +39,7 @@ namespace dnSR_Coding
 
         void OnEnable() { }
 
-        void OnDisable() 
+        void OnDisable()
         {
             DOTween.Kill( this );
         }
@@ -80,13 +82,13 @@ namespace dnSR_Coding
             // If the index is higher than the chosen index we throw an error and kill the method...
             if ( index > _weatherPresets.Count )
             {
-                Debug.LogError( 
+                Debug.LogError(
                     "The index you choose is higher than the preset amount, it's impossible to activate it", this );
                 return;
             }
 
             // If no active preset is set, we set it...
-            if ( _activePreset.IsNull<WeatherPreset>() ) 
+            if ( _activePreset.IsNull<WeatherPreset>() )
             {
                 _activePreset = _weatherPresets [ index ];
                 _activePreset.Init();
@@ -97,10 +99,10 @@ namespace dnSR_Coding
             bool aPresetIsActive = !_activePreset.IsNull<WeatherPreset>() && _activePreset.IsActive;
 
             // If a preset is already active and we still trying to aply it again, we kill the method...
-            if ( aPresetIsActive && _activePreset == _weatherPresets [ index ] ) 
+            if ( aPresetIsActive && _activePreset == _weatherPresets [ index ] )
             {
                 this.Debugger( "Killing the method a preset is active and is the same as the one already passed" );
-                return; 
+                return;
             }
 
             // If a preset is active but a new one is applied (different from the current one), we stop the current preset to properly activate the new one...
@@ -153,7 +155,7 @@ namespace dnSR_Coding
         private void OnValidate()
         {
             SetLightsReference();
-        }        
+        }
 #endif
 
         #endregion

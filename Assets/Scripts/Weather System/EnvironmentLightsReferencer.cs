@@ -1,5 +1,5 @@
 using UnityEngine;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using dnSR_Coding.Utilities.Helpers;
 using dnSR_Coding.Utilities.Interfaces;
 
@@ -7,14 +7,24 @@ namespace dnSR_Coding
 {
     ///<summary> EnvironmentLightsReferencer description <summary>
     [DisallowMultipleComponent]
-    
+    [InlineEditor( InlineEditorObjectFieldModes.Foldout )]
     public class EnvironmentLightsReferencer : MonoBehaviour, IDebuggable
     {
-        [SerializeField, ReadOnly] private GameObject _lightsContainer;
+        [SerializeField, ReadOnly]
+        [FoldoutGroup( "Lights" )]
+        private GameObject _lightsContainer;
 
-        [SerializeField, ReadOnly] private LightController _mainLightController;
-        [SerializeField, ReadOnly] private LightController _additionalLightController;
-        [SerializeField, ReadOnly] private LightController _thunderLightController;
+        [SerializeField, ReadOnly]
+        [FoldoutGroup( "Lights" )]
+        private LightController _mainLightController;
+
+        [SerializeField, ReadOnly]
+        [FoldoutGroup( "Lights" )]
+        private LightController _additionalLightController;
+
+        [SerializeField, ReadOnly]
+        [FoldoutGroup( "Lights" )]
+        private LightController _thunderLightController;
 
         public LightController MainLightController { get => _mainLightController; private set => _mainLightController = value; }
         public LightController AdditionalLightController { get => _additionalLightController; private set => _additionalLightController = value; }
@@ -22,16 +32,16 @@ namespace dnSR_Coding
 
         #region DEBUG
 
-        //[Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
-        [SerializeField] private bool _isDebuggable = true;
-        public bool IsDebuggable => _isDebuggable;
+        [field: SerializeField, FoldoutGroup( "Debug Section", Order = -1 )]
+        public bool IsDebuggable { get; set; } = true;
 
         #endregion
 
         #region Setup
 
         void Awake() => Init();
-        void Init() {
+        void Init()
+        {
             SetLightsReference( ref _lightsContainer );
         }
 
@@ -60,20 +70,24 @@ namespace dnSR_Coding
 
         #endregion       
 
-        public void SetMainLightController( LightController lightController ) {
+        public void SetMainLightController( LightController lightController )
+        {
             _mainLightController = lightController;
         }
-        public void SetAdditionalLightController( LightController lightController ) {
+        public void SetAdditionalLightController( LightController lightController )
+        {
             _additionalLightController = lightController;
         }
-        public void SetThunderLightController( LightController lightController ) {
+        public void SetThunderLightController( LightController lightController )
+        {
             _thunderLightController = lightController;
         }
 
         #region On Editor
 
 #if UNITY_EDITOR
-        private void OnValidate() {
+        private void OnValidate()
+        {
             SetLightsReference( ref _lightsContainer );
         }
 #endif

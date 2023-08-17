@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 
@@ -20,10 +21,11 @@ namespace dnSR_Coding.Utilities.Helpers
     public class EditorHelper
     {
         public const int DEFAULT_MIN_HORIZONTAL_LAYOUT_OFFSET = 2;
-        private const float PROPERTY_DEFAULT_FIELD_WIDTH = 50f;
+        internal const float PROPERTY_DEFAULT_FIELD_WIDTH = 50f;
 
-        public const string FOCUS_ON_ICON = "Assets/Utilities/Editor/Icons/FocusOnIcon.png";
-        public const string OPEN_IN_FOLDER_ICON = "Assets/Utilities/Editor/Icons/OpenInFolderIcon.png";
+        public const string RESET_ICON = "Assets/Utilities/Editor/Icons/ResetIcon.png";
+        internal const string FOCUS_ON_ICON = "Assets/Utilities/Editor/Icons/FocusOnIcon.png";
+        internal const string OPEN_IN_FOLDER_ICON = "Assets/Utilities/Editor/Icons/OpenInFolderIcon.png";
 
         #region Dimensions Utils - Width
 
@@ -107,7 +109,7 @@ namespace dnSR_Coding.Utilities.Helpers
         /// <summary>
         /// Use this function to get a container where to put elements in it, eg: buttons, fields, etc...
         /// </summary>
-        /// <param name="position"> Represents the position passed by OnGUI. </param>
+        /// <param name="position"> Represents the totalRect passed by OnGUI. </param>
         /// <param name="xOffset"> Represents the offset from the left => label posiiton. </param>
         /// <param name="totalWidth"> Represents the total width used by the property. </param>
         /// <returns> A rect where you can add elements in it.</returns>
@@ -124,6 +126,23 @@ namespace dnSR_Coding.Utilities.Helpers
                 );
 
             return rect;
+        }
+
+        /// <summary>
+        /// This is used to create a proper zone in which we can draw what we want - 
+        /// (It represents the right zone).
+        /// </summary>
+        /// <param name="totalRect">This is the total zone of the field.</param>
+        /// <returns></returns>
+        public static Rect GetFieldContainer( Rect totalRect )
+        {
+            float offsetFromLabel = totalRect.xMin + EditorGUIUtility.labelWidth + DEFAULT_MIN_HORIZONTAL_LAYOUT_OFFSET;
+
+            float containerTotalWidth = totalRect.width - EditorGUIUtility.labelWidth - DEFAULT_MIN_HORIZONTAL_LAYOUT_OFFSET;
+
+            Rect container = GetTotalRectForElements( totalRect, offsetFromLabel, containerTotalWidth );
+
+            return container;
         }
 
         public static Vector2 GetGUIContentSize( GUIStyle style, GUIContent content )
@@ -160,6 +179,96 @@ namespace dnSR_Coding.Utilities.Helpers
             return false;
         }
 
+        public static bool CreateEditorBackground( Rect rect, GUIStyle style, Color color = default )
+        {
+            GUI.backgroundColor = color;
+
+            EditorGUI.BeginDisabledGroup( true );
+
+            if ( GUI.Button( rect, GUIContent.none, style ) )
+            {
+                return true;
+            }
+
+            EditorGUI.EndDisabledGroup();
+
+            GUI.backgroundColor = Color.white;
+
+            return false;
+        }
+
+        public static void CreateHelpBox(
+            Rect position, string message,
+            MessageType messageType,
+            out Rect helpBox )
+        {
+            Vector2 initialIconSize = EditorGUIUtility.GetIconSize();
+
+            GUIContent content = new GUIContent( ' ' + message );
+            helpBox = new Rect(
+                    position.xMin,
+                    position.y,
+                    position.width,
+                    position.height );
+
+            int fontSize = 12;
+
+            EditorGUIUtility.SetIconSize( new Vector2( fontSize + 2, fontSize + 2 ) );
+
+            GUIStyle style = EditorStyles.helpBox;
+            style.alignment = TextAnchor.MiddleLeft;
+            style.fontSize = fontSize;
+
+            EditorGUI.HelpBox( helpBox, content.text, messageType );
+
+            EditorGUIUtility.SetIconSize( initialIconSize );
+        }
+
+        #endregion
+
+        #region Global Methods
+
+        public static void ShowInExplorer( string assetPath )
+        {
+            try
+            {
+                EditorUtility.RevealInFinder( assetPath );
+            }
+            catch ( System.Exception e )
+            {
+
+                Debug.Log( $"Can't reveal target file {e.StackTrace} {e.Message}" );
+                throw;
+            }
+        }
+
+        public static void OpenInVisualStudio( string assetPath, int lineNumber = 0 )
+        {
+            try
+            {
+                AssetDatabase.OpenAsset( AssetDatabase.LoadMainAssetAtPath( assetPath ), lineNumber );
+            }
+            catch ( System.Exception e )
+            {
+
+                Debug.Log( $"Can't open target file in VS: {e.StackTrace} {e.Message}" );
+                throw;
+            }
+        }
+
+        public static void PingAsset( string assetPath )
+        {
+            try
+            {
+                EditorGUIUtility.PingObject( AssetDatabase.LoadMainAssetAtPath( assetPath ) );
+            }
+            catch ( System.Exception e )
+            {
+
+                Debug.Log( $"Can't open target file {e.StackTrace} {e.Message}" );
+                throw;
+            }
+        }
 
         #endregion
 

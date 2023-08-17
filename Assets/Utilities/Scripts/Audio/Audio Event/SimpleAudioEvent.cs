@@ -1,18 +1,20 @@
 using UnityEngine;
 using System.Collections.Generic;
 using dnSR_Coding.Utilities.Helpers;
+using dnSR_Coding.Utilities.Attributes;
+using Sirenix.OdinInspector;
 
 namespace dnSR_Coding.Utilities.Runtime
 {
     ///<summary> SimpleAudioEvent description <summary>
-    [CreateAssetMenu(fileName = "", menuName = "Scriptable Objects/Audio Events/Simple")]
+    [CreateAssetMenu( fileName = "", menuName = "Scriptable Objects/Audio Events/Simple" )]
     public class SimpleAudioEvent : AudioEvent
     {
         [Header( "SETTINGS" )]
-        [NaughtyAttributes.MinMaxSlider( -3, 3 )] public Vector2 Pitch = new ( 0, 1);
-        [NaughtyAttributes.MinMaxSlider( 0, 1 )] public Vector2 Volume = new( 1, 1 );
+        [MinMaxSlider( -3, 3 )] public Vector2 Pitch = new( 0, 1 );
+        [MinMaxSlider( 0, 1 )] public Vector2 Volume = new( 1, 1 );
 
-        [Space( 4f ), /*NaughtyAttributes.HorizontalLine( .5f, NaughtyAttributes.EColor.Gray )*/]
+        [Space( 4f ), HorizontalLine( .5f, EditorColor.Grey )]
 
         public List<ClipData> Clips = new();
 
@@ -37,13 +39,13 @@ namespace dnSR_Coding.Utilities.Runtime
             [HideInInspector] public string Name = "";
             public AudioClip Clip = null;
 
-            public ClipData(string name, AudioClip clip)
+            public ClipData( string name, AudioClip clip )
             {
                 Name = name;
                 Clip = clip;
             }
 
-            public ClipData() : base () 
+            public ClipData() : base()
             {
                 Name = "New Clip - Unreferenced";
                 Clip = null;

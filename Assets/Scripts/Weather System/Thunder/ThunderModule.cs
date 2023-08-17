@@ -6,6 +6,7 @@ using dnSR_Coding.Utilities.Helpers;
 using dnSR_Coding.Utilities.Attributes;
 using dnSR_Coding.Utilities.Interfaces;
 using dnSR_Coding.Utilities.Runtime;
+using Sirenix.OdinInspector;
 
 namespace dnSR_Coding
 {
@@ -15,7 +16,7 @@ namespace dnSR_Coding
 
 
     [CreateAssetMenu( menuName = "Scriptable Objects/Weather System/Modules/Create New Thunder Module Settings" )]
-    public class ThunderModule : WeatherSystemModule<ThunderModule.ThunderSettings>, IDebuggable
+    public class ThunderModule : WeatherSystemModule<ThunderModule.ThunderSettings>
     {
         [Serializable]
         public struct ThunderSettings
@@ -32,13 +33,13 @@ namespace dnSR_Coding
 
             [field: Header( "Main" )]
             [SerializeField] private Enums.Thunder_Type _associatedThunderType;
-            [SerializeField, NaughtyAttributes.MinMaxSlider( 0, 1 )] private Vector2 _flickeringRate;
-            [SerializeField, NaughtyAttributes.MinMaxSlider( 0, 5 )] private Vector2 _timerBetweenConsecutiveApplications;
+            [SerializeField, MinMaxSlider( 0, 1 )] private Vector2 _flickeringRate;
+            [SerializeField, MinMaxSlider( 0, 5 )] private Vector2 _timerBetweenConsecutiveApplications;
             [SerializeField] private List<AnimationCurve> _flickeringCurves;
 
             [field: Header( "Audio" )]
             [SerializeField] private bool _hasAudio;
-            [field: SerializeField, NaughtyAttributes.AllowNesting, NaughtyAttributes.ShowIf( "_hasAudio" )]
+            [field: SerializeField, ShowIf( "_hasAudio" )]
             public SimpleAudioEvent AudioEvent { get; private set; }
 
             public readonly Vector2 GetFlickeringRate() => _flickeringRate;
@@ -52,14 +53,6 @@ namespace dnSR_Coding
 
         private Coroutine thunderCoroutine;
         private int _currentKey = 0;
-
-        #region Debug
-
-        //[Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
-        [SerializeField] private bool _isDebuggable = true;
-        public bool IsDebuggable => _isDebuggable;
-
-        #endregion
 
         public void ApplySettings( MonoBehaviour monoBehaviour, Enums.Thunder_Type thunderType, LightController thunderLightController, Color mainLightColor )
         {

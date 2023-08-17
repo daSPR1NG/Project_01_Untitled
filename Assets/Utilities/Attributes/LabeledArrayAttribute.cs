@@ -4,6 +4,7 @@ using System;
 namespace dnSR_Coding.Utilities.Attributes
 {
     ///<summary> LabeledArrayAttribute description <summary>
+    [AttributeUsage( AttributeTargets.Field, Inherited = false, AllowMultiple = false )]
     public class LabeledArrayAttribute : PropertyAttribute
     {
         public readonly string [] names;
