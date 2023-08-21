@@ -40,10 +40,7 @@ namespace dnSR_Coding
         #region Setup
 
         void Awake() => Init();
-        void Init()
-        {
-            SetLightsReference( ref _lightsContainer );
-        }
+        void Init() => SetLightsReference( ref _lightsContainer );
 
         /// <summary>
         ///     This method tries to reference the main light and the additional light used for simulating a sun influence.

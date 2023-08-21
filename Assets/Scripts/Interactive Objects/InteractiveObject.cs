@@ -34,10 +34,10 @@ namespace dnSR_Coding
         public Enums.Cursor_SelectionType CursorSelectionType { get; set; } = Enums.Cursor_SelectionType.Default;
 
         [field: SerializeField, FoldoutGroup( "$_groupName" ), InfoBox(
-            "By default, the selection is only possible when the object is interactive. This overrides the default behaviour.")]
+            "By default, the selection is only possible when the object is interactive. This overrides the default behaviour." )]
         public bool IsItAlwaysSelectable { get; set; } = false;
 
-        [field: SerializeField, Range( 0, 3 ), FoldoutGroup( "$_groupName" )] 
+        [field: SerializeField, Range( 0, 3 ), FoldoutGroup( "$_groupName" )]
         public float OutlineWidth { get; set; } = .5f;
         public bool IsOutlined { get => !_outlineComponent.IsNull<Outline>() && _outlineComponent.enabled; }
 
@@ -46,10 +46,12 @@ namespace dnSR_Coding
         {
             get
             {
-                if ( _outlineComponent.IsNull<Outline>() && gameObject.TryGetComponent( out Outline component ) ) {
+                if ( _outlineComponent.IsNull<Outline>() && gameObject.TryGetComponent( out Outline component ) )
+                {
                     _outlineComponent = component;
                 }
-                else if ( _outlineComponent.IsNull<Outline>() && gameObject.GetComponent<Outline>().IsNull<Outline>() ) {
+                else if ( _outlineComponent.IsNull<Outline>() && gameObject.GetComponent<Outline>().IsNull<Outline>() )
+                {
                     _outlineComponent = gameObject.AddComponent<Outline>();
                     _outlineComponent.OutlineMode = Outline.Mode.OutlineVisible;
                 }
@@ -69,15 +71,23 @@ namespace dnSR_Coding
 
         public virtual void BeginInteraction( object interactor )
         {
-            if ( !IsInteractive ) { 
+            if ( interactor.IsNull() )
+            {
+
+            }
+
+            if ( !IsInteractive )
+            {
                 // Feedback is not interactive ?
-                return; 
+                return;
             }
 
             Interactor = interactor;
         }
         public virtual void EndInteraction()
         {
+            if ( Interactor.IsNull() ) { return; }
+
             Interactor = null;
         }
 
@@ -85,7 +95,8 @@ namespace dnSR_Coding
 
         public void DisplayOutline( float width = 1 )
         {
-            if ( !IsInteractive && !IsItAlwaysSelectable || IsOutlined ) { return; }
+            bool isAlreadyOutlined = !IsInteractive && !IsItAlwaysSelectable || IsOutlined;
+            if ( isAlreadyOutlined ) { return; }
 
             OutlineComponent.OutlineWidth = width;
             OutlineComponent.enabled = true;
@@ -109,14 +120,22 @@ namespace dnSR_Coding
             this.Debugger( "On Mouse Enter" );
             DisplayOutline( OutlineWidth );
 
-            // Ajouter le changement de curseur => spécifique
-            EventManager.OnCursorHover( CursorSelectionType );
+            if ( CursorSelectionType.IsNull() )
+            {
+                this.Debugger(
+                    "CursorSelectionType is NULL",
+                    DebugType.Error );
+                return;
+            }
+
+            EventManager.OnCursorHover.Call( CursorSelectionType );
         }
 
         public void OnMouseOver()
         {
             this.Debugger( "On Mouse Over" );
-            if ( !IsInteractive && !IsItAlwaysSelectable ) { HideOutline(); }
+            bool isNoLongerInteractive = !IsInteractive && !IsItAlwaysSelectable;
+            if ( isNoLongerInteractive ) { HideOutline(); }
         }
 
 
@@ -125,11 +144,8 @@ namespace dnSR_Coding
             this.Debugger( "On Mouse Exit" );
             HideOutline();
 
-            // Ajouter le changement de curseur => default
-            EventManager.OnCursorHover( Enums.Cursor_SelectionType.Default );
+            EventManager.OnCursorHover.Call( Enums.Cursor_SelectionType.Default );
         }
-
-        
 
         #endregion
 

@@ -20,5 +20,5 @@ MonoBehaviour:
   _fogType: 1
   _environmentLightModule: {fileID: 11400000, guid: 8eb91632475d0684fa903b49a525ced9,
     type: 2}
-  _environmentLightIntensityType: 3
+  _environmentLightIntensityType: 0
   <IsSunHidden>k__BackingField: 0

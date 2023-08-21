@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using dnSR_Coding.Utilities.Helpers;
 
 namespace dnSR_Coding.Utilities.Attributes
 {
@@ -14,17 +15,20 @@ namespace dnSR_Coding.Utilities.Attributes
         public float Height { get; set; } = DEFAULT_HEIGHT;
         public float YMinPos { get; set; }  = Y_MIN_POS_VALUE;
         public TextAnchor TextAnchor { get; set; } = TextAnchor.MiddleLeft;
+        public EditorColor LeftDecorationColor { get; set; } = EditorColor.Orange;
 
         public CenteredHeaderAttribute( 
             string header = "", 
             float height = DEFAULT_HEIGHT, 
             float yMinPos = Y_MIN_POS_VALUE, 
-            TextAnchor textAnchor = TextAnchor.MiddleLeft )
+            TextAnchor textAnchor = TextAnchor.MiddleLeft,
+            EditorColor leftDecorationColor = EditorColor.Orange )
         {
             Header = header.ToUpper();
             Height = height;
             YMinPos = yMinPos;
             TextAnchor = textAnchor;
+            LeftDecorationColor = leftDecorationColor;
         }
     }
 }

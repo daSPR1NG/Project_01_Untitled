@@ -1,8 +1,12 @@
 using UnityEngine;
+using Sirenix.OdinInspector;
+using dnSR_Coding.Utilities.Helpers;
+using dnSR_Coding.Utilities.Attributes;
 
 namespace dnSR_Coding
 {
     [CreateAssetMenu(fileName = "", menuName = "Scriptable Objects/#SCRIPTNAME#")]
+    [InlineEditor( InlineEditorObjectFieldModes.Foldout )]
     public class #SCRIPTNAME# : ScriptableObject
     {
         // Override of the basic ToString() to display wanted elements.

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 753b10a311ba63b4e9a524eacc35bc3b, type: 3}
   m_Name: Fog Module Settings
   m_EditorClassIdentifier: 
+  <IsDebuggable>k__BackingField: 0
   Settings:
   - _name: None
     _associatedFogType: 0

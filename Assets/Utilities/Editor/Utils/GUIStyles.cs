@@ -20,10 +20,10 @@ namespace dnSR_Coding.Utilities.Editor
                 fontSize = ( int ) ( fontRatio >= 1
                     ? fontSizePadding
                     : fontSizePadding * fontRatio ),
-                padding = new RectOffset( 10, 10, 2, 2 ),
+                padding = new RectOffset( 8, 8, 2, 2 ),
 
                 fixedHeight = height,
-                normal = CreateStyleWithBackground( GUI.skin.box.ToString(), color ).normal
+                normal = CreateBackgroundFromStyle( GUI.skin.box.ToString(), color ).normal
             };
 
             return style;
@@ -41,12 +41,12 @@ namespace dnSR_Coding.Utilities.Editor
             return lineStyle;
         }
 
-        public static GUIStyle CreateStyleWithBackground( string s, EditorColor color )
+        public static GUIStyle CreateBackgroundFromStyle( string styleName, EditorColor color )
         {
-            GUIStyle style = new( s ) { };
+            GUIStyle style = new( styleName ) { };
 
             style.normal.textColor = Color.white;
-            style.normal.background = CreateBackground( color );
+            style.normal.background = EditorHelper.CreateBackground( color );
 
             return style;
         }

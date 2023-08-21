@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31e7223dacbc138438828c86548438dc, type: 3}
   m_Name: Thunder Module Settings
   m_EditorClassIdentifier: 
+  <IsDebuggable>k__BackingField: 0
   Settings:
   - _name: None
     _associatedThunderType: 0
@@ -390,4 +391,3 @@ MonoBehaviour:
     _flickeringCurves: []
     _hasAudio: 0
     <AudioEvent>k__BackingField: {fileID: 0}
-  _isDebuggable: 0

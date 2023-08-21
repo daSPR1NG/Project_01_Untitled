@@ -10,9 +10,9 @@ namespace dnSR_Coding
 
         private void Awake() => Init();
 
-        protected virtual void Init( bool dontDestroyOnLoad = false )
+        protected virtual void Init( bool dontDestroyOnLoad = true )
         {
-            if ( !Instance.IsNull<Singleton<T>>() && Instance != this as T )
+            if ( !Instance.IsNull() && Instance != this as T )
             { 
                 Instance.gameObject.DestroyInRuntimeOrEditor();
             }

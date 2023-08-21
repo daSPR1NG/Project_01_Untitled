@@ -5,6 +5,7 @@ using dnSR_Coding.Utilities.Helpers;
 using dnSR_Coding.Utilities.Interfaces;
 using dnSR_Coding.Utilities.Attributes;
 using Sirenix.OdinInspector;
+using System;
 
 namespace dnSR_Coding
 {
@@ -14,19 +15,24 @@ namespace dnSR_Coding
     [DisallowMultipleComponent]
     public class WeatherSystem : MonoBehaviour, IEnvironmentLightsUser, IDebuggable
     {
-        [Header( "Weather Presets" )]
-        [SerializeField,
-            ListDrawerSettings( ShowItemCount = true, DraggableItems = false, ShowIndexLabels = false ),
-            LabeledArray( new string [] { "Default", } )]
+        [CenteredHeader( "Weather Presets", LeftDecorationColor = EditorColor.Red )]
+
+        [ListDrawerSettings( 
+            ShowItemCount = true, DraggableItems = false, ShowIndexLabels = false, HideRemoveButton = true )]
+        [SerializeField]
         private List<WeatherPreset> _weatherPresets = new();
 
-        private WeatherPreset _activePreset = null;
+        private WeatherPreset _currentPreset = null;
         private GameObject _rainGO;
+
+        #region Lights fields
 
         public EnvironmentLightsReferencer EnvironmentLightsReferencer { get; set; }
         public LightController MainLightController { get; set; }
         public LightController AdditionalLightController { get; set; }
         private LightController _thunderLightController;
+
+        #endregion
 
         #region DEBUG
 
@@ -46,30 +52,35 @@ namespace dnSR_Coding
 
         #endregion
 
-        private void Awake() => Init();
+        #region Setup
+
+        private void Start() => Init();
         private void Init()
         {
-            SetDependencies();
+            GetDependencies();
 
             ToggleSunDisplay_OnApplyingPreset( false );
-            ApplyWeatherPreset( index: 0 );
+            SetWeatherPreset( index: 0 );
         }
-        private void SetDependencies()
+        private void GetDependencies()
         {
             _rainGO = GameObject.FindGameObjectWithTag( "Environment/Rain" );
             SetLightsReference();
         }
 
+        #endregion
+
+        // AS A DEBUG PURPOSE, PLS REMOVE AFTER
         private void Update()
         {
             if ( KeyCode.D.IsPressed() )
             {
-                ApplyWeatherPreset( 0 );
+                SetWeatherPreset( 0 );
             }
 
             if ( KeyCode.S.IsPressed() )
             {
-                StopActiveWeatherPreset();
+                StopCurrentWeatherPreset( false );
             }
         }
 
@@ -77,69 +88,129 @@ namespace dnSR_Coding
         /// Activates a weather preset, chosen by index.
         /// </summary>
         /// <param name="index"></param>
-        public void ApplyWeatherPreset( int index )
+        public void SetWeatherPreset( int index )
         {
-            // If the index is higher than the chosen index we throw an error and kill the method...
+            WeatherPreset newWeatherPreset = _weatherPresets [ index ];
+
+            // We need to check if the index is higher than the list count.
             if ( index > _weatherPresets.Count )
             {
-                Debug.LogError(
-                    "The index you choose is higher than the preset amount, it's impossible to activate it", this );
+                this.Debugger(
+                    "The index you choose is higher than the preset amount, it's impossible to activate it",
+                    DebugType.Error );
                 return;
             }
 
-            // If no active preset is set, we set it...
-            if ( _activePreset.IsNull<WeatherPreset>() )
+            // We need to check if a preset is set.
+            if ( _currentPreset.IsNull() )
             {
-                _activePreset = _weatherPresets [ index ];
-                _activePreset.Init();
+                // No preset is set so we need to set it here.
+                _currentPreset = newWeatherPreset;
 
-                this.Debugger( "Assign active preset" );
+                this.Debugger(
+                    $"Weather preset was null so another one corresponding to " +
+                    $"{index} has been assigned" );
             }
 
-            bool aPresetIsActive = !_activePreset.IsNull<WeatherPreset>() && _activePreset.IsActive;
-
-            // If a preset is already active and we still trying to aply it again, we kill the method...
-            if ( aPresetIsActive && _activePreset == _weatherPresets [ index ] )
+            // Then we check if a preset is set and active...
+            // and if it is the same as the one we want to activate.
+            bool aPresetIsActive = !_currentPreset.IsNull() && _currentPreset.IsActive;
+            if ( aPresetIsActive && _currentPreset == newWeatherPreset )
             {
                 this.Debugger( "Killing the method a preset is active and is the same as the one already passed" );
                 return;
             }
 
-            // If a preset is active but a new one is applied (different from the current one), we stop the current preset to properly activate the new one...
-            if ( aPresetIsActive && _activePreset != _weatherPresets [ index ] )
+            // If a preset is active but a new one is applied (different from the current one), ...
+            // we stop the current preset to properly activate the new one.
+            if ( aPresetIsActive && _currentPreset != newWeatherPreset )
             {
-                _activePreset.Stop( monoBehaviour: this, _rainGO, MainLightController );
-                // Active preset is reassigned and we apply the preset we want.
-                _activePreset = _weatherPresets [ index ];
-                _activePreset.Init();
+                StopCurrentWeatherPreset( true, index );
             }
 
-            _activePreset.Apply(
-                monoBehaviour: this,
-                _rainGO,
-                MainLightController,
+            // Then actually apply the preset.
+            ApplyCurrentWeatherPreset();
+        }
+
+        #region Apply / Stop current preset
+
+        /// <summary>
+        /// Applies the weather preset.
+        /// </summary>
+        private void ApplyCurrentWeatherPreset()
+        {
+            // First we need to check if all the needed elements are here.
+            if ( _currentPreset.IsNull<WeatherPreset>()
+                 || this.IsNull<MonoBehaviour>()
+                 || _rainGO.IsNull<GameObject>()
+                 || MainLightController.IsNull<LightController>()
+                 || _thunderLightController.IsNull<LightController>() )
+            {
+                return;
+            }
+
+            // Then we are actually applying the preset, giving all the element that are needed.
+            _currentPreset.Apply( 
+                this, 
+                _rainGO, 
+                MainLightController, 
                 _thunderLightController );
 
-            EventManager.OnApplyingWeatherPreset?.Invoke( _activePreset );
+            EventManager.OnApplyingWeatherPreset.Call( _currentPreset );
 
-            ToggleSunDisplay_OnApplyingPreset( _activePreset.IsSunHidden );
-            this.Debugger( $"Assign active preset {_activePreset.name}" );
+            ToggleSunDisplay_OnApplyingPreset( _currentPreset.IsSunHidden );
+            this.Debugger( $"Assign active preset {_currentPreset.name}" );
         }
-        public void StopActiveWeatherPreset()
+
+        /// <summary>
+        /// Stops the active weather preset.
+        /// It is used when just stopping it or when a new preset become active and another one was already used.
+        /// </summary>
+        /// <param name="isReassignationNeeded"> 
+        /// Means that we are in the case where a new preset has become active. 
+        /// </param>
+        /// <param name="index"> Corresponds to the active preset -> weatherPresets[index] </param>
+        public void StopCurrentWeatherPreset( bool isReassignationNeeded, int index = 0 )
         {
-            if ( _activePreset.IsNull<WeatherPreset>() || !_activePreset.IsActive ) { return; }
+            // First we need to check is a weather preset is defined and active.
+            if ( _currentPreset.IsNull<WeatherPreset>()
+                || !_currentPreset.IsActive )
+            {
+                this.Debugger(
+                    "The preset you're trying to stop is null",
+                    DebugType.Error );
+                return;
+            }
 
-            this.Debugger( $"{_activePreset.name} is being stopped." );
+            // Then we need to actually stop it
+            _currentPreset.Stop();
+            this.Debugger( $"{_currentPreset.name} has been stopped." );
 
-            _activePreset.Stop( monoBehaviour: this, _rainGO, MainLightController );
-            _activePreset = null;
+            // Then as a security layer we reset the active preset to null.
+            // But in case we need to reassign the active preset, we assign it to _weatherPresets [ index ].
+            _currentPreset = isReassignationNeeded
+                ? _currentPreset = _weatherPresets [ index ]
+                : null;
         }
 
+        #endregion
+
+        #region Utils
+
+        /// <summary>
+        /// Toggles the sun display based on the light setting used by the Light Module...
+        /// in the weather preset.
+        /// </summary>
+        /// <param name="sunIsHidden"></param>
         private void ToggleSunDisplay_OnApplyingPreset( bool sunIsHidden )
         {
             AdditionalLightController.ToggleEnabledLightState( !sunIsHidden );
         }
 
+        /// <summary>
+        /// Gras all the reference comming from Environment Lights Referencer to use...
+        /// all the light controllers that are neeeded.
+        /// </summary>
         public void SetLightsReference()
         {
             EnvironmentLightsReferencer = GetComponent<EnvironmentLightsReferencer>();
@@ -148,6 +219,8 @@ namespace dnSR_Coding
             AdditionalLightController = EnvironmentLightsReferencer.AdditionalLightController;
             _thunderLightController = EnvironmentLightsReferencer.ThunderLightController;
         }
+
+        #endregion
 
         #region On Editor
 

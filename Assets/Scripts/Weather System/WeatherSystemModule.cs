@@ -14,6 +14,7 @@ namespace dnSR_Coding
 
         #endregion
 
+        [ListDrawerSettings( ShowItemCount = true, DraggableItems = false, ShowIndexLabels = true, HideRemoveButton = true )]
         [SerializeField] protected List<T> Settings = new();
     }
 }

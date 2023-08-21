@@ -17,14 +17,27 @@ namespace dnSR_Coding
         [SerializeField, PropertySpace( 5 )] public AmbientLightingPreset _lightingPreset;
 
         [CenteredHeader( "Night and day settings" )]
+
+        [ToggleLeft]
         [SerializeField] private bool _stopNightAndDayCycle = false;
-        [SerializeField, Range( 1, 240 )] private float _dayDuration = 240f;
-        [SerializeField, Range( 1, 240 )] private float _timeOfDay = 120f;
+
+        [HorizontalGroup( "Day settings" )]
+        [SerializeField, Range( 1, 240 )]
+        private float _dayDuration = 240f;
+
+        [HorizontalGroup( "Day settings" )]
+        [SerializeField, PropertyRange( 1, 240 )]
+        private float _timeOfDay = 120f;
+
         private float _currentTimeOfDay = 0f;
         private float _firstPartOfDayLength, _secondPartOfDayLength;
 
         [CenteredHeader( "Main light settings" )]
+
+        [LabelWidth( 275 )]
         [SerializeField] private float _mainLightIntensityShiftDurationOnDay = 1.25f;
+
+        [LabelWidth( 275 )]
         [SerializeField] private float _mainLightIntensityShiftDurationOnNight = 1.25f;
         private float _mainLightIntensityAtDay = 0f;
 
@@ -67,12 +80,12 @@ namespace dnSR_Coding
 
         void OnEnable()
         {
-            EventManager.OnApplyingWeatherPreset += SetActivePreset;
+            EventManager.OnApplyingWeatherPreset.Subscribe( SetActivePreset );
         }
 
         void OnDisable()
         {
-            EventManager.OnApplyingWeatherPreset -= SetActivePreset;
+            EventManager.OnApplyingWeatherPreset.Unsubscribe( SetActivePreset );
         }
 
         #endregion
@@ -205,7 +218,11 @@ namespace dnSR_Coding
 
         private void SetAdditionalLightIntensity_BasedOnDayTime()
         {
-            if ( AdditionalLightController.IsNull<LightController>() ) { return; }
+            if ( AdditionalLightController.IsNull<LightController>()
+                || _activeWeatherPreset.IsNull<WeatherPreset>() )
+            {
+                return;
+            }
 
             if ( _activeWeatherPreset.IsSunHidden )
             {

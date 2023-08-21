@@ -18,6 +18,7 @@ namespace dnSR_Coding.Utilities.Editor
         private float _height;
         private float _yMinPos;
         private TextAnchor _textAnchor;
+        private EditorColor _leftDecorationColor;
 
         public override void OnGUI( Rect position )
         {
@@ -26,6 +27,7 @@ namespace dnSR_Coding.Utilities.Editor
             _header = centeredHeaderAttribute?.Header.ToUpper();
             _height = ( float ) ( centeredHeaderAttribute?.Height );
             _textAnchor = centeredHeaderAttribute.TextAnchor;
+            _leftDecorationColor = centeredHeaderAttribute.LeftDecorationColor;
 
             _yMinPos = centeredHeaderAttribute.YMinPos;
             position.yMin += _yMinPos;
@@ -36,34 +38,45 @@ namespace dnSR_Coding.Utilities.Editor
 
             if ( Event.current.type == EventType.Repaint )
             {
-                GUIStyle style = GUIStyles.GetHeaderWithBackground(
+                GUIStyle headerBGStyle = GUIStyles.GetHeaderWithBackground(
                     _height + HEIGHT_OFFSET,
                     fontRatio, fontSizePadding,
                     EditorColor.Black,
                     _textAnchor );
 
-                float leftDecorationWidth = 5;
-                GUIStyle leftDecoration = GUIStyles.GetHeaderWithBackground(
-                    _height + HEIGHT_OFFSET,
-                    0, 0,
-                    EditorColor.Red );
+                DrawLeftDecoration( 
+                    ref rect, 
+                    headerBGStyle, 
+                    _leftDecorationColor, 
+                    out float leftDecorationWidth );
 
-                leftDecoration.Draw(
-                    new Rect(
-                        rect.x, rect.y,
-                     leftDecorationWidth,
-                     style.fixedHeight ),
-                    GUIContent.none,
-                    false, false, false, false );
-
-                style.Draw(
+                headerBGStyle.Draw(
                     new Rect(
                         rect.x + leftDecorationWidth, rect.y,
                      GetInspectorWidthBasedOnIndentation( position ) - leftDecorationWidth,
-                     style.fixedHeight ),
+                     headerBGStyle.fixedHeight ),
                     new GUIContent( _header ),
                     false, false, false, false );
             }
+        }
+
+        private void DrawLeftDecoration( ref Rect rect, GUIStyle style, EditorColor color, out float decorationWidth )
+        {
+            float height = _height + HEIGHT_OFFSET;
+            decorationWidth = 5;
+
+            GUIStyle leftDecoration = GUIStyles.GetHeaderWithBackground(
+                height,
+                0, 0,
+                color );
+
+            leftDecoration.Draw(
+                new Rect(
+                    rect.x, rect.y,
+                 decorationWidth,
+                 style.fixedHeight ),
+                GUIContent.none,
+                false, false, false, false );
         }
 
         ///<inheritdoc/>

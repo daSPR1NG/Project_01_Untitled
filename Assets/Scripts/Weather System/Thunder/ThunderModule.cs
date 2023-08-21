@@ -18,6 +18,8 @@ namespace dnSR_Coding
     [CreateAssetMenu( menuName = "Scriptable Objects/Weather System/Modules/Create New Thunder Module Settings" )]
     public class ThunderModule : WeatherSystemModule<ThunderModule.ThunderSettings>
     {
+        #region Thunder settings struct
+
         [Serializable]
         public struct ThunderSettings
         {
@@ -51,47 +53,131 @@ namespace dnSR_Coding
             return Settings [ id ];
         }
 
-        private Coroutine thunderCoroutine;
+        #endregion
+
+        private MonoBehaviour _monoBehaviour = null;
+        private LightController _thunderLightController = null;
+
+        private Coroutine thunderCoroutine = null;
         private int _currentKey = 0;
 
-        public void ApplySettings( MonoBehaviour monoBehaviour, Enums.Thunder_Type thunderType, LightController thunderLightController, Color mainLightColor )
+        #region Init
+
+        public void Init( MonoBehaviour monoBehaviour, LightController thunderlightController )
+        {
+            SetMonoBehaviour( monoBehaviour );
+            SetThunderLightController( thunderlightController );
+        }
+
+        private void SetMonoBehaviour( MonoBehaviour monoBehaviour )
+        {
+            if ( monoBehaviour.IsNull<GameObject>() )
+            {
+                this.Debugger(
+                    "The monoBehaviour sent to this object is null.",
+                    DebugType.Error );
+                return;
+            }
+
+            _monoBehaviour = monoBehaviour;
+        }
+        private void SetThunderLightController( LightController lightController )
+        {
+            if ( lightController.IsNull<LightController>() )
+            {
+                this.Debugger(
+                    "The lightController sent to this object is null.",
+                    DebugType.Error );
+                return;
+            }
+
+            _thunderLightController = lightController;
+        }
+
+        #endregion
+
+        #region Apply / Stop
+
+        /// <summary>
+        /// Applies the settings.
+        /// </summary>
+        /// <param name="monoBehaviour"> The user needed to use coroutine. </param>
+        /// <param name="thunderType"> The type of thunder applied. </param>
+        /// <param name="thunderLightController"> 
+        /// The light controller used for thunder, can be found in Lights referencer.
+        /// </param>
+        /// <param name="mainLightColor">
+        /// The current main light color (especially useful for the daytime light influence).
+        /// </param>
+        public void ApplySettings(
+            Enums.Thunder_Type thunderType,
+            Color mainLightColor )
         {
             if ( !thunderCoroutine.IsNull<Coroutine>() ) { return; }
 
             ThunderSettings settings = GetSettingsByID( ( int ) thunderType );
             if ( settings.IsNull<ThunderSettings>() )
             {
-                Debug.LogError( "Thunder Module - ApplySettings - Thunder settings reference is null" );
+                this.Debugger( 
+                    "Thunder Module - ApplySettings - Thunder settings reference is null",
+                    DebugType.Error );
                 return;
             }
             this.Debugger( $"Thunder setting has been applied with ID : {settings.ID}." );
 
-            if ( thunderLightController.IsNull<LightController>() ) {
-                Debug.LogError( "Thunder Module - ApplySettings - Thunder light reference is null" );
+            if ( _thunderLightController.IsNull<LightController>() )
+            {
+                this.Debugger(
+                    "Thunder Light Module - ApplySettings - Thunder light controller reference is null",
+                    DebugType.Error );
                 return;
             }
 
-            thunderCoroutine = monoBehaviour.StartCoroutine( StartLightFlickering( settings, thunderLightController, mainLightColor ) );
+            thunderCoroutine = _monoBehaviour.StartCoroutine( 
+                StartLightFlickering( settings, mainLightColor ) );
 
-            Debug.Log( $"Thunder setting has been applied with a flickering rate of : {settings.GetFlickeringRate()}." );
+            this.Debugger( $"Thunder setting has been applied with a flickering rate of : {settings.GetFlickeringRate()}." );
         }
-        public void Stop( MonoBehaviour monoBehaviour )
+
+        /// <summary>
+        /// Stops the thunder.
+        /// </summary>
+        /// <param name="monoBehaviour"> The user needed to use coroutine. </param>
+        public void Stop()
         {
+            // We need to check if a thunder coroutine is defined.
             if ( thunderCoroutine.IsNull<Coroutine>() ) { return; }
 
+            // Then we stop this coroutine.
+            _monoBehaviour.StopCoroutine( thunderCoroutine );
             this.Debugger( "Thunder setting has been stopped." );
 
-            monoBehaviour.StopCoroutine( thunderCoroutine );
+            // As a security layer, we set it to null
             thunderCoroutine = null;
         }
 
-        private IEnumerator StartLightFlickering( ThunderSettings settings, LightController thunderLightController, Color mainLightColor )
+        #endregion
+
+        #region Utils
+
+        /// <summary>
+        /// Flickers the thunder light to imitate the effect or IRL thunder.
+        /// </summary>
+        /// <param name="settings"> The settings that hold all the parameter to use. </param>
+        /// The light controller used for thunder, can be found in Lights referencer.
+        /// <param name="mainLightColor">
+        /// The current main light color (especially useful for the daytime light influence).
+        /// </param>
+        /// <returns></returns>
+        private IEnumerator StartLightFlickering( 
+            ThunderSettings settings, 
+            Color mainLightColor )
         {
             AnimationCurve currentCurve = null;
             float randomFlickerRate = 0;
             float randomTimerBetweenConsecutiveApplications = 0;
 
-            thunderLightController.SetLightColor( mainLightColor );
+            _thunderLightController.SetLightColor( mainLightColor );
 
             do
             {
@@ -103,7 +189,7 @@ namespace dnSR_Coding
                 {
                     this.Debugger( "Curve has been picked, a thunder will be shot" );
 
-                    thunderLightController.SetLightIntensity( 0 );
+                    _thunderLightController.SetLightIntensity( 0 );
 
                     // Get a random curve...
                     int randomCurveIndex = UnityEngine.Random.Range( 0, settings.GetFlickeringCurves().Count );
@@ -131,13 +217,15 @@ namespace dnSR_Coding
                 float rate = hasLastKeyReached ? randomTimerBetweenConsecutiveApplications : randomFlickerRate;
                 this.Debugger( "Rate value : " + rate + " ON | Length : " + currentCurve.length );
 
-                thunderLightController.SetLightIntensity( hasLastKeyReached ? 0f : currentCurve.keys [ _currentKey ].value );
-                this.Debugger( "Current thunder intensity : " + thunderLightController.GetControllerLight().intensity );
+                _thunderLightController.SetLightIntensity( hasLastKeyReached ? 0f : currentCurve.keys [ _currentKey ].value );
+                this.Debugger( "Current thunder intensity : " + _thunderLightController.GetControllerLight().intensity );
                 // BLOC THAT NEEDS TO ITERATE CONTINUOUSLY --
 
                 yield return new WaitForSeconds( rate );
 
             } while ( true );
         }
+
+        #endregion
     }
 }

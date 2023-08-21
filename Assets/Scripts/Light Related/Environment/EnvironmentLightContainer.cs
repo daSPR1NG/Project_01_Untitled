@@ -1,6 +1,7 @@
 using UnityEngine;
 using dnSR_Coding.Utilities.Helpers;
 using dnSR_Coding.Utilities.Interfaces;
+using Sirenix.OdinInspector;
 
 namespace dnSR_Coding
 {
@@ -12,31 +13,33 @@ namespace dnSR_Coding
 
         #region DEBUG
 
-        //[Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
-        [SerializeField] private bool _isDebuggable = true;
-        public bool IsDebuggable => _isDebuggable;
+        [field: SerializeField, FoldoutGroup( "Debug Section", -1 )]
+        public bool IsDebuggable { get; set; } = true;
 
         #endregion
 
         #region SETUP
 
         void Awake() => Init();
-        
+
         // Set all datas that need it at the start of the game
         public void Init()
         {
             GetLinkedComponents();
 
-            if ( _environmentLightsReferencer.MainLightController.IsNull<LightController>() ) {
-                SetMainLightReference(); 
+            if ( _environmentLightsReferencer.MainLightController.IsNull<LightController>() )
+            {
+                SetMainLightReference();
             }
 
-            if ( _environmentLightsReferencer.AdditionalLightController.IsNull<LightController>() ) {
-                SetAdditionalLightReference(); 
+            if ( _environmentLightsReferencer.AdditionalLightController.IsNull<LightController>() )
+            {
+                SetAdditionalLightReference();
             }
 
-            if ( _environmentLightsReferencer.ThunderLightController.IsNull<LightController>() ) {
-                SetThunderLightReference(); 
+            if ( _environmentLightsReferencer.ThunderLightController.IsNull<LightController>() )
+            {
+                SetThunderLightReference();
             }
         }
 
@@ -44,7 +47,8 @@ namespace dnSR_Coding
         // This method is called on Awake() + OnValidate() to set both in game mod and in editor what this script needs.
         void GetLinkedComponents()
         {
-            if ( _environmentLightsReferencer.IsNull<EnvironmentLightsReferencer>() ) {
+            if ( _environmentLightsReferencer.IsNull<EnvironmentLightsReferencer>() )
+            {
                 _environmentLightsReferencer = transform.parent.GetComponent<EnvironmentLightsReferencer>();
             }
         }
@@ -79,7 +83,8 @@ namespace dnSR_Coding
             mainLightController.Init( mainLightGO.GetComponent<Light>(), Enums.Light_Type.Main );
             SetMainLightParametersAsDefault( mainLightController );
         }
-        private void SetMainLightParametersAsDefault( LightController controller ) {
+        private void SetMainLightParametersAsDefault( LightController controller )
+        {
             controller.SetLightParameters(
                 LightType.Directional,
                 LightmapBakeType.Realtime,
@@ -187,7 +192,8 @@ namespace dnSR_Coding
 
 #if UNITY_EDITOR
 
-        private void OnValidate() {
+        private void OnValidate()
+        {
             Init();
         }
 #endif

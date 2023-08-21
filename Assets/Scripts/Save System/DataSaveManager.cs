@@ -29,7 +29,7 @@ namespace dnSR_Coding
 
         #region SETUP
 
-        protected override void Init( bool dontDestroyOnLoad = false )
+        protected override void Init( bool dontDestroyOnLoad = true )
         {
             base.Init();
         }

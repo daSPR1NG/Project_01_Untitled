@@ -11,25 +11,27 @@ namespace dnSR_Coding.Utilities.Runtime
     public enum GameState { Playing, Paused }
 
     ///<summary> GameManager description <summary>
+    [HiddenField]
     public class GameManager : Singleton<GameManager>, IDebuggable
     {
         [CenteredHeader( "Game State details" )]
         [SerializeField] private GameState _gameState = GameState.Playing;
-        [CstmHeader( "Game State details", true )]
-        [SerializeField, ReadOnly] private int _timeScale = 1;
 
-        [SerializeField, ShowIf( "IsDebuggable" )]
-        private int _refreshRate = 60;
+        [SerializeField, ReadOnly] private int _timeScale = 1;
 
         public static Action<object> OnGameStateChanged;
 
         #region DEBUG
+
         [field: SerializeField, FoldoutGroup( "Debug Section", -1 )]
-        [field: InfoBox("Test")]
         public bool IsDebuggable { get; set; } = true;
+
+        [SerializeField, ShowIf( "IsDebuggable" )]
+        private int _refreshRate = 60;
+
         #endregion
 
-        protected override void Init( bool dontDestroyOnLoad = false )
+        protected override void Init( bool dontDestroyOnLoad = true )
         {
             base.Init();
             Application.targetFrameRate = _refreshRate;
@@ -46,7 +48,7 @@ namespace dnSR_Coding.Utilities.Runtime
         /// </summary>
         public void CheckIfPauseInputHasBeenPressed()
         {
-            InputAction input = PlayerInputsHelper.Instance.GetTogglePauseMenuAction();
+            InputAction input = PlayerInputsHelper.GetTogglePauseMenuAction();
 
             if ( !input.IsNull<InputAction>() && input.WasPerformedThisFrame() )
             {
@@ -93,6 +95,13 @@ namespace dnSR_Coding.Utilities.Runtime
 
             _gameState = gameState;
             this.Debugger( "GameState changed to: " + gameState.ToString().ToLogValue() );
+        }
+
+        private void SetGameTimeScale( int value )
+        {
+            if ( _timeScale == value ) { return; }
+
+            _timeScale = value;
         }
 
         public bool IsGamePaused() { return _gameState == GameState.Paused || Time.timeScale == 0; }

@@ -1,6 +1,8 @@
 using UnityEngine;
 using dnSR_Coding.Utilities.Helpers;
 using dnSR_Coding.Utilities.Interfaces;
+using Sirenix.OdinInspector;
+using dnSR_Coding.Utilities.Attributes;
 
 namespace dnSR_Coding
 {
@@ -10,6 +12,7 @@ namespace dnSR_Coding
     [DisallowMultipleComponent]
     public class LightController : MonoBehaviour, IDebuggable
     {
+        [CenteredHeader( "Light Settings" )]
         [SerializeField] private Enums.Light_Type _lightType = Enums.Light_Type.None;
         private Light _controllerLight;
 
@@ -21,16 +24,15 @@ namespace dnSR_Coding
 
         #region DEBUG
 
-        //[Space( 10 ), HorizontalLine( .5f, EColor.Gray )]
-        [SerializeField] private bool _isDebuggable = true;
-        public bool IsDebuggable => _isDebuggable;
+        [field: SerializeField, FoldoutGroup( "Debug Section", -1 )]
+        public bool IsDebuggable { get; set; } = true;
 
         #endregion
 
         #region SETUP
 
         void Awake() => SetControllerLight( GetComponent<Light>() );
-        
+
         // Set all datas that need it at the start of the game
         public void Init( Light light, Enums.Light_Type lightType )
         {
@@ -85,49 +87,59 @@ namespace dnSR_Coding
 
         #region LIGHT
 
-        private void SetLightType( LightType type ) {
-            _controllerLight.type = type; 
+        private void SetLightType( LightType type )
+        {
+            _controllerLight.type = type;
         }
 
-        private void SetLightmapBakeType( LightmapBakeType bakeType ) {
-            _controllerLight.lightmapBakeType = bakeType; 
+        private void SetLightmapBakeType( LightmapBakeType bakeType )
+        {
+            _controllerLight.lightmapBakeType = bakeType;
         }
 
-        private void SetLightmapRenderMode( LightRenderMode renderMode ) {
-            _controllerLight.renderMode = renderMode; 
+        private void SetLightmapRenderMode( LightRenderMode renderMode )
+        {
+            _controllerLight.renderMode = renderMode;
         }
 
-        public void SetLightIntensity( float intensity ) {
-            _controllerLight.intensity = intensity; 
+        public void SetLightIntensity( float intensity )
+        {
+            _controllerLight.intensity = intensity;
         }
 
-        public void SetLightColor( Color color ) {
-            _controllerLight.color = color; 
+        public void SetLightColor( Color color )
+        {
+            _controllerLight.color = color;
         }
 
-        public bool DoesLightIntensityEquals( float value ) {
-            return _controllerLight.intensity == value; 
+        public bool DoesLightIntensityEquals( float value )
+        {
+            return _controllerLight.intensity == value;
         }
 
         #endregion
 
         #region SHADOW
 
-        private void SetLightShadows( LightShadows shadows ) {
-            _controllerLight.shadows = shadows; 
+        private void SetLightShadows( LightShadows shadows )
+        {
+            _controllerLight.shadows = shadows;
         }
 
-        private void SetShadowNearPlane( float shadowNearPlane ) {
-            _controllerLight.shadowNearPlane = shadowNearPlane; 
+        private void SetShadowNearPlane( float shadowNearPlane )
+        {
+            _controllerLight.shadowNearPlane = shadowNearPlane;
         }
 
-        private void SetShadowStrength ( float shadowStrength ) {
-            _controllerLight.shadowStrength = shadowStrength; 
+        private void SetShadowStrength( float shadowStrength )
+        {
+            _controllerLight.shadowStrength = shadowStrength;
         }
 
         #endregion
 
-        public void SetLightCullingMask( int cullingMask ){
+        public void SetLightCullingMask( int cullingMask )
+        {
             _controllerLight.cullingMask = cullingMask;
         }
 
@@ -144,14 +156,14 @@ namespace dnSR_Coding
             DisableLight();
         }
 
-        public void EnableLight() 
+        public void EnableLight()
         {
             if ( _controllerLight.enabled ) { return; }
 
             _controllerLight.Enable();
             ChangeGameObjectName( "Enabled" );
         }
-        public void DisableLight() 
+        public void DisableLight()
         {
             if ( !_controllerLight.enabled ) { return; }
 
@@ -172,8 +184,9 @@ namespace dnSR_Coding
 
         #region CONTROLLER LIGHT GET/SET + HAS LIGHT ?
 
-        public Light GetControllerLight() {
-            return _controllerLight; 
+        public Light GetControllerLight()
+        {
+            return _controllerLight;
         }
 
         public void SetControllerLight( Light light )
@@ -184,15 +197,18 @@ namespace dnSR_Coding
         }
 
 
-        public bool HasLight() {
-            return !_controllerLight.IsNull<LightController>(); 
+        public bool HasLight()
+        {
+            return !_controllerLight.IsNull<LightController>();
         }
 
-        public Enums.Light_Type GetLightType() {
+        public Enums.Light_Type GetLightType()
+        {
             return _lightType;
         }
 
-        public void SetLightType( Enums.Light_Type lightType ) {
+        public void SetLightType( Enums.Light_Type lightType )
+        {
             _lightType = lightType;
         }
 
@@ -201,7 +217,8 @@ namespace dnSR_Coding
         #region EDITOR
 
 #if UNITY_EDITOR
-        private void OnValidate() {
+        private void OnValidate()
+        {
             SetControllerLight( GetComponent<Light>() );
         }
 #endif

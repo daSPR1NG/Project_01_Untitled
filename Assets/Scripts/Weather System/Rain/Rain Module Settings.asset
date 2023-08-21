@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0021f58ff57d68f4cb20a2e3250a7165, type: 3}
   m_Name: Rain Module Settings
   m_EditorClassIdentifier: 
+  <IsDebuggable>k__BackingField: 1
   Settings:
   - _name: None
     _associatedRainType: 0

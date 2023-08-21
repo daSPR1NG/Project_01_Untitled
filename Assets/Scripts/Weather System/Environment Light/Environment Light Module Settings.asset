@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a5ca97e8064c3246ad67e451256980b, type: 3}
   m_Name: Environment Light Module Settings
   m_EditorClassIdentifier: 
+  <IsDebuggable>k__BackingField: 0
   Settings:
   - _name: Low
     _lightIntensity: 0

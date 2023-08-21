@@ -1,15 +1,14 @@
 using UnityEngine;
 using System.Collections.Generic;
-using dnSR_Coding.Utilities.Helpers;
-using dnSR_Coding.Utilities.Attributes;
-using dnSR_Coding.Utilities.Interfaces;
 using Sirenix.OdinInspector;
+using dnSR_Coding.Utilities.Helpers;
+using dnSR_Coding.Utilities.Interfaces;
 
 namespace dnSR_Coding
 {
     ///<summary> CustomCursorManager description <summary>
     [DisallowMultipleComponent]
-    public class CustomCursorManager : MonoBehaviour, IDebuggable
+    public class CustomCursorManager : Singleton<CustomCursorManager>, IDebuggable
     {
         [SerializeField, PropertySpace( 5, 5 )] 
         private CursorLockMode _lockMode = CursorLockMode.None;
@@ -37,23 +36,23 @@ namespace dnSR_Coding
 
         void OnEnable()
         {
-            EventManager.OnCursorHover += SetCursorFirstAppearance_ByAction;
+            EventManager.OnCursorHover.Subscribe( SetCursorFirstAppearance_ByAction );
         }
 
         void OnDisable()
         {
-            EventManager.OnCursorHover -= SetCursorFirstAppearance_ByAction;
+            EventManager.OnCursorHover.Unsubscribe( SetCursorFirstAppearance_ByAction );
         }
 
         #endregion
 
         #region Setup
 
-        void Awake() => Init();
-
         // Set all datas that need it at the start of the game
-        void Init()
+        protected override void Init( bool dontDestroyOnLoad = true )
         {
+            base.Init();
+
             Helper.SetCursorLockMode( _lockMode );
             Helper.SetCursorVisibility( true );
 

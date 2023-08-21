@@ -4,12 +4,13 @@ using DG.Tweening;
 using dnSR_Coding.Utilities.Helpers;
 using dnSR_Coding.Utilities.Attributes;
 
-
 namespace dnSR_Coding
 {
     [CreateAssetMenu( menuName = "Scriptable Objects/Weather System/Modules/Create New Environment Light Module Settings" )]
     public class EnvironmentLightModule : WeatherSystemModule<EnvironmentLightModule.EnvironmentLightSettings>
     {
+        #region EnvironmentLight setting struct
+
         [Serializable]
         public struct EnvironmentLightSettings
         {
@@ -33,9 +34,14 @@ namespace dnSR_Coding
             return Settings [ id ];
         }
 
-        private Tween _lightIntensityTween;
+        #endregion
 
-        public void ApplySettings( Enums.Environment_LightIntensity_Type lightIntensity, LightController mainLightController )
+        private LightController _mainLightController = null;
+        private Tween _lightIntensityTween = null;
+
+        #region Apply
+
+        public void ApplySettings( Enums.Environment_LightIntensity_Type lightIntensity )
         {
             EnvironmentLightSettings settings = GetSettingsByID( ( int ) lightIntensity );
             if ( settings.IsNull<EnvironmentLightSettings>() )
@@ -44,36 +50,49 @@ namespace dnSR_Coding
                 return;
             }
 
-            SetLightIntensity( settings, mainLightController );
+            SetLightIntensity( settings );
 
             Debug.Log( $"Environment light setting has been applied with an intensity of : {settings.Intensity}." );
         }
 
-        private void SetLightIntensity( EnvironmentLightSettings settings, LightController mainLightController )
+        #endregion
+
+        #region Utils
+
+        private void SetLightIntensity( EnvironmentLightSettings settings )
         {
-            if ( mainLightController.IsNull<LightController>() )
+            // We need to check if the main light controller is defined.
+            if ( _mainLightController.IsNull<LightController>() )
             {
                 Debug.LogError( "Environment Light Module - ApplySettings - Environment Light main light reference is null" );
                 return;
             }
 
-            if ( mainLightController.DoesLightIntensityEquals( settings.Intensity )
+            // Then we need to check if the intensity is already equal to the new value...
+            // or that it is currently set.
+            if ( _mainLightController.DoesLightIntensityEquals( settings.Intensity )
                 || _lightIntensityTween.IsActive() )
             {
                 return;
             }
 
+            // We call a tween to set the value gradually, it's smoother, more visually appealing.
             _lightIntensityTween = DOTween.To(
-                () => mainLightController.GetControllerLight().intensity,
-                _ => mainLightController.GetControllerLight().intensity = _,
+                () => _mainLightController.GetControllerLight().intensity,
+                _ => _mainLightController.GetControllerLight().intensity = _,
                 settings.Intensity,
                 1.25f );
 
+            // When the value has been reached, we need to kill the tween...
+            // and as a security layer, we reassign the value to the what we wanted...
+            // in order to make sure it is equal to this value.
             _lightIntensityTween.OnComplete( () =>
             {
-                mainLightController.SetLightIntensity( settings.Intensity );
+                _mainLightController.SetLightIntensity( settings.Intensity );
                 _lightIntensityTween.Kill();
             } );
         }
+
+        #endregion
     }
 }

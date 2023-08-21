@@ -12,7 +12,7 @@ namespace dnSR_Coding
         [Header( "Main settings" )]
         public Enums.Cursor_SelectionType RelatedAction = Enums.Cursor_SelectionType.Default;
 
-        [Range( 0.01f, 1f )] public float FrameRate;
+        [Range( 0.01f, 1f )] public float FrameRate = .5f;
 
         public Vector2 HotspotOffset = Vector2.zero;
 

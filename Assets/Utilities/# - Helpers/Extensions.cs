@@ -26,6 +26,7 @@ namespace dnSR_Coding.Utilities.Helpers
             if ( gameObject.IsActive() ) return;
 
             gameObject.SetActive( true );
+
             Debug.Log( gameObject.name.ToLogComponent() + " has been displayed." );
 
         }

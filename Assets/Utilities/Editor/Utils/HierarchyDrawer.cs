@@ -13,14 +13,15 @@ namespace dnSR_Coding.Utilities.Editor
     {
         private static bool _isInitialized = false;
         private static InstanceInfo _currentInstanceInfo;
-        private static readonly Dictionary<int, InstanceInfo> _sceneInstances = new ();
+        private static readonly Dictionary<int, InstanceInfo> _sceneInstances = new();
 
         private const int ICON_SIZE = 16;
-        private const float SEPARATOR_HEIGHT = 1f;
+        private const float SEPARATOR_HEIGHT = .5f;
         private const float LABEL_BACKGROUND_HEIGHT_REDUCTION = 2f;
         private const float ELEMENTS_WIDTH_OFFSET = 8f;
 
-        static HierarchyDrawer() {
+        static HierarchyDrawer()
+        {
             Init();
         }
 
@@ -61,16 +62,18 @@ namespace dnSR_Coding.Utilities.Editor
                 rect.width - rect.xMin + ELEMENTS_WIDTH_OFFSET,
                 rect.height - LABEL_BACKGROUND_HEIGHT_REDUCTION );
 
-            DrawElementsBackground( backgroundRect );
-            DrawLabel( backgroundRect, _currentInstanceInfo );
-            DrawSeparator( rect );
+            if ( false )
+            {
+                DrawElementsBackground( backgroundRect );
+                DrawLabel( backgroundRect, _currentInstanceInfo );
+                DrawSeparator( rect );
+            }
+
             DrawVisibilityToggle( go, rect, 2 );
         }
 
         private static void GetHierarchyElements()
         {
-            //if ( Application.isPlaying ) { return; }
-
             _sceneInstances.Clear();
 
             // Trouver le moyen de récupérer les "objets" de la scène présents la hiérarchie
@@ -91,8 +94,9 @@ namespace dnSR_Coding.Utilities.Editor
                         GameObject go = sceneObjects [ j ];
 
                         if ( _sceneInstances.ContainsKey( go.GetInstanceID() )
-                            || go.IsNull() 
-                            || !go.transform.parent.IsNull()) {
+                            || go.IsNull()
+                            || !go.transform.parent.IsNull() )
+                        {
                             continue;
                         }
 
@@ -111,9 +115,9 @@ namespace dnSR_Coding.Utilities.Editor
 
         private static void DrawVisibilityToggle( GameObject go, Rect rect, int xPosOffset = 1 )
         {
-            Rect visibilityToggle = new Rect( 
-                rect.xMax - ICON_SIZE * xPosOffset, 
-                rect.yMin, 
+            Rect visibilityToggle = new Rect(
+                rect.xMax - ICON_SIZE * xPosOffset,
+                rect.yMin,
                 ICON_SIZE,
                 ICON_SIZE );
 
@@ -131,14 +135,15 @@ namespace dnSR_Coding.Utilities.Editor
             }
         }
 
-        private static void DrawElementsBackground( Rect rect ) 
+        private static void DrawElementsBackground( Rect rect )
         {
             Color color = EditorHelper.GetColor( _currentInstanceInfo.HierarchyColor );
             // Background
             EditorGUI.DrawRect( rect, color );
         }
 
-        private static void DrawLabel( Rect rect, InstanceInfo instanceInfo ) {
+        private static void DrawLabel( Rect rect, InstanceInfo instanceInfo )
+        {
             // Label
             GUIStyle style = new GUIStyle
             {
@@ -148,7 +153,7 @@ namespace dnSR_Coding.Utilities.Editor
                 clipping = TextClipping.Clip,
                 normal = new GUIStyleState()
                 {
-                    textColor = instanceInfo.HierarchyColor ==  EditorColor.Grey ? 
+                    textColor = instanceInfo.HierarchyColor == EditorColor.Grey ?
                     EditorHelper.GetColor( EditorColor.Black ) : EditorHelper.GetColor( EditorColor.White ),
                 }
             };
@@ -156,17 +161,17 @@ namespace dnSR_Coding.Utilities.Editor
             EditorGUI.LabelField( rect, _currentInstanceInfo.GoName.ToUpper(), style );
         }
 
-        private static void DrawSeparator( Rect rect ) 
+        private static void DrawSeparator( Rect rect )
         {
             Color color = EditorHelper.GetColor( EditorColor.Orange );
 
             // Separator
             EditorGUI.DrawRect(
                     new Rect(
-                        rect.xMin, 
+                        rect.xMin,
                         rect.yMax - ( LABEL_BACKGROUND_HEIGHT_REDUCTION / 2 ),
-                        rect.width - rect.xMin + ELEMENTS_WIDTH_OFFSET, 
-                        SEPARATOR_HEIGHT ), 
+                        rect.width - rect.xMin + ELEMENTS_WIDTH_OFFSET,
+                        SEPARATOR_HEIGHT ),
                     color );
         }
     }
