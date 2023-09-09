@@ -1,178 +1,189 @@
-using UnityEngine;
-using UnityEditor;
-using UnityEngine.SceneManagement;
-using UnityEditor.SceneManagement;
-using System.Collections.Generic;
-using System;
-using dnSR_Coding.Utilities.Helpers;
+//using UnityEngine;
+//using UnityEditor;
+//using UnityEngine.SceneManagement;
+//using UnityEditor.SceneManagement;
+//using System.Collections.Generic;
+//using System;
+//using dnSR_Coding.Utilities.Helpers;
+//using System.Linq;
 
-namespace dnSR_Coding.Utilities.Editor
-{
-    [InitializeOnLoad]
-    public static class HierarchyDrawer
-    {
-        private static bool _isInitialized = false;
-        private static InstanceInfo _currentInstanceInfo;
-        private static readonly Dictionary<int, InstanceInfo> _sceneInstances = new();
+//namespace dnSR_Coding.Utilities.Editor
+//{
+//    [InitializeOnLoad]
+//    public static class HierarchyDrawer
+//    {
+//        private static bool _isInitialized = false;
+//        private static InstanceInfo _currentInstanceInfo;
+//        private static readonly Dictionary<int, InstanceInfo> _sceneInstances = new();
 
-        private const int ICON_SIZE = 16;
-        private const float SEPARATOR_HEIGHT = .5f;
-        private const float LABEL_BACKGROUND_HEIGHT_REDUCTION = 2f;
-        private const float ELEMENTS_WIDTH_OFFSET = 8f;
+//        private const int ICON_SIZE = 16;
+//        private const float SEPARATOR_HEIGHT = .5f;
+//        private const float LABEL_BACKGROUND_HEIGHT_REDUCTION = 2f;
+//        private const float ELEMENTS_WIDTH_OFFSET = 8f;
 
-        static HierarchyDrawer()
-        {
-            Init();
-        }
+//        static HierarchyDrawer() => Init();
 
-        [Serializable]
-        struct InstanceInfo
-        {
-            public string GoName;
-            public bool IsGoActive;
-            public EditorColor HierarchyColor;
-        }
+//        [Serializable]
+//        struct InstanceInfo
+//        {
+//            public string GoName;
+//            public bool IsGoActive;
+//            public EditorColor HierarchyColor;
+//        }
 
-        private static void Init()
-        {
-            if ( _isInitialized )
-            {
-                EditorApplication.hierarchyWindowItemOnGUI -= DrawCore;
-                EditorApplication.hierarchyChanged -= GetHierarchyElements;
-            }
+//        private static void Init()
+//        {
+//            if ( _isInitialized )
+//            {
+//                EditorApplication.hierarchyWindowItemOnGUI -= DrawCore;
+//                EditorApplication.hierarchyChanged -= GetHierarchyElements;
 
-            EditorApplication.hierarchyWindowItemOnGUI += DrawCore;
-            EditorApplication.hierarchyChanged += GetHierarchyElements;
-        }
+//                return;
+//            }
 
-        private static void DrawCore( int instanceID, Rect rect )
-        {
-            _isInitialized = true;
+//            EditorApplication.hierarchyWindowItemOnGUI += DrawCore;
+//            EditorApplication.hierarchyChanged += GetHierarchyElements;
+//        }
 
-            if ( !_sceneInstances.ContainsKey( instanceID ) ) { return; }
+//        private static void DrawCore( int instanceID, Rect rect )
+//        {
+//            _isInitialized = true;
 
-            _currentInstanceInfo = _sceneInstances [ instanceID ];
-            GameObject go = EditorUtility.InstanceIDToObject( instanceID ) as GameObject;
+//            if ( !_sceneInstances.ContainsKey( instanceID ) ) { return; }
 
-            if ( go.IsNull() ) { return; }
+//            Rect backgroundRect = new Rect(
+//                rect.xMin,
+//                rect.yMin + 1,
+//                rect.width - rect.xMin + ELEMENTS_WIDTH_OFFSET,
+//                rect.height - LABEL_BACKGROUND_HEIGHT_REDUCTION );
 
-            Rect backgroundRect = new Rect(
-                rect.xMin,
-                rect.yMin + 1,
-                rect.width - rect.xMin + ELEMENTS_WIDTH_OFFSET,
-                rect.height - LABEL_BACKGROUND_HEIGHT_REDUCTION );
+//            GameObject go = EditorUtility.InstanceIDToObject( instanceID ) as GameObject;
 
-            if ( false )
-            {
-                DrawElementsBackground( backgroundRect );
-                DrawLabel( backgroundRect, _currentInstanceInfo );
-                DrawSeparator( rect );
-            }
+//            if ( go.IsNull() ) { return; }
 
-            DrawVisibilityToggle( go, rect, 2 );
-        }
+//            //DrawSeparator( rect );
+//            DrawElementsBackground( backgroundRect );
+//            DrawVisibilityToggle( go, rect, 2 );
 
-        private static void GetHierarchyElements()
-        {
-            _sceneInstances.Clear();
+//            _currentInstanceInfo = _sceneInstances [ instanceID ];
+//            //DrawLabel( backgroundRect, _currentInstanceInfo );
+//        }
 
-            // Trouver le moyen de récupérer les "objets" de la scène présents la hiérarchie
-            GameObject [] sceneObjects;
-            Scene activeScene;
+//        private static void GetHierarchyElements()
+//        {
+//            _sceneInstances.Clear();
 
-            for ( int i = 0; i < SceneManager.sceneCount; i++ )
-            {
-                activeScene = SceneManager.GetSceneAt( i );
+//            // Trouver le moyen de récupérer les "objets" de la scène présents la hiérarchie
+//            GameObject [] sceneObjects;
+//            Scene activeScene;
 
-                if ( activeScene.isLoaded )
-                {
-                    sceneObjects = activeScene.GetRootGameObjects();
-                    //Debug.Log( $"{sceneObjects.Length} " );
+//            for ( int i = 0; i < SceneManager.sceneCount; i++ )
+//            {
+//                activeScene = SceneManager.GetSceneAt( i );
 
-                    for ( int j = 1; j < sceneObjects.Length; j++ )
-                    {
-                        GameObject go = sceneObjects [ j ];
+//                if ( activeScene.isLoaded )
+//                {
+//                    sceneObjects = activeScene.GetRootGameObjects();
+//                    //Debug.Log( $"{sceneObjects.Length} " );
 
-                        if ( _sceneInstances.ContainsKey( go.GetInstanceID() )
-                            || go.IsNull()
-                            || !go.transform.parent.IsNull() )
-                        {
-                            continue;
-                        }
+//                    for ( int j = 1; j < sceneObjects.Length; j++ )
+//                    {
+//                        GameObject go = sceneObjects [ j ];
 
-                        InstanceInfo newInfo = new()
-                        {
-                            GoName = go.name,
-                            IsGoActive = go.activeInHierarchy,
-                            HierarchyColor = j % 2 == 0 ? EditorColor.Black : EditorColor.Grey,
-                        };
+//                        if ( _sceneInstances.ContainsKey( go.GetInstanceID() )
+//                            || go.IsNull()
+//                            || !go.transform.parent.IsNull() )
+//                        {
+//                            continue;
+//                        }
 
-                        _sceneInstances.Add( go.GetInstanceID(), newInfo );
-                    }
-                }
-            }
-        }
+//                        InstanceInfo newInfo = new()
+//                        {
+//                            GoName = go.name,
+//                            IsGoActive = go.activeInHierarchy,
+//                            HierarchyColor = j % 2 == 0 ? EditorColor.Black : EditorColor.Grey,
+//                        };
 
-        private static void DrawVisibilityToggle( GameObject go, Rect rect, int xPosOffset = 1 )
-        {
-            Rect visibilityToggle = new Rect(
-                rect.xMax - ICON_SIZE * xPosOffset,
-                rect.yMin,
-                ICON_SIZE,
-                ICON_SIZE );
+//                        _sceneInstances.Add( go.GetInstanceID(), newInfo );
+//                    }
+//                }
+//            }
+//        }
 
-            bool wasGOActive = go.activeSelf;
-            bool isGOActive = GUI.Toggle( visibilityToggle, wasGOActive, "" );
+//        private static void DrawVisibilityToggle( GameObject go, Rect rect, int xPosOffset = 1 )
+//        {
+//            Rect visibilityToggle = new Rect(
+//                rect.xMax - ICON_SIZE * xPosOffset,
+//                rect.yMin,
+//                ICON_SIZE,
+//                ICON_SIZE );
 
-            if ( wasGOActive != isGOActive )
-            {
-                go.SetActive( isGOActive );
-                if ( !EditorApplication.isPlaying )
-                {
-                    EditorSceneManager.MarkSceneDirty( go.scene );
-                    EditorUtility.SetDirty( go );
-                }
-            }
-        }
+//            bool wasGOActive = go.activeSelf;
+//            bool isGOActive = GUI.Toggle( visibilityToggle, wasGOActive, "" );
 
-        private static void DrawElementsBackground( Rect rect )
-        {
-            Color color = EditorHelper.GetColor( _currentInstanceInfo.HierarchyColor );
-            // Background
-            EditorGUI.DrawRect( rect, color );
-        }
+//            if ( wasGOActive != isGOActive )
+//            {
+//                go.SetActive( isGOActive );
+//                if ( !EditorApplication.isPlaying )
+//                {
+//                    EditorSceneManager.MarkSceneDirty( go.scene );
+//                    EditorUtility.SetDirty( go );
+//                }
+//            }
+//        }
 
-        private static void DrawLabel( Rect rect, InstanceInfo instanceInfo )
-        {
-            // Label
-            GUIStyle style = new GUIStyle
-            {
-                alignment = TextAnchor.MiddleCenter,
-                fontStyle = FontStyle.Bold,
-                fontSize = 11,
-                clipping = TextClipping.Clip,
-                normal = new GUIStyleState()
-                {
-                    textColor = instanceInfo.HierarchyColor == EditorColor.Grey ?
-                    EditorHelper.GetColor( EditorColor.Black ) : EditorHelper.GetColor( EditorColor.White ),
-                }
-            };
+//        private static void DrawElementsBackground( Rect rect )
+//        {
+//            GUIStyle style = new GUIStyle();
+//            style.normal.background = EditorHelper.CreateBackgroundWithGradient(
+//                ( int ) rect.width,
+//                ( int ) rect.height,
+//                EditorHelper.GetColor( EditorColor.Blue ).WithAlpha( .5f ),
+//                EditorHelper.GetColor( EditorColor.Clear ).WithAlpha( 0 ) );
 
-            EditorGUI.LabelField( rect, _currentInstanceInfo.GoName.ToUpper(), style );
-        }
+//            if ( Event.current.type == EventType.Repaint )
+//            {
+//                GUI.depth -= 100;
+//                style.Draw(
+//                    new Rect(
+//                        rect.x,
+//                        rect.y,
+//                        rect.width,
+//                        rect.height ),
+//                    false, false, false, false );
+//            }
+//        }
 
-        private static void DrawSeparator( Rect rect )
-        {
-            Color color = EditorHelper.GetColor( EditorColor.Orange );
+//        private static void DrawLabel( Rect rect, InstanceInfo instanceInfo )
+//        {
+//            // Label
+//            GUIStyle style = new GUIStyle
+//            {
+//                alignment = TextAnchor.MiddleLeft,
+//                fontStyle = FontStyle.Bold,
+//                fontSize = 11,
+//                clipping = TextClipping.Clip,
+//                normal = new GUIStyleState()
+//                {
+//                    textColor = EditorHelper.GetColor( EditorColor.White ),
+//                }
+//            };
 
-            // Separator
-            EditorGUI.DrawRect(
-                    new Rect(
-                        rect.xMin,
-                        rect.yMax - ( LABEL_BACKGROUND_HEIGHT_REDUCTION / 2 ),
-                        rect.width - rect.xMin + ELEMENTS_WIDTH_OFFSET,
-                        SEPARATOR_HEIGHT ),
-                    color );
-        }
-    }
-}
+//            EditorGUI.LabelField( rect, instanceInfo.GoName.ToUpper(), style );
+//        }
+
+//        private static void DrawSeparator( Rect rect )
+//        {
+//            Color color = EditorHelper.GetColor( EditorColor.Clear );
+
+//            // Separator
+//            EditorGUI.DrawRect(
+//                    new Rect(
+//                        rect.xMin,
+//                        rect.yMax - ( LABEL_BACKGROUND_HEIGHT_REDUCTION / 2 ),
+//                        rect.width - rect.xMin + ELEMENTS_WIDTH_OFFSET,
+//                        SEPARATOR_HEIGHT ),
+//                    color );
+//        }
+//    }
+//}

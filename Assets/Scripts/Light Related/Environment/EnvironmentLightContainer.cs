@@ -11,6 +11,10 @@ namespace dnSR_Coding
     {
         private EnvironmentLightsReferencer _environmentLightsReferencer;
 
+        private const string MAIN_LIGHT_NAME = "Main Light";
+        private const string ADDITIONAL_LIGHT_NAME = "Additional Light";
+        private const string THUNDER_LIGHT_NAME = "Thunder Light";
+
         #region DEBUG
 
         [field: SerializeField, FoldoutGroup( "Debug Section", -1 )]
@@ -18,71 +22,58 @@ namespace dnSR_Coding
 
         #endregion
 
-        #region SETUP
-
-        void Awake() => Init();
-
-        // Set all datas that need it at the start of the game
-        public void Init()
+        private struct LightReferenceInfo
         {
-            GetLinkedComponents();
+            public string Name;
+            public Enums.Light_Type LightType;
+            public EnvironmentLightsReferencer LightsReferencer;
+            public LightController LightController;
 
-            if ( _environmentLightsReferencer.MainLightController.IsNull<LightController>() )
+            public LightReferenceInfo(
+                string name,
+                Enums.Light_Type lightType,
+                EnvironmentLightsReferencer lightsReferencer,
+                LightController lightController )
             {
-                SetMainLightReference();
-            }
-
-            if ( _environmentLightsReferencer.AdditionalLightController.IsNull<LightController>() )
-            {
-                SetAdditionalLightReference();
-            }
-
-            if ( _environmentLightsReferencer.ThunderLightController.IsNull<LightController>() )
-            {
-                SetThunderLightReference();
+                Name = name;
+                LightType = lightType;
+                LightsReferencer = lightsReferencer;
+                LightController = lightController;
             }
         }
 
-        // Put all the get component here, it'll be easier to follow what we need and what we collect.
-        // This method is called on Awake() + OnValidate() to set both in game mod and in editor what this script needs.
-        void GetLinkedComponents()
+        #region SETUP
+
+        // Set all datas that need it at the start of the game
+        public void Init( EnvironmentLightsReferencer environmentLightsReferencer )
         {
-            if ( _environmentLightsReferencer.IsNull<EnvironmentLightsReferencer>() )
-            {
-                _environmentLightsReferencer = transform.parent.GetComponent<EnvironmentLightsReferencer>();
-            }
+            _environmentLightsReferencer = environmentLightsReferencer;
+            this.Debugger( $"Initializing light container, referencer is : {_environmentLightsReferencer}." );
+
+            LightReferenceInfo mainLightReferenceInfo = new LightReferenceInfo(
+                    MAIN_LIGHT_NAME,
+                    Enums.Light_Type.Main,
+                    _environmentLightsReferencer,
+                    GetLightControllerByType( Enums.Light_Type.Main ) );
+            SetLightReference( mainLightReferenceInfo, false );
+
+            LightReferenceInfo additionalLightReferenceInfo = new LightReferenceInfo(
+                    ADDITIONAL_LIGHT_NAME,
+                    Enums.Light_Type.Additional,
+                    _environmentLightsReferencer,
+                    GetLightControllerByType( Enums.Light_Type.Additional ) );
+            SetLightReference( additionalLightReferenceInfo, true );
+
+            LightReferenceInfo thunderLightReferenceInfo = new LightReferenceInfo(
+                    THUNDER_LIGHT_NAME,
+                    Enums.Light_Type.Thunder,
+                    _environmentLightsReferencer,
+                    GetLightControllerByType( Enums.Light_Type.Thunder ) );
+            SetLightReference( thunderLightReferenceInfo, false );
         }
 
         #endregion
 
-        #region MAIN LIGHT REFERENCE
-
-        private void SetMainLightReference()
-        {
-            LightController mainLightController = GetLightControllerByType( Enums.Light_Type.Main );
-
-            if ( !mainLightController.IsNull<LightController>() )
-            {
-                _environmentLightsReferencer.SetMainLightController( mainLightController );
-                _environmentLightsReferencer.MainLightController.SetControllerLight( mainLightController.GetControllerLight() );
-                return;
-            }
-
-            Debug.Log( "No main light was found so a new one has been created." );
-            CreateMainLightReference();
-        }
-        private void CreateMainLightReference()
-        {
-            //Object creation and component assignment
-            GameObject mainLightGO = new( "Main Light", typeof( LightController ) );
-            mainLightGO.transform.SetParent( transform );
-
-            LightController mainLightController = mainLightGO.GetComponent<LightController>();
-            _environmentLightsReferencer.SetMainLightController( mainLightController );
-
-            mainLightController.Init( mainLightGO.GetComponent<Light>(), Enums.Light_Type.Main );
-            SetMainLightParametersAsDefault( mainLightController );
-        }
         private void SetMainLightParametersAsDefault( LightController controller )
         {
             controller.SetLightParameters(
@@ -95,37 +86,6 @@ namespace dnSR_Coding
                 .85f );
         }
 
-        #endregion
-
-        #region ADDITIONAL LIGHT REFERENCE
-
-        private void SetAdditionalLightReference()
-        {
-            LightController additionalLightController = GetLightControllerByType( Enums.Light_Type.Additional );
-
-            if ( !additionalLightController.IsNull<LightController>() )
-            {
-                _environmentLightsReferencer.SetAdditionalLightController( additionalLightController );
-                _environmentLightsReferencer.AdditionalLightController.SetControllerLight( additionalLightController.GetControllerLight() );
-                return;
-            }
-
-            Debug.Log( "No additional light was found so a new one has been created." );
-            CreateAdditionalLightReference();
-        }
-        private void CreateAdditionalLightReference()
-        {
-            //Object creation and component assignment
-            GameObject additionalLightGO = new( "Additional Light", typeof( LightController ) );
-            additionalLightGO.transform.SetParent( transform );
-
-            LightController additionalLightController = additionalLightGO.GetComponent<LightController>();
-            _environmentLightsReferencer.SetAdditionalLightController( additionalLightController );
-
-            additionalLightController.Init( additionalLightGO.GetComponent<Light>(), Enums.Light_Type.Additional );
-            SetAdditionalLightParametersAsDefault( additionalLightController );
-            additionalLightController.DisableLight();
-        }
         private void SetAdditionalLightParametersAsDefault( LightController controller )
         {
             Color additionalLightColor = Color.white;
@@ -134,35 +94,6 @@ namespace dnSR_Coding
             controller.SetLightParameters( LightType.Directional, LightmapBakeType.Mixed, additionalLightColor, 1 );
         }
 
-        #endregion
-
-        private void SetThunderLightReference()
-        {
-            LightController thunderLightController = GetLightControllerByType( Enums.Light_Type.Thunder );
-
-            if ( !thunderLightController.IsNull<LightController>() )
-            {
-                _environmentLightsReferencer.SetThunderLightController( thunderLightController );
-                _environmentLightsReferencer.ThunderLightController.SetControllerLight( thunderLightController.GetControllerLight() );
-                return;
-            }
-
-            Debug.Log( "No thunder light was found so a new one has been created." );
-            CreateThunderLightReference();
-        }
-        private void CreateThunderLightReference()
-        {
-            //Object creation and component assignment
-            GameObject thunderLightGO = new( "Thunder Light", typeof( LightController ) );
-            thunderLightGO.transform.SetParent( transform );
-            thunderLightGO.transform.eulerAngles = new Vector3( 90, 0, 0 );
-
-            LightController thunderLightController = thunderLightGO.GetComponent<LightController>();
-            _environmentLightsReferencer.SetThunderLightController( thunderLightController );
-
-            thunderLightController.Init( thunderLightGO.GetComponent<Light>(), Enums.Light_Type.Thunder );
-            SetThunderLightParametersAsDefault( thunderLightController );
-        }
         private void SetThunderLightParametersAsDefault( LightController controller )
         {
             int defaultLM = 1 << 0;
@@ -172,6 +103,102 @@ namespace dnSR_Coding
             int cullingMask = defaultLM | ignoreRaycastLM | groundLM;
 
             controller.SetLightParameters( LightType.Directional, LightmapBakeType.Mixed, LightRenderMode.ForceVertex, Color.white, 0, cullingMask );
+        }
+
+        #region UTILS
+
+        private void SetLightReference(
+            LightReferenceInfo lightReferenceInfo,
+            bool isLightDisabled )
+        {
+            if ( !lightReferenceInfo.LightController.IsNull() )
+            {
+                Debug.Log( $"Light of type {lightReferenceInfo.LightType} was found so we set it in case parameters are not." );
+                SetControllersAndTheirParameters( lightReferenceInfo );
+                return;
+            }
+
+            Debug.Log( $"No light of type {lightReferenceInfo.LightType} was found so a new one has been created." );
+
+            // LIGHT REFERENCE
+            CreateLightReference( lightReferenceInfo, isLightDisabled );
+        }
+
+        private void CreateLightReference(
+            LightReferenceInfo lightReferenceInfo,
+            bool isLightDisabled )
+        {
+            Debug.Log( $"In the process of creating a light of type {lightReferenceInfo.LightType}" );
+
+            //Object creation and component assignment
+            GameObject createdLightGO = new( lightReferenceInfo.Name, typeof( LightController ) );
+            createdLightGO.transform.SetParent( transform );
+
+            LightController lightController = createdLightGO.GetComponent<LightController>();
+            lightReferenceInfo.LightController = lightController;
+
+            lightController.Init( createdLightGO.GetComponent<Light>(), lightReferenceInfo.LightType );
+
+            switch ( lightReferenceInfo.LightType )
+            {
+                case Enums.Light_Type.Main:
+                    lightReferenceInfo.LightsReferencer.SetMainLightController( lightController );
+                    break;
+                case Enums.Light_Type.Additional:
+                    lightReferenceInfo.LightsReferencer.SetAdditionalLightController( lightController );
+                    break;
+                case Enums.Light_Type.Thunder:
+                    lightReferenceInfo.LightsReferencer.SetThunderLightController( lightController );
+                    break;
+            }
+
+            SetControllersLightParameters( lightReferenceInfo );
+
+            if ( isLightDisabled ) { lightController.DisableLight(); }
+        }
+
+        private void SetControllersAndTheirParameters( LightReferenceInfo lightReferenceInfo )
+        {
+            EnvironmentLightsReferencer lightsReferencer = lightReferenceInfo.LightsReferencer;
+            LightController lightController = lightReferenceInfo.LightController;
+
+            switch ( lightReferenceInfo.LightType )
+            {
+                case Enums.Light_Type.Main:
+                    lightsReferencer.SetMainLightController( lightController );
+                    lightsReferencer.MainLightController.SetControllerLight( lightController.GetControllerLight() );
+                    break;
+
+                case Enums.Light_Type.Additional:
+                    lightsReferencer.SetAdditionalLightController( lightController );
+                    lightsReferencer.AdditionalLightController.SetControllerLight( lightController.GetControllerLight() );
+                    break;
+
+                case Enums.Light_Type.Thunder:
+                    lightsReferencer.SetThunderLightController( lightController );
+                    lightsReferencer.ThunderLightController.SetControllerLight( lightController.GetControllerLight() );
+                    break;
+            }
+
+            SetControllersLightParameters( lightReferenceInfo );
+        }
+
+        private void SetControllersLightParameters( LightReferenceInfo lightReferenceInfo )
+        {
+            switch ( lightReferenceInfo.LightType )
+            {
+                case Enums.Light_Type.Main:
+                    SetMainLightParametersAsDefault( lightReferenceInfo.LightController );
+                    break;
+
+                case Enums.Light_Type.Additional:
+                    SetAdditionalLightParametersAsDefault( lightReferenceInfo.LightController );
+                    break;
+
+                case Enums.Light_Type.Thunder:
+                    SetThunderLightParametersAsDefault( lightReferenceInfo.LightController );
+                    break;
+            }
         }
 
         public LightController GetLightControllerByType( Enums.Light_Type type )
@@ -184,19 +211,11 @@ namespace dnSR_Coding
                 return controller;
             }
 
-            Debug.LogError( $"No controller of type {type} found." );
+            this.Debugger( 
+                $"No controller of type {type} found.",
+                DebugType.Error );
             return null;
         }
-
-        #region OnValidate
-
-#if UNITY_EDITOR
-
-        private void OnValidate()
-        {
-            Init();
-        }
-#endif
 
         #endregion
     }

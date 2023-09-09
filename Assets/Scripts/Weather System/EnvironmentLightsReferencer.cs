@@ -46,23 +46,30 @@ namespace dnSR_Coding
         ///     This method tries to reference the main light and the additional light used for simulating a sun influence.
         /// </summary>
         /// <param name="lightsContainer"></param>
+        [Button]
         private void SetLightsReference( ref GameObject lightsContainer )
         {
-            if ( !transform.GetFirstChild().IsNull<Transform>() )
+            EnvironmentLightContainer lightContainer;
+            bool isContainerCreated = !transform.GetFirstChild().IsNull<Transform>();
+            if ( isContainerCreated )
             {
                 lightsContainer = transform.GetFirstChild().gameObject;
-                lightsContainer.GetComponent<EnvironmentLightContainer>().Init();
-            }
+                Debug.Log( $"{lightsContainer} when container might be created" );
 
-            if ( lightsContainer.IsNull<GameObject>() )
-            {
-                GameObject container = new( "Light Container", typeof( EnvironmentLightContainer ) );
-                lightsContainer = container;
-                lightsContainer.transform.SetParent( transform );
-                lightsContainer.GetComponent<EnvironmentLightContainer>().Init();
+                lightContainer = lightsContainer.GetComponent<EnvironmentLightContainer>();
+                lightContainer.Init( this );
 
                 return;
             }
+
+            GameObject container = new GameObject( "Light Container", typeof( EnvironmentLightContainer ) );
+            container.transform.SetParent( transform );
+
+            lightsContainer = container;
+            Debug.Log( $"{lightsContainer} when container was not created" );
+
+            lightContainer = lightsContainer.GetComponent<EnvironmentLightContainer>();
+            lightContainer.Init( this );
         }
 
         #endregion       
@@ -79,16 +86,5 @@ namespace dnSR_Coding
         {
             _thunderLightController = lightController;
         }
-
-        #region On Editor
-
-#if UNITY_EDITOR
-        private void OnValidate()
-        {
-            SetLightsReference( ref _lightsContainer );
-        }
-#endif
-
-        #endregion
     }
 }

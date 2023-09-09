@@ -36,12 +36,12 @@ namespace dnSR_Coding
 
         void OnEnable()
         {
-            EventManager.OnCursorHover.Subscribe( SetCursorFirstAppearance_ByAction );
+            EventManager.Selectable_OnCursorHover.Subscribe( SetCursorFirstAppearance_ByAction );
         }
 
         void OnDisable()
         {
-            EventManager.OnCursorHover.Unsubscribe( SetCursorFirstAppearance_ByAction );
+            EventManager.Selectable_OnCursorHover.Unsubscribe( SetCursorFirstAppearance_ByAction );
         }
 
         #endregion

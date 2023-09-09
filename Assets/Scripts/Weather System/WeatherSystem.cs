@@ -65,7 +65,7 @@ namespace dnSR_Coding
         private void GetDependencies()
         {
             _rainGO = GameObject.FindGameObjectWithTag( "Environment/Rain" );
-            SetLightsReference();
+            SetLightReferences();
         }
 
         #endregion
@@ -90,7 +90,15 @@ namespace dnSR_Coding
         /// <param name="index"></param>
         public void SetWeatherPreset( int index )
         {
-            WeatherPreset newWeatherPreset = _weatherPresets [ index ];
+            // We need to check if a preset is set and active...
+            // and if it is the same as the one we want to activate.
+            bool aPresetIsActive = !_currentPreset.IsNull() && _currentPreset.IsActive;
+            if ( aPresetIsActive 
+                && _currentPreset == _weatherPresets [ index ] )
+            {
+                this.Debugger( "Killing the method a preset is active and is the same as the one already passed" );
+                return;
+            }
 
             // We need to check if the index is higher than the list count.
             if ( index > _weatherPresets.Count )
@@ -101,6 +109,8 @@ namespace dnSR_Coding
                 return;
             }
 
+            WeatherPreset newWeatherPreset = _weatherPresets [ index ];
+
             // We need to check if a preset is set.
             if ( _currentPreset.IsNull() )
             {
@@ -110,15 +120,6 @@ namespace dnSR_Coding
                 this.Debugger(
                     $"Weather preset was null so another one corresponding to " +
                     $"{index} has been assigned" );
-            }
-
-            // Then we check if a preset is set and active...
-            // and if it is the same as the one we want to activate.
-            bool aPresetIsActive = !_currentPreset.IsNull() && _currentPreset.IsActive;
-            if ( aPresetIsActive && _currentPreset == newWeatherPreset )
-            {
-                this.Debugger( "Killing the method a preset is active and is the same as the one already passed" );
-                return;
             }
 
             // If a preset is active but a new one is applied (different from the current one), ...
@@ -156,7 +157,7 @@ namespace dnSR_Coding
                 MainLightController, 
                 _thunderLightController );
 
-            EventManager.OnApplyingWeatherPreset.Call( _currentPreset );
+            EventManager.WeatherSystem_OnApplyingWeatherPreset.Call( _currentPreset );
 
             ToggleSunDisplay_OnApplyingPreset( _currentPreset.IsSunHidden );
             this.Debugger( $"Assign active preset {_currentPreset.name}" );
@@ -211,7 +212,7 @@ namespace dnSR_Coding
         /// Gras all the reference comming from Environment Lights Referencer to use...
         /// all the light controllers that are neeeded.
         /// </summary>
-        public void SetLightsReference()
+        public void SetLightReferences()
         {
             EnvironmentLightsReferencer = GetComponent<EnvironmentLightsReferencer>();
 
@@ -227,7 +228,7 @@ namespace dnSR_Coding
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            SetLightsReference();
+            SetLightReferences();
         }
 #endif
 

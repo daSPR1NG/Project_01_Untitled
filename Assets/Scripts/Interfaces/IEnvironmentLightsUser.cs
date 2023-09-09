@@ -12,6 +12,6 @@ namespace dnSR_Coding
         /// <summary>
         /// DataWrapper method to set all dependencies
         /// </summary>
-        public abstract void SetLightsReference();
+        public abstract void SetLightReferences();
     }
 }

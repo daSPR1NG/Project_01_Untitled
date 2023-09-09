@@ -23,16 +23,13 @@ namespace dnSR_Coding
         #region DEBUG
 
         [field: SerializeField, FoldoutGroup( "Debug Section", Order = -1 )]
-        public bool IsDebuggable { get; set; } = true;
+        public bool IsDebuggable { get; set; } = false;
 
         #endregion
 
         #region SETUP
 
-        protected override void Init( bool dontDestroyOnLoad = true )
-        {
-            base.Init();
-        }
+        protected override void Init( bool dontDestroyOnLoad = true ) => base.Init();
 
         #endregion
 
@@ -61,7 +58,8 @@ namespace dnSR_Coding
 
             List<object> datasContent = new();
 
-            foreach ( ISaveable data in datas ) {
+            foreach ( ISaveable data in datas )
+            {
                 datasContent.AppendItem( data.GetData() );
             }
 
@@ -98,7 +96,7 @@ namespace dnSR_Coding
             }
         }
 
-        public object LoadData<T>( string ID )
+        public object LoadData<T>( string ID ) where T : IDataIdentifiers
         {
             string path = Application.persistentDataPath + SAVE_DIRECTORY + SAVE_FILE_NAME;
 
@@ -111,28 +109,38 @@ namespace dnSR_Coding
             try
             {
                 string jsonContent = File.ReadAllText( path );
-                object data = null;
+                T data = default;
                 this.Debugger( jsonContent );
 
                 JArray array = JArray.Parse( File.ReadAllText( path ) );
                 this.Debugger( array.Count() );
+
+                JsonSerializerSettings settings = new JsonSerializerSettings
+                {
+                    FloatParseHandling = FloatParseHandling.Decimal
+                };
+
                 foreach ( JToken item in array )
                 {
                     for ( int i = 0; i < item.Count(); i++ )
                     {
                         if ( item.ElementAt( i ).First().ToString().Equals( ID ) )
                         {
-                            this.Debugger( item.ElementAt( i ).First() );
-                            data = JsonConvert.DeserializeObject( item.ToString(), typeof( T ) );
+                            this.Debugger( $"Data before serialization: {item}" );
+                            data = JsonConvert.DeserializeObject<T>( item.ToString(), settings );
+                            this.Debugger( $"Data after serialization: {item}" );
                         }
                     }
                 }
 
+                this.Debugger( $"Returned data: {data}" );
                 return data;
             }
             catch ( Exception e )
             {
-                Debug.LogError( $"Unable to load data from {path} | {e.Message} {e.StackTrace}" );
+                this.Debugger(
+                    $"Unable to load data from {path} | {e.Message} {e.StackTrace}",
+                    DebugType.Error );
                 throw;
             }
         }

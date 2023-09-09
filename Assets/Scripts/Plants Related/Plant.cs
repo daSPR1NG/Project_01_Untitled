@@ -1,6 +1,7 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
 using dnSR_Coding.Utilities.Helpers;
+using Newtonsoft.Json;
 
 namespace dnSR_Coding
 {
@@ -18,22 +19,27 @@ namespace dnSR_Coding
         private Transform RendererChildTrs => transform.GetFirstChild();
         private GameObject _plantRenderer;
 
-        [ System.Serializable]
+        [System.Serializable]
         public struct PlantData : IDataIdentifiers
         {
             public string ID { get; set; }
             public string TypeName { get; set; }
 
-            public Enums.Plant_GrowingState GrowingState { get; private set; }
-            public float CurrentLifeCycleValue { get; private set; }
+            [JsonProperty] public Enums.Plant_GrowingState GrowingState { get; private set; }
+            [JsonProperty] public float CurrentLifeCycleValue { get; private set; }
 
-            public PlantData( string iD, Enums.Plant_GrowingState growingState, float currentLifeCycleValue )
+            public PlantData( string ID, Enums.Plant_GrowingState growingState, float currentLifeCycleValue )
             {
-                ID = iD;
+                this.ID = ID;
                 TypeName = Helper.GetTypeName( typeof( PlantData ) );
 
                 GrowingState = growingState;
                 CurrentLifeCycleValue = currentLifeCycleValue;
+            }
+
+            public override readonly string ToString()
+            {
+                return $"{ID} {GrowingState} {CurrentLifeCycleValue}";
             }
         }
 
@@ -51,14 +57,16 @@ namespace dnSR_Coding
             AddRenderer_BasedOnSettings();
 
             PlantData plantData = ( PlantData ) DataSaveManager.Instance.LoadData<PlantData>( ID );
+            this.Debugger( $"Plant on init : {plantData.CurrentLifeCycleValue}" );
 
             if ( plantData.IsNull<PlantData>() )
             {
+                this.Debugger( "TA MERE LA DINDE" );
                 _growingState = Enums.Plant_GrowingState.Seed;
                 _currentLifeCycleValue = 0;
             }
-            
-            Load( DataSaveManager.Instance.LoadData<PlantData>( ID ) );
+
+            Load( plantData );
             DisplayPlantAppearance( ( int ) _growingState );
         }
 
@@ -82,7 +90,7 @@ namespace dnSR_Coding
             if ( _growingState == Enums.Plant_GrowingState.Plant ) { return; }
 
             _currentLifeCycleValue += Helper.GetDeltaTime();
-            //this.Debugger( $"Life Cycle value : {_currentLifeCycleValue}");
+            this.Debugger( $"Life Cycle value : {_currentLifeCycleValue}");
 
             if ( _currentLifeCycleValue >= ( _plantSettings.LifeCycleDuration / 2 )
                 && _growingState == Enums.Plant_GrowingState.Seed ) 
@@ -165,16 +173,25 @@ namespace dnSR_Coding
 
         public object GetData()
         {
-            _id = ISaveable.ISaveableExtensions.GetID( _id );
-            return new PlantData( _id, _growingState, _currentLifeCycleValue );
+            ID = ISaveable.ISaveableExtensions.GetID( ID );
+            this.Debugger( $"ID in GetData() : {ID}" );
+
+            PlantData plantData = new PlantData( ID, _growingState, _currentLifeCycleValue );
+            this.Debugger( $"Saved plantData : {plantData}" );
+
+            return plantData;
         }
 
         public void Load( object data )
         {
+            this.Debugger($"Data received on LOAD : {data}");
+
             PlantData plantData = ( PlantData ) data;
 
             _growingState = plantData.GrowingState;
             _currentLifeCycleValue = plantData.CurrentLifeCycleValue;
+
+            this.Debugger($"Data received on LOAD : {plantData}");
         }
 
         #endregion

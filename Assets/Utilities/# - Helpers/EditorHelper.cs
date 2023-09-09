@@ -164,7 +164,40 @@ namespace dnSR_Coding.Utilities.Helpers
             return texture;
         }
 
-        public static bool CreateEditorButton( Rect rect, GUIContent content, GUIStyle style, Color color = default, System.Action onClickingButton = null )
+        public static Texture2D CreateBackgroundWithGradient(
+            int width,
+            int height,
+            Color leftColor,
+            Color rightColor )
+        {
+            Texture2D texture2D = new Texture2D( width, height, TextureFormat.ARGB32, false );
+            texture2D.hideFlags = HideFlags.HideAndDontSave;
+
+            Color32 [] colors = new Color32 [ width * height ];
+
+            for ( int i = 0; i < width; i++ )
+            {
+                Color color = Color.Lerp( leftColor, rightColor, i / ( float ) ( width - 1 ) );
+
+                for ( int j = 0; j < height; j++ )
+                {
+                    colors [ j * width + i ] = color;
+                }
+            }
+
+            texture2D.SetPixels32( colors );
+            texture2D.wrapMode = TextureWrapMode.Clamp;
+            texture2D.Apply();
+
+            return texture2D;
+        }
+
+        public static bool CreateEditorButton(
+            Rect rect,
+            GUIContent content,
+            GUIStyle style,
+            Color color = default,
+            System.Action onClickingButton = null )
         {
             GUI.backgroundColor = color;
 
@@ -179,7 +212,10 @@ namespace dnSR_Coding.Utilities.Helpers
             return false;
         }
 
-        public static bool CreateEditorBackground( Rect rect, GUIStyle style, Color color = default )
+        public static bool CreateEditorBackground(
+            Rect rect,
+            GUIStyle style,
+            Color color = default )
         {
             GUI.backgroundColor = color;
 

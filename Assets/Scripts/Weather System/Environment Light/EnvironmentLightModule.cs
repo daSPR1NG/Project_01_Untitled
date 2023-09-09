@@ -39,6 +39,28 @@ namespace dnSR_Coding
         private LightController _mainLightController = null;
         private Tween _lightIntensityTween = null;
 
+        #region Init
+
+        public void Init( LightController mainLightController )
+        {
+            SetMainLightController( mainLightController );
+        }
+
+        private void SetMainLightController( LightController mainLightController )
+        {
+            if ( mainLightController.IsNull<GameObject>() )
+            {
+                this.Debugger(
+                    "The mainLightController sent to this object is null.",
+                    DebugType.Error );
+                return;
+            }
+
+            _mainLightController = mainLightController;
+        }
+
+        #endregion
+
         #region Apply
 
         public void ApplySettings( Enums.Environment_LightIntensity_Type lightIntensity )

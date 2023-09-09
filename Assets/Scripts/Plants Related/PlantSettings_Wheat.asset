@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PlantSettings_Wheat
   m_EditorClassIdentifier: 
   <PlantType>k__BackingField: 1
-  <LifeCycleDuration>k__BackingField: 1
+  <LifeCycleDuration>k__BackingField: 5
   <InGameAppearance>k__BackingField: {fileID: 4754077166574675771, guid: a5618650894ff554eb884bfaecbfdffe,
     type: 3}
   <Icon>k__BackingField: {fileID: 0}

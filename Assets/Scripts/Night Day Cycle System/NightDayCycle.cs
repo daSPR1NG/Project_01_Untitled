@@ -5,46 +5,50 @@ using dnSR_Coding.Utilities.Helpers;
 using dnSR_Coding.Utilities.Interfaces;
 using dnSR_Coding.Utilities.Attributes;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities.Editor.Expressions;
+using System.Runtime.CompilerServices;
 
 namespace dnSR_Coding
 {
     [RequireComponent( typeof( EnvironmentLightsReferencer ) )]
 
+    // All this script has to handle is :
+    // Setting and handling the time of day
+    // AND Consume services for handling the ambience look (mainlight, ambient color, ...)
+
     ///<summary> NightDayCycle description <summary>
     [DisallowMultipleComponent]
     public class NightDayCycle : MonoBehaviour, IEnvironmentLightsUser, IDebuggable
     {
-        [SerializeField, PropertySpace( 5 )] public AmbientLightingPreset _lightingPreset;
+        private const float DEFAULT_DAY_DURATION = 360;
+        private const float DAY_START_THRESHOLD = .25f;
+        private const float DAY_END_THRESHOLD = .75f;
+        private const float NIGHT_MAIN_LIGHT_INTENSITY = 0.2f;
+
+        [ToggleLeft]
+        [PropertySpace( 5, 5 )]
+        [InfoBox( "Stops the cycle, meaning that the time of day is not updated anymore." )]
+        [SerializeField] private bool _stopNightAndDayCycle = false;
+
+        [SerializeField, PropertySpace( 5, 5 )]
+        private AmbientLightingPreset _lightingPreset;
 
         [CenteredHeader( "Night and day settings" )]
 
-        [ToggleLeft]
-        [SerializeField] private bool _stopNightAndDayCycle = false;
-
-        [HorizontalGroup( "Day settings" )]
-        [SerializeField, Range( 1, 240 )]
-        private float _dayDuration = 240f;
-
-        [HorizontalGroup( "Day settings" )]
-        [SerializeField, PropertyRange( 1, 240 )]
-        private float _timeOfDay = 120f;
-
+        [SerializeField, PropertyRange( 1, "DEFAULT_DAY_DURATION" )]
+        private float _dayDuration = DEFAULT_DAY_DURATION;
+        [SerializeField, PropertyRange( 1, "DEFAULT_DAY_DURATION" )]
+        private float _timeOfDay = DEFAULT_DAY_DURATION / 2;
         private float _currentTimeOfDay = 0f;
-        private float _firstPartOfDayLength, _secondPartOfDayLength;
 
-        [CenteredHeader( "Main light settings" )]
-
-        [LabelWidth( 275 )]
-        [SerializeField] private float _mainLightIntensityShiftDurationOnDay = 1.25f;
-
-        [LabelWidth( 275 )]
-        [SerializeField] private float _mainLightIntensityShiftDurationOnNight = 1.25f;
-        private float _mainLightIntensityAtDay = 0f;
+        [CenteredHeader( "Main Light Intensity Settings" ), PropertySpace( 5, 10 )]
+        [SerializeField] private MainLightIntensitySettings _mainLightIntensitySettings;
 
         public EnvironmentLightsReferencer EnvironmentLightsReferencer { get; set; }
         public LightController MainLightController { get; set; }
         public LightController AdditionalLightController { get; set; }
 
+        private readonly LightIntensityTweener _lightIntentityTweener = null;
         private readonly Tween _mainLightIntensityTween;
 
         private static bool _isDaytime = false;
@@ -62,12 +66,24 @@ namespace dnSR_Coding
             }
         }
 
-        private const float DAY_START_THRESHOLD = .3f;
-        private const float DAY_END_THRESHOLD = .7f;
-        private const float NIGHT_MAIN_LIGHT_INTENSITY = 0.2f;
-
         private WeatherPreset _activeWeatherPreset = null;
-        private Color _initialFogColor;
+        private Color _initialFogColor = default;
+
+        private readonly AmbientColorer _ambientColorer = null;
+        private readonly LightRotator _lightRotator = null;
+
+        [System.Serializable]
+        private struct MainLightIntensitySettings
+        {
+            [SerializeField] private float _shiftDurationOnDay;
+            [SerializeField] private float _shiftDurationOnNight;
+
+            private float _mainLightIntensityAtDay;
+
+            public float ShiftDurationOnDay { readonly get => _shiftDurationOnDay; set => _shiftDurationOnDay = value; }
+            public float ShiftDurationOnNight { readonly get => _shiftDurationOnNight; set => _shiftDurationOnNight = value; }
+            public float MainLightIntensityAtDay { readonly get => _mainLightIntensityAtDay; set => _mainLightIntensityAtDay = value; }
+        }
 
         #region DEBUG
 
@@ -80,12 +96,23 @@ namespace dnSR_Coding
 
         void OnEnable()
         {
-            EventManager.OnApplyingWeatherPreset.Subscribe( SetActivePreset );
+            EventManager.WeatherSystem_OnApplyingWeatherPreset.Subscribe( SetActivePreset_WhenOneIsApplied );
         }
 
         void OnDisable()
         {
-            EventManager.OnApplyingWeatherPreset.Unsubscribe( SetActivePreset );
+            EventManager.WeatherSystem_OnApplyingWeatherPreset.Unsubscribe( SetActivePreset_WhenOneIsApplied );
+        }
+
+        #endregion
+
+        #region CONSTRUCTOR
+
+        private NightDayCycle()
+        {
+            _ambientColorer = new AmbientColorer();
+            _lightRotator = new LightRotator();
+            _lightIntentityTweener = new LightIntensityTweener();
         }
 
         #endregion
@@ -95,14 +122,18 @@ namespace dnSR_Coding
         private void Awake() => Init();
         private void Init()
         {
-            SetLightsReference();
+            SetLightReferences();
         }
-        public void SetLightsReference()
+
+        [Button( ButtonStyle.CompactBox )]
+        public void SetLightReferences()
         {
             EnvironmentLightsReferencer = GetComponent<EnvironmentLightsReferencer>();
 
             MainLightController = EnvironmentLightsReferencer.MainLightController;
             AdditionalLightController = EnvironmentLightsReferencer.AdditionalLightController;
+
+            this.Debugger( "NightDayCycle - Light references have been set." );
         }
 
         #endregion
@@ -116,179 +147,104 @@ namespace dnSR_Coding
             _timeOfDay %= _dayDuration;
 
             _currentTimeOfDay = _timeOfDay / _dayDuration;
+            _isDaytime = _currentTimeOfDay >= DAY_START_THRESHOLD && _currentTimeOfDay <= DAY_END_THRESHOLD;
 
-            float timePercent = _currentTimeOfDay;
-            _isDaytime = timePercent >= DAY_START_THRESHOLD && timePercent <= DAY_END_THRESHOLD;
+            _ambientColorer.SetAmbientElementsColor(
+                MainLightController,
+                _lightingPreset,
+                _initialFogColor,
+                _currentTimeOfDay );
 
-            SetAmbientElements( timePercent );
-
-            RotateMainLight( timePercent );
+            _lightRotator.RotateLight_BasedOnCurrentTimeOfDay( MainLightController, _currentTimeOfDay );
 
             if ( _isDaytime )
             {
-                SetMainLightIntensity_WhenStartingTheDay();
-                SetAdditionalLightIntensity_BasedOnDayTime();
+                _lightIntentityTweener.TweenLightIntensity(
+                    _mainLightIntensityTween,
+                    MainLightController,
+                    _mainLightIntensitySettings.MainLightIntensityAtDay,
+                    _mainLightIntensitySettings.ShiftDurationOnDay );
+                SetAdditionalLightIntensity_BasedOnDayTime( AdditionalLightController, _activeWeatherPreset );
             }
             else
             {
-                SetMainLightIntensity_WhenStartingTheNight();
+                _lightIntentityTweener.TweenLightIntensity(
+                    _mainLightIntensityTween,
+                    MainLightController,
+                    NIGHT_MAIN_LIGHT_INTENSITY,
+                    _mainLightIntensitySettings.ShiftDurationOnNight );
+                AdditionalLightController.SetLightIntensity( 0 );
             }
         }
-
-        #region COLOR SETTER FOR AMBIENT, DIRECTIONNAL LIGHT AND FOG COLORS
-
-        private void SetAmbientElements( float timePercent )
-        {
-            // Ambient light color
-            RenderSettings.ambientLight = _lightingPreset.AmbientColor.Evaluate( timePercent );
-
-            // Main light color
-            if ( !MainLightController.IsNull<LightController>() )
-            {
-                MainLightController.SetLightColor( _lightingPreset.DirectionalColor.Evaluate( timePercent ) );
-            }
-
-            // Fog color
-            if ( RenderSettings.fog )
-            {
-                RenderSettings.fogColor = _initialFogColor.MultiplyRGB( _lightingPreset.FogColor.Evaluate( timePercent ) );
-            }
-        }
-
-        #endregion
-
-        #region MAIN LIGHT HANDLE
-
-        private void RotateMainLight( float timePercent )
-        {
-            if ( MainLightController.IsNull<LightController>() ) { return; }
-
-            MainLightController.transform.localRotation =
-                Quaternion.Euler( new Vector3( ( timePercent * 360f ) - 90f, 170f, 0 ) );
-        }
-
-        private void SetMainLightIntensity_WhenStartingTheDay()
-        {
-            if ( MainLightController.IsNull<LightController>() ) { return; }
-
-            bool isMainLightIntensitySetOrBeingSet = MainLightController.DoesLightIntensityEquals( _mainLightIntensityAtDay )
-                || _mainLightIntensityTween.IsActive();
-            if ( isMainLightIntensitySetOrBeingSet ) { return; }
-
-            TweenMainLightIntensity(
-                _mainLightIntensityTween,
-                MainLightController,
-                _mainLightIntensityAtDay,
-                _mainLightIntensityShiftDurationOnDay,
-                () => MainLightController.SetLightIntensity( _mainLightIntensityAtDay ) );
-        }
-
-        private void SetMainLightIntensity_WhenStartingTheNight()
-        {
-            if ( MainLightController.IsNull<LightController>() ) { return; }
-
-            bool isMainLightIntensitySetOrBeingSet = MainLightController.DoesLightIntensityEquals( NIGHT_MAIN_LIGHT_INTENSITY )
-                || _mainLightIntensityTween.IsActive();
-            if ( isMainLightIntensitySetOrBeingSet ) { return; }
-
-            TweenMainLightIntensity(
-                _mainLightIntensityTween,
-                MainLightController,
-                NIGHT_MAIN_LIGHT_INTENSITY,
-                _mainLightIntensityShiftDurationOnNight,
-                () => MainLightController.SetLightIntensity( NIGHT_MAIN_LIGHT_INTENSITY ) );
-        }
-
-        private void TweenMainLightIntensity( Tween tween, LightController mainLightController, float valueToReach, float duration, Action onComplete )
-        {
-            this.Debugger( "Tweening main light intensity !" );
-
-            tween = DOTween.To( () => mainLightController.GetControllerLight().intensity, _ => mainLightController.GetControllerLight().intensity = _, valueToReach, duration );
-
-            tween.OnComplete( () =>
-            {
-                onComplete?.Invoke();
-                tween.Kill();
-            } );
-        }
-
-        #endregion
 
         #region ADDITIONAL LIGHT HANDLE
 
-        private void SetAdditionalLightIntensity_BasedOnDayTime()
+        private void SetAdditionalLightIntensity_BasedOnDayTime(
+            LightController lightController,
+            WeatherPreset weatherPreset )
         {
-            if ( AdditionalLightController.IsNull<LightController>()
-                || _activeWeatherPreset.IsNull<WeatherPreset>() )
+            bool isSunHidden = weatherPreset.IsNull<WeatherPreset>()
+                || !weatherPreset.IsNull() && weatherPreset.IsSunHidden;
+
+            if ( isSunHidden )
             {
+                this.Debugger( "Sun is hidden" );
+                lightController.DisableLight();
                 return;
             }
 
-            if ( _activeWeatherPreset.IsSunHidden )
-            {
-                AdditionalLightController.DisableLight();
-                return;
-            }
+            lightController.EnableLight();
 
-            AdditionalLightController.EnableLight();
+            bool isFirstPartOfDay = _currentTimeOfDay < GetTotalDayPercentage();
 
-            // When we are still in the first part of the day...
-            if ( _currentTimeOfDay < GetMedianOfDay() )
-            {
-                _firstPartOfDayLength = ( _dayDuration * GetMedianOfDay() ) - ( _dayDuration * DAY_START_THRESHOLD );
-                AdditionalLightController.SetLightIntensity( GetStartingDayValue() / _firstPartOfDayLength );
-                return;
-            }
+            float currentPartOfDayValue = isFirstPartOfDay
+                ? ( _dayDuration * GetTotalDayPercentage() ) - ( _dayDuration * DAY_START_THRESHOLD )
+                : ExtMathfs.Abs( ( _dayDuration * GetTotalDayPercentage() ) - ( _dayDuration * DAY_END_THRESHOLD ) );
+            float maxPartOfDayValue = isFirstPartOfDay ? GetStartingDayValue() : GetEndingDayValue();
 
-            _secondPartOfDayLength = ( _dayDuration * DAY_END_THRESHOLD ) - ( _dayDuration * GetMedianOfDay() );
-            // When we are in the second part of the day...
-            AdditionalLightController.SetLightIntensity( GetEndingDayValue() / _secondPartOfDayLength );
+            this.Debugger( GetTotalDayPercentage() );
+            this.Debugger( _dayDuration * GetTotalDayPercentage() );
+            this.Debugger( maxPartOfDayValue + "/" + currentPartOfDayValue );
+            this.Debugger( maxPartOfDayValue / currentPartOfDayValue );
+
+            lightController.SetLightIntensity( maxPartOfDayValue / currentPartOfDayValue );
         }
 
         #endregion
 
-        private void SetActivePreset( WeatherPreset sentWeatherPreset )
+        #region PRESET HANDLE
+
+        private void SetActivePreset_WhenOneIsApplied( WeatherPreset sentWeatherPreset )
         {
             _activeWeatherPreset = sentWeatherPreset;
 
             EnvironmentLightModule module = _activeWeatherPreset.GetEnvironmentLightInfo().module;
             EnvironmentLightModule.EnvironmentLightSettings lightSettings =
                 module.GetSettingsByID( ( int ) _activeWeatherPreset.GetEnvironmentLightInfo().type );
-            _mainLightIntensityAtDay = lightSettings.Intensity;
-
-            this.Debugger( "_mainLightIntensityAtDay " + _mainLightIntensityAtDay );
+            _mainLightIntensitySettings.MainLightIntensityAtDay = lightSettings.Intensity;
 
             FogModule fogModule = _activeWeatherPreset.GetFogInfo().module;
             FogModule.FogSettings fogSettings = fogModule.GetSettingsByID( ( int ) _activeWeatherPreset.GetFogInfo().type );
             _initialFogColor = fogSettings.FogColor;
         }
 
+        #endregion
+
         #region DAY VALUES | START - MEDIAN - END
 
         private float GetStartingDayValue()
         {
-            return ( _timeOfDay - ( _dayDuration * DAY_START_THRESHOLD ) );
+            return _timeOfDay - ( _dayDuration * DAY_START_THRESHOLD );
         }
         private float GetEndingDayValue()
         {
-            return -( _timeOfDay - ( _dayDuration * DAY_END_THRESHOLD ) );
+            return ExtMathfs.Abs( _timeOfDay - ( _dayDuration * DAY_END_THRESHOLD ) );
         }
-        private float GetMedianOfDay()
+        private float GetTotalDayPercentage()
         {
-            float totalDayDuration = DAY_START_THRESHOLD + DAY_END_THRESHOLD;
-            return totalDayDuration / 2;
+            float totalDayDuration = DAY_END_THRESHOLD - DAY_START_THRESHOLD;
+            return totalDayDuration;
         }
-
-        #endregion
-
-        #region On Editor
-
-#if UNITY_EDITOR
-        private void OnValidate()
-        {
-            SetLightsReference();
-        }
-#endif
 
         #endregion
     }

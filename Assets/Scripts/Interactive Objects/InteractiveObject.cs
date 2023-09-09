@@ -128,7 +128,7 @@ namespace dnSR_Coding
                 return;
             }
 
-            EventManager.OnCursorHover.Call( CursorSelectionType );
+            EventManager.Selectable_OnCursorHover.Call( CursorSelectionType );
         }
 
         public void OnMouseOver()
@@ -144,7 +144,7 @@ namespace dnSR_Coding
             this.Debugger( "On Mouse Exit" );
             HideOutline();
 
-            EventManager.OnCursorHover.Call( Enums.Cursor_SelectionType.Default );
+            EventManager.Selectable_OnCursorHover.Call( Enums.Cursor_SelectionType.Default );
         }
 
         #endregion

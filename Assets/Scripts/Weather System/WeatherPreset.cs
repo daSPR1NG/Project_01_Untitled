@@ -12,7 +12,7 @@ namespace dnSR_Coding
         public int ID => GetInstanceID();
         public bool IsActive { get; private set; } = false;
 
-        #region Rain module
+        #region Rain module fields
 
         [CenteredHeader( Header = "Rain details", TextAnchor = TextAnchor.MiddleLeft )]
         [SerializeField] private RainModule _rainModule;
@@ -20,7 +20,7 @@ namespace dnSR_Coding
 
         #endregion
 
-        #region Thunder module
+        #region Thunder module fields
 
         [CenteredHeader( Header = "Thunder details", TextAnchor = TextAnchor.MiddleLeft )]
         [SerializeField] private ThunderModule _thunderModule;
@@ -28,7 +28,7 @@ namespace dnSR_Coding
 
         #endregion
 
-        #region Fog module
+        #region Fog module fields
 
         [CenteredHeader( Header = "Fog details" )]
         [SerializeField] private FogModule _fogModule;
@@ -36,7 +36,7 @@ namespace dnSR_Coding
 
         #endregion
 
-        #region Light module
+        #region Light module fields
 
         [CenteredHeader( Header = "Lighting details" )]
         [SerializeField] private EnvironmentLightModule _environmentLightModule;
@@ -45,7 +45,7 @@ namespace dnSR_Coding
 
         #endregion
 
-        #region Modules definition checks
+        #region Weather modules definition checks
 
         private bool HasActiveRainModule =>
             !_rainModule.IsNull<RainModule>() && _rainType != Enums.Rain_Type.None;
@@ -58,6 +58,8 @@ namespace dnSR_Coding
 
         #endregion
 
+        #region Init
+
         private void Init(
             MonoBehaviour monoBehaviour,
             GameObject rainGO,
@@ -68,7 +70,12 @@ namespace dnSR_Coding
 
             _rainModule.Init( rainGO );
             _thunderModule.Init( monoBehaviour, thunderLightController );
+            _environmentLightModule.Init( mainLightController );
         }
+
+        #endregion
+
+        #region Apply / Stop
 
         public void Apply(
             MonoBehaviour monoBehaviour,
@@ -112,6 +119,8 @@ namespace dnSR_Coding
             IsActive = false;
         }
 
+        #endregion
+
         #region Main Light Intensity
 
         private void SetLightIntensity( Enums.Environment_LightIntensity_Type lightIntensity )
@@ -120,6 +129,8 @@ namespace dnSR_Coding
         }
 
         #endregion
+
+        #region Weather modules info
 
         public (RainModule module, Enums.Rain_Type type) GetRainInfo()
         {
@@ -137,5 +148,7 @@ namespace dnSR_Coding
         {
             return (_environmentLightModule, _environmentLightIntensityType);
         }
+
+        #endregion
     }
 }
