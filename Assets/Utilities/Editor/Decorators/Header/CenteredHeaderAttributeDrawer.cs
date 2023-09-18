@@ -44,16 +44,19 @@ namespace dnSR_Coding.Utilities.Editor
                     EditorColor.Black,
                     _textAnchor );
 
-                DrawLeftDecoration( 
-                    ref rect, 
-                    headerBGStyle, 
-                    _leftDecorationColor, 
+                DrawLeftDecoration(
+                    ref rect,
+                    headerBGStyle,
+                    _leftDecorationColor,
                     out float leftDecorationWidth );
 
                 headerBGStyle.Draw(
                     new Rect(
                         rect.x + leftDecorationWidth, rect.y,
-                     GetInspectorWidthBasedOnIndentation( position ) - leftDecorationWidth,
+                     GetInspectorWidthBasedOnIndentation( position ) 
+                     - GetXOffset_BasedOnIndentation( rect )
+                     + 2 
+                     - ( IsIndented() ? 0 : leftDecorationWidth ),
                      headerBGStyle.fixedHeight ),
                     new GUIContent( _header ),
                     false, false, false, false );

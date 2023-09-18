@@ -23,7 +23,7 @@ namespace dnSR_Coding
         [Serializable]
         public struct ThunderSettings
         {
-            public int ID
+            public readonly int ID
             {
                 get
                 {
@@ -31,21 +31,21 @@ namespace dnSR_Coding
                 }
             }
 
-            [SerializeField, LabeledArray( typeof( Enums.Thunder_Type ) )] private string _name;
-
-            [field: Header( "Main" )]
+            [field: CenteredHeader( "Main settings" )]
             [SerializeField] private Enums.Thunder_Type _associatedThunderType;
+
+            [field: CenteredHeader( "Thunder application settings" )]
+            [SerializeField, MinMaxSlider( 0, 5 )] private Vector2 _timerBetweenTwoStrikes;
             [SerializeField, MinMaxSlider( 0, 1 )] private Vector2 _flickeringRate;
-            [SerializeField, MinMaxSlider( 0, 5 )] private Vector2 _timerBetweenConsecutiveApplications;
             [SerializeField] private List<AnimationCurve> _flickeringCurves;
 
-            [field: Header( "Audio" )]
+            [field: CenteredHeader( "Audio settings" )]
             [SerializeField] private bool _hasAudio;
             [field: SerializeField, ShowIf( "_hasAudio" )]
             public SimpleAudioEvent AudioEvent { get; private set; }
 
             public readonly Vector2 GetFlickeringRate() => _flickeringRate;
-            public readonly Vector2 GetTimerBetweenConsecutiveApplications() => _timerBetweenConsecutiveApplications;
+            public readonly Vector2 GetTimerBetweenConsecutiveApplications() => _timerBetweenTwoStrikes;
             public readonly List<AnimationCurve> GetFlickeringCurves() => _flickeringCurves;
         }
         public ThunderSettings GetSettingsByID( int id )
@@ -109,7 +109,7 @@ namespace dnSR_Coding
         /// <param name="mainLightColor">
         /// The current main light color (especially useful for the daytime light influence).
         /// </param>
-        public void ApplySettings(
+        public void Apply(
             Enums.Thunder_Type thunderType,
             Color mainLightColor )
         {
@@ -119,7 +119,7 @@ namespace dnSR_Coding
             if ( settings.IsNull<ThunderSettings>() )
             {
                 this.Debugger( 
-                    "Thunder Module - ApplySettings - Thunder settings reference is null",
+                    "Thunder Module - Apply - Thunder settings reference is null",
                     DebugType.Error );
                 return;
             }
@@ -128,7 +128,7 @@ namespace dnSR_Coding
             if ( _thunderLightController.IsNull<LightController>() )
             {
                 this.Debugger(
-                    "Thunder Light Module - ApplySettings - Thunder light controller reference is null",
+                    "Thunder Light Module - Apply - Thunder light controller reference is null",
                     DebugType.Error );
                 return;
             }

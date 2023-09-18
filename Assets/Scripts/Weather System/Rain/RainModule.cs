@@ -20,7 +20,7 @@ namespace dnSR_Coding
         [Serializable]
         public struct RainSettings
         {
-            public int ID
+            public readonly int ID
             {
                 get
                 {
@@ -28,14 +28,13 @@ namespace dnSR_Coding
                 }
             }
 
-            [SerializeField, LabeledArray( typeof( Enums.Rain_Type ) )] private string _name;
-
-            [field: CstmHeader( "Main", true )]
+            [field: CenteredHeader( "Main settings" )]
             [SerializeField] private Enums.Rain_Type _rainType;
+
             [field: SerializeField, Range( 0, 500 )]
             public float RainRate { get; private set; }
 
-            [field: Header( "Audio" )]
+            [field: CenteredHeader( "Audio settings" )]
             [SerializeField] private bool _hasAudio;
             [field: SerializeField, ShowIf( "_hasAudio" )]
             public SimpleAudioEvent AudioEvent { get; private set; }
@@ -81,7 +80,7 @@ namespace dnSR_Coding
         /// </summary>
         /// <param name="rainType"> The type of rain used by the current settings </param>
         /// <param name="rainGO"> The gameObject that holds the rain PS </param>
-        public void ApplySettings( Enums.Rain_Type rainType )
+        public void Apply( Enums.Rain_Type rainType )
         {
             // We need to check if the rain's particle system is defined or not...
             if ( _rainParticleSystem.IsNull()

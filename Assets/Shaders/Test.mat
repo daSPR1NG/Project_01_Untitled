@@ -76,15 +76,15 @@ Material:
     - _AmbientOcclusion: 0.15
     - _Ambient_Influence: 1.25
     - _Blend: 0
-    - _BlendAccentuation: 0
-    - _BlendMapHeight: 0.15
+    - _BlendAccentuation: 2.79
+    - _BlendMapHeight: 0.334
     - _BlendModePreserveSpecular: 1
     - _CastShadows: 1
     - _Cull: 2
     - _DstBlend: 0
     - _HasBlendMap: 0
     - _IntersectionDepth: 0.807
-    - _IsAffectedBySnow: 0
+    - _IsAffectedBySnow: 1
     - _IsAffectedBySnowTriplanar: 0
     - _IsAffectedByTriplanar: 1
     - _QueueControl: 0
@@ -94,9 +94,9 @@ Material:
     - _Rim_Power: 0
     - _Smoothness: 0
     - _SnowAccentuation: 1
-    - _SnowHeight: 9.35
-    - _SnowNoise: 25
-    - _SnowOpacity: 2
+    - _SnowHeight: 1
+    - _SnowNoise: 150
+    - _SnowOpacity: 2.000244
     - _SnowSize: 1.25
     - _SnowTriplanarAccentuation: 2.5
     - _SnowTriplanarNoise: 500
@@ -116,7 +116,7 @@ Material:
     m_Colors:
     - _BlendMapColorLayer: {r: 0.21534868, g: 0.7075472, b: 0.13683695, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _SnowColor: {r: 0.69955605, g: 1.4980392, b: 1.4980392, a: 1}
+    - _SnowColor: {r: 0.803579, g: 1.7207954, b: 1.7207954, a: 1}
     - _SnowColorLayer: {r: 1, g: 1, b: 1, a: 1}
     - _SnowDirection: {r: 0, g: 1, b: 0, a: 0}
     - _SnowHeight: {r: 0.01, g: 0.01, b: 0.01, a: 0}

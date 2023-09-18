@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0eb3b973cf171e54c97ef74efe58d7ae, type: 3}
+  m_Name: Snow Module Settings
+  m_EditorClassIdentifier: 
+  <IsDebuggable>k__BackingField: 1
+  Settings:
+  - _associatedSnowType: 0
+  - _associatedSnowType: 1
+  - _associatedSnowType: 2
+  - _associatedSnowType: 3
+  - _associatedSnowType: 4
+  ShaderTest: {fileID: -6465566751694194690, guid: f540ef1f0bb8b3243a977fdd4373a34b,
+    type: 3}

@@ -20,7 +20,7 @@ namespace dnSR_Coding
     [DisallowMultipleComponent]
     public class NightDayCycle : MonoBehaviour, IEnvironmentLightsUser, IDebuggable
     {
-        private const float DEFAULT_DAY_DURATION = 360;
+        private const float DEFAULT_DAY_DURATION = 540;
         private const float DAY_START_THRESHOLD = .25f;
         private const float DAY_END_THRESHOLD = .75f;
         private const float NIGHT_MAIN_LIGHT_INTENSITY = 0.2f;
@@ -52,19 +52,19 @@ namespace dnSR_Coding
         private readonly Tween _mainLightIntensityTween;
 
         private static bool _isDaytime = false;
-        public static bool IsDaytime
-        {
-            get => _isDaytime;
-            set
-            {
-                // Nighttime block
-                if ( _isDaytime && !value ) { Debug.Log( "It is Night time" ); }
-                // Daytime block
-                else if ( !_isDaytime && value ) { Debug.Log( "It is Daytime" ); }
+        //public static bool IsDaytime
+        //{
+        //    get => _isDaytime;
+        //    set
+        //    {
+        //        // Nighttime block
+        //        if ( _isDaytime && !value ) { Debug.Log( "It is Night time" ); }
+        //        // Daytime block
+        //        else if ( !_isDaytime && value ) { Debug.Log( "It is Daytime" ); }
 
-                _isDaytime = value;
-            }
-        }
+        //        _isDaytime = value;
+        //    }
+        //}
 
         private WeatherPreset _activeWeatherPreset = null;
         private Color _initialFogColor = default;
@@ -165,16 +165,16 @@ namespace dnSR_Coding
                     _mainLightIntensitySettings.MainLightIntensityAtDay,
                     _mainLightIntensitySettings.ShiftDurationOnDay );
                 SetAdditionalLightIntensity_BasedOnDayTime( AdditionalLightController, _activeWeatherPreset );
+
+                return;
             }
-            else
-            {
-                _lightIntentityTweener.TweenLightIntensity(
-                    _mainLightIntensityTween,
-                    MainLightController,
-                    NIGHT_MAIN_LIGHT_INTENSITY,
-                    _mainLightIntensitySettings.ShiftDurationOnNight );
-                AdditionalLightController.SetLightIntensity( 0 );
-            }
+
+            _lightIntentityTweener.TweenLightIntensity(
+                   _mainLightIntensityTween,
+                   MainLightController,
+                   NIGHT_MAIN_LIGHT_INTENSITY,
+                   _mainLightIntensitySettings.ShiftDurationOnNight );
+            AdditionalLightController.SetLightIntensity( 0 );
         }
 
         #region ADDITIONAL LIGHT HANDLE

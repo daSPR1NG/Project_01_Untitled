@@ -14,17 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <IsDebuggable>k__BackingField: 0
   Settings:
-  - _name: None
-    _associatedThunderType: 0
+  - _associatedThunderType: 0
+    _timerBetweenTwoStrikes: {x: 0, y: 0}
     _flickeringRate: {x: 0, y: 0}
-    _timerBetweenConsecutiveApplications: {x: 0, y: 0}
     _flickeringCurves: []
     _hasAudio: 0
     <AudioEvent>k__BackingField: {fileID: 0}
-  - _name: Low
-    _associatedThunderType: 1
+  - _associatedThunderType: 1
+    _timerBetweenTwoStrikes: {x: 3.295872, y: 5}
     _flickeringRate: {x: 0.05, y: 0.125}
-    _timerBetweenConsecutiveApplications: {x: 1.25, y: 5}
     _flickeringCurves:
     - serializedVersion: 2
       m_Curve:
@@ -377,17 +375,15 @@ MonoBehaviour:
       m_RotationOrder: 0
     _hasAudio: 0
     <AudioEvent>k__BackingField: {fileID: 0}
-  - _name: Medium
-    _associatedThunderType: 2
+  - _associatedThunderType: 2
+    _timerBetweenTwoStrikes: {x: 0, y: 0}
     _flickeringRate: {x: 0, y: 0}
-    _timerBetweenConsecutiveApplications: {x: 0, y: 0}
     _flickeringCurves: []
     _hasAudio: 0
     <AudioEvent>k__BackingField: {fileID: 0}
-  - _name: High
-    _associatedThunderType: 3
+  - _associatedThunderType: 3
+    _timerBetweenTwoStrikes: {x: 0, y: 0}
     _flickeringRate: {x: 0, y: 0}
-    _timerBetweenConsecutiveApplications: {x: 0, y: 0}
     _flickeringCurves: []
     _hasAudio: 0
     <AudioEvent>k__BackingField: {fileID: 0}

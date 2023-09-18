@@ -14,7 +14,7 @@ namespace dnSR_Coding
         [Serializable]
         public struct EnvironmentLightSettings
         {
-            public int ID
+            public readonly int ID
             {
                 get
                 {
@@ -22,9 +22,7 @@ namespace dnSR_Coding
                 }
             }
 
-            [SerializeField, LabeledArray( typeof( Enums.Environment_LightIntensity_Type ) )] private string _name;
-
-            [field: Header( "Main" )]
+            [field: CenteredHeader( "Main" )]
             [SerializeField] private Enums.Environment_LightIntensity_Type _lightIntensity;
             [field: SerializeField, Range( 0, 1 )]
             public float Intensity { get; private set; }
@@ -63,18 +61,20 @@ namespace dnSR_Coding
 
         #region Apply
 
-        public void ApplySettings( Enums.Environment_LightIntensity_Type lightIntensity )
+        public void Apply( Enums.Environment_LightIntensity_Type lightIntensity )
         {
             EnvironmentLightSettings settings = GetSettingsByID( ( int ) lightIntensity );
             if ( settings.IsNull<EnvironmentLightSettings>() )
             {
-                Debug.LogError( "Environment Light Module - ApplySettings - Environment Light settings reference is null" );
+                this.Debugger(
+                    "Environment Light Module - Apply - Environment Light settings reference is null",
+                    DebugType.Error );
                 return;
             }
 
             SetLightIntensity( settings );
 
-            Debug.Log( $"Environment light setting has been applied with an intensity of : {settings.Intensity}." );
+            this.Debugger( $"Environment light setting has been applied with an intensity of : {settings.Intensity}." );
         }
 
         #endregion
@@ -86,7 +86,9 @@ namespace dnSR_Coding
             // We need to check if the main light controller is defined.
             if ( _mainLightController.IsNull<LightController>() )
             {
-                Debug.LogError( "Environment Light Module - ApplySettings - Environment Light main light reference is null" );
+                this.Debugger(
+                    "Environment Light Module - ApplySettings - Environment Light main light reference is null",
+                    DebugType.Error );
                 return;
             }
 

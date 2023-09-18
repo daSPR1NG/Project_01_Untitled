@@ -15,7 +15,7 @@ namespace dnSR_Coding
         [Serializable]
         public struct FogSettings
         {
-            public int ID
+            public readonly int ID
             {
                 get
                 {
@@ -23,9 +23,7 @@ namespace dnSR_Coding
                 }
             }
 
-            [SerializeField, LabeledArray( typeof( Enums.Fog_Type ) )] private string _name;
-
-            [field: Header( "Main" )]
+            [field: CenteredHeader( "Main settings" )]
             [SerializeField] private Enums.Fog_Type _associatedFogType;
 
             [field: SerializeField, Range( 0, .085f )]
@@ -46,18 +44,18 @@ namespace dnSR_Coding
 
         #region Apply / Stop
 
-        public void ApplySettings( Enums.Fog_Type fogType )
+        public void Apply( Enums.Fog_Type fogType )
         {
-            // We need to make sure that a setting exists.
-            FogSettings settings = GetSettingsByID( ( int ) fogType );
-            if ( settings.IsNull<FogSettings>() )
-            {
-                Debug.LogError( "Fog Module - ApplySettings - Fog settings reference is null" );
-                return;
-            }
+            //// We need to make sure that a setting exists.
+            //FogSettings settings = GetSettingsByID( ( int ) fogType );
+            //if ( settings.IsNull<FogSettings>() )
+            //{
+            //    Debug.LogError( "Fog Module - Apply - Fog settings reference is null" );
+            //    return;
+            //}
 
-            SetFogDensity( settings );
-            SetFogColor( settings );
+            //SetFogDensity( settings );
+            //SetFogColor( settings );
         }
         public void Stop()
         {

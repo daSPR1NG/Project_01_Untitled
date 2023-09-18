@@ -454,5 +454,7 @@ MonoBehaviour:
     alignWindowToBar: 1
     windowMode: 1
   _sceneHistory:
+  - name: Scene_01
+    path: Assets/_Fog_Plane/Scene/Scene_01.unity
   - name: Scene_World
     path: Assets/Scenes/Scene_World.unity

@@ -5,7 +5,6 @@ using dnSR_Coding.Utilities.Helpers;
 using dnSR_Coding.Utilities.Interfaces;
 using dnSR_Coding.Utilities.Attributes;
 using Sirenix.OdinInspector;
-using System;
 
 namespace dnSR_Coding
 {
@@ -17,7 +16,7 @@ namespace dnSR_Coding
     {
         [CenteredHeader( "Weather Presets", LeftDecorationColor = EditorColor.Red )]
 
-        [ListDrawerSettings( 
+        [ListDrawerSettings(
             ShowItemCount = true, DraggableItems = false, ShowIndexLabels = false, HideRemoveButton = true )]
         [SerializeField]
         private List<WeatherPreset> _weatherPresets = new();
@@ -68,7 +67,7 @@ namespace dnSR_Coding
             SetLightReferences();
         }
 
-        #endregion
+        #endregion 
 
         // AS A DEBUG PURPOSE, PLS REMOVE AFTER
         private void Update()
@@ -93,7 +92,7 @@ namespace dnSR_Coding
             // We need to check if a preset is set and active...
             // and if it is the same as the one we want to activate.
             bool aPresetIsActive = !_currentPreset.IsNull() && _currentPreset.IsActive;
-            if ( aPresetIsActive 
+            if ( aPresetIsActive
                 && _currentPreset == _weatherPresets [ index ] )
             {
                 this.Debugger( "Killing the method a preset is active and is the same as the one already passed" );
@@ -151,10 +150,10 @@ namespace dnSR_Coding
             }
 
             // Then we are actually applying the preset, giving all the element that are needed.
-            _currentPreset.Apply( 
-                this, 
-                _rainGO, 
-                MainLightController, 
+            _currentPreset.Apply(
+                this,
+                _rainGO,
+                MainLightController,
                 _thunderLightController );
 
             EventManager.WeatherSystem_OnApplyingWeatherPreset.Call( _currentPreset );
