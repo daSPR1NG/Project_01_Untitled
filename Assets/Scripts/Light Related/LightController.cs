@@ -42,8 +42,47 @@ namespace dnSR_Coding
 
         #endregion
 
-        #region SETTING LIGHT PARAMETERS | DIFFERENT CONSTRUCTORS
 
+        #region LIGHT - RUNTIME
+
+        public void SetLightIntensity( float intensity )
+        {
+            _controllerLight.intensity = intensity;
+        }
+
+        public void SetLightColor( Color color )
+        {
+            _controllerLight.color = color;
+        }
+
+        public bool DoesLightIntensityEquals( float value )
+        {
+            return _controllerLight.intensity == value;
+        }
+
+        #endregion
+
+        #region SHADOW
+
+        private void SetLightShadows( LightShadows shadows )
+        {
+            _controllerLight.shadows = shadows;
+        }
+
+        private void SetShadowNearPlane( float shadowNearPlane )
+        {
+            _controllerLight.shadowNearPlane = shadowNearPlane;
+        }
+
+        private void SetShadowStrength( float shadowStrength )
+        {
+            _controllerLight.shadowStrength = shadowStrength;
+        }
+
+        #endregion
+
+        #region SETTING LIGHT PARAMETERS | DIFFERENT CONSTRUCTORS - EDITOR
+#if UNITY_EDITOR
         public void SetLightParameters( LightType type, LightmapBakeType bakeType, Color color, float intensity, LightShadows shadows, float shadowNearPlane, float shadowStrength )
         {
             if ( _controllerLight.IsNull<LightController>() ) { return; }
@@ -82,11 +121,11 @@ namespace dnSR_Coding
             SetLightColor( color );
             SetLightIntensity( intensity );
         }
-
+#endif
         #endregion
 
-        #region LIGHT
-
+        #region LIGHT - EDITOR
+#if UNITY_EDITOR
         private void SetLightType( LightType type )
         {
             _controllerLight.type = type;
@@ -101,41 +140,7 @@ namespace dnSR_Coding
         {
             _controllerLight.renderMode = renderMode;
         }
-
-        public void SetLightIntensity( float intensity )
-        {
-            _controllerLight.intensity = intensity;
-        }
-
-        public void SetLightColor( Color color )
-        {
-            _controllerLight.color = color;
-        }
-
-        public bool DoesLightIntensityEquals( float value )
-        {
-            return _controllerLight.intensity == value;
-        }
-
-        #endregion
-
-        #region SHADOW
-
-        private void SetLightShadows( LightShadows shadows )
-        {
-            _controllerLight.shadows = shadows;
-        }
-
-        private void SetShadowNearPlane( float shadowNearPlane )
-        {
-            _controllerLight.shadowNearPlane = shadowNearPlane;
-        }
-
-        private void SetShadowStrength( float shadowStrength )
-        {
-            _controllerLight.shadowStrength = shadowStrength;
-        }
-
+#endif
         #endregion
 
         public void SetLightCullingMask( int cullingMask )
@@ -161,7 +166,9 @@ namespace dnSR_Coding
             if ( _controllerLight.enabled ) { return; }
 
             _controllerLight.Enable();
+#if UNITY_EDITOR
             ChangeGameObjectName( "Enabled" );
+#endif
         }
         public void DisableLight()
         {
@@ -169,7 +176,9 @@ namespace dnSR_Coding
 
             SetLightIntensity( 0 );
             _controllerLight.Disable();
+#if UNITY_EDITOR
             ChangeGameObjectName( "Disabled" );
+#endif
         }
 
 #if UNITY_EDITOR

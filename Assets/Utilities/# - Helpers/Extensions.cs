@@ -774,6 +774,8 @@ namespace dnSR_Coding.Utilities.Helpers
         #endregion
 
         #region Editor 
+
+#if UNITY_EDITOR
         [MethodImpl( INLINE )]
         public static Vector2 GetGUIContentSize( this GUIStyle style, GUIContent content )
         {
@@ -781,10 +783,13 @@ namespace dnSR_Coding.Utilities.Helpers
         }
 
         [MethodImpl( INLINE )]
-        public static bool IsPropertyTypeOf( this SerializedProperty property, SerializedPropertyType type )
+        public static bool IsPropertyTypeOf(
+            this SerializedProperty property,
+           SerializedPropertyType type )
         {
             return property.propertyType == type;
         }
+#endif
 
         #endregion
     }

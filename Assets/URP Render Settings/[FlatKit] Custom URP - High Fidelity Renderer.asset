@@ -31,10 +31,10 @@ MonoBehaviour:
   settings:
     renderersAfterOpaqueAndSky: []
     renderersBeforePostProcess:
-    - CompoundRendererFeature.PostProcess.StylizedDetailRenderer, External, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    - CompoundRendererFeature.PostProcess.ColorGradingRenderer, External, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    - CompoundRendererFeature.PostProcess.ColorGradingRenderer, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    - CompoundRendererFeature.PostProcess.StylizedDetailRenderer, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     renderersAfterPostProcess: []
 --- !u!114 &-1144942288474377317
 MonoBehaviour:

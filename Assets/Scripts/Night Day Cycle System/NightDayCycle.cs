@@ -5,8 +5,6 @@ using dnSR_Coding.Utilities.Helpers;
 using dnSR_Coding.Utilities.Interfaces;
 using dnSR_Coding.Utilities.Attributes;
 using Sirenix.OdinInspector;
-using Sirenix.Utilities.Editor.Expressions;
-using System.Runtime.CompilerServices;
 
 namespace dnSR_Coding
 {
@@ -148,6 +146,8 @@ namespace dnSR_Coding
 
             _currentTimeOfDay = _timeOfDay / _dayDuration;
             _isDaytime = _currentTimeOfDay >= DAY_START_THRESHOLD && _currentTimeOfDay <= DAY_END_THRESHOLD;
+
+            Debug.Log( _timeOfDay );
 
             _ambientColorer.SetAmbientElementsColor(
                 MainLightController,

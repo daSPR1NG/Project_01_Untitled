@@ -38,6 +38,7 @@ namespace dnSR_Coding
         #endregion
 
         #region Setup
+#if UNITY_EDITOR
 
         void Awake() => Init();
         void Init() => SetLightsReference( ref _lightsContainer );
@@ -71,8 +72,8 @@ namespace dnSR_Coding
             lightContainer = lightsContainer.GetComponent<EnvironmentLightContainer>();
             lightContainer.Init( this );
         }
-
-        #endregion       
+#endif
+        #endregion
 
         public void SetMainLightController( LightController lightController )
         {

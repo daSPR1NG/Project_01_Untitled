@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 
@@ -20,6 +19,7 @@ namespace dnSR_Coding.Utilities.Helpers
     ///<summary> EditorHelper description <summary>
     public class EditorHelper
     {
+#if UNITY_EDITOR
         public const int DEFAULT_MIN_HORIZONTAL_LAYOUT_OFFSET = 2;
         internal const float PROPERTY_DEFAULT_FIELD_WIDTH = 50f;
 
@@ -235,7 +235,7 @@ namespace dnSR_Coding.Utilities.Helpers
 
         public static void CreateHelpBox(
             Rect position, string message,
-            MessageType messageType,
+            UnityEditor.MessageType messageType,
             out Rect helpBox )
         {
             Vector2 initialIconSize = EditorGUIUtility.GetIconSize();
@@ -317,5 +317,6 @@ namespace dnSR_Coding.Utilities.Helpers
         {
             return EditorGUI.indentLevel - offset;
         }
+#endif
     }
 }

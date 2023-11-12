@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-namespace dnSR_Coding.Utilities.Runtime
+namespace dnSR_Coding
 {
     public partial class @PlayerInputs: IInputActionCollection2, IDisposable
     {

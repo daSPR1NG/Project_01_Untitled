@@ -96,7 +96,7 @@ Material:
     - _SnowAccentuation: 1
     - _SnowHeight: 1
     - _SnowNoise: 150
-    - _SnowOpacity: 2.000244
+    - _SnowOpacity: 0.010122165
     - _SnowSize: 1.25
     - _SnowTriplanarAccentuation: 2.5
     - _SnowTriplanarNoise: 500

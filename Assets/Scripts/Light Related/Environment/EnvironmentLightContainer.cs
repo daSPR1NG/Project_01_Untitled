@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using dnSR_Coding.Utilities.Helpers;
 using dnSR_Coding.Utilities.Interfaces;
@@ -211,7 +212,7 @@ namespace dnSR_Coding
                 return controller;
             }
 
-            this.Debugger( 
+            this.Debugger(
                 $"No controller of type {type} found.",
                 DebugType.Error );
             return null;
@@ -220,3 +221,4 @@ namespace dnSR_Coding
         #endregion
     }
 }
+#endif
